@@ -25,7 +25,7 @@ public class uplfileController extends AbstractCrudController<uplfile, Integer> 
     }
 
     @Override
-    public uplfile update(uplfile entity) {
+    public void update(uplfile entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

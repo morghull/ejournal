@@ -5,6 +5,7 @@
  */
 package dataControllerCore;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -15,9 +16,12 @@ import java.util.List;
  */
 public abstract class AbstractCrudController<E, K> extends AbstractController {
 
+    public AbstractCrudController() throws SQLException {
+    }
+
     public abstract K create(E entity) throws Exception;
 
-    public abstract E update(E entity) throws Exception;
+    public abstract void update(E entity) throws Exception;
 
     public abstract boolean delete(K id) throws Exception;
 

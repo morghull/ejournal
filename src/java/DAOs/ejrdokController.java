@@ -6,6 +6,7 @@
 package DAOs;
 
 import dataControllerCore.AbstractCrudController;
+import dataControllerCore.NamedParameterStatement;
 import dataObjects.ejrdok;
 import dataObjects.uplfile;
 import java.sql.PreparedStatement;
@@ -21,6 +22,9 @@ import java.util.List;
 public class ejrdokController extends AbstractCrudController<ejrdok, Integer> {
 
     private static final String TABLE_NAME = "xxx.ejrdok";
+
+    public ejrdokController() throws SQLException {
+    }
 
     @Override
     public Integer create(ejrdok entity) throws Exception {
@@ -59,8 +63,36 @@ public class ejrdokController extends AbstractCrudController<ejrdok, Integer> {
     }
 
     @Override
-    public ejrdok update(ejrdok entity) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void update(ejrdok entity) throws Exception {
+        String query
+                = "update " + TABLE_NAME + " set rdk=@rdk,rdn=@rdn,rdd=@rdd,"
+                + "nazz=@nazz,rdsh=@rdsh,ordk=@ordk,ordn=@ordn,ordd=@ordd,"
+                + "dvd=@dvd,nzak=@nzak,prim=@prim "
+                + "where idd=@idd";
+
+        NamedParameterStatement nps = getNamedParameterStatement(query);
+
+        try {
+            nps.setInt("idd", entity.getIdd());
+            nps.setString("rdk", entity.getRdk());
+            nps.setString("rdn", entity.getRdn());
+            nps.setDate("rdd", new java.sql.Date(entity.getRdd().getTime()));
+            nps.setString("nazz", entity.getNazz());
+            nps.setString("rdsh", entity.getRdsh());
+            nps.setString("ordk", entity.getOrdk());
+            nps.setString("ordn", entity.getOrdn());
+            nps.setDate("ordd", new java.sql.Date(entity.getOrdd().getTime()));
+            nps.setDate("dvd", new java.sql.Date(entity.getDvd().getTime()));
+            nps.setString("nzak", entity.getNzak());
+            nps.setString("prim", entity.getPrim());
+
+            nps.executeQuery();
+        } catch (Exception e) {
+            throw new Exception("Помилка при виконанні SQL-запиту</br>"
+                    + "<div class=\"nested-error\">" + e.getMessage() + "</div>");
+        } finally {
+            closeNamedParameterStatement(nps);
+        }
     }
 
     @Override

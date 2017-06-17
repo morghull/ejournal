@@ -34,7 +34,7 @@ public class ConnectionPool {
         return new ConnectionPool();
     }
 
-    public Connection getConnection() {
+    public Connection getConnection() throws SQLException {
         Connection conn = null;
         try {
             conn = dataSource.getConnection();;

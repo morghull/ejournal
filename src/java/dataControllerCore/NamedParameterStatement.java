@@ -8,6 +8,7 @@ package dataControllerCore;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,14 +30,14 @@ public class NamedParameterStatement {
      * @throws SQLException if the statement could not be created
      */
     public NamedParameterStatement(Connection connection, String query) throws SQLException {
-        this.fields = new ArrayList<>();
+        fields = new ArrayList<>();
         //another one regexp for matcher "(?<!')(@[\\w]*)(?!')"
-        Pattern findParametersPattern = Pattern.compile("(?!\\\\B'[^']*)(:\\\\w+)(?![^']*'\\\\B)");
+        Pattern findParametersPattern = Pattern.compile("(?!\\B'[^']*)(@\\w+)(?![^']*'\\B)");
         Matcher matcher = findParametersPattern.matcher(query);
         while (matcher.find()) {
             fields.add(matcher.group().substring(1));
         }
-        this.preparedStatement = connection.prepareStatement(query.replaceAll(findPara‌​metersPattern.patter‌​n(), "?"));
+        preparedStatement = connection.prepareStatement(query.replaceAll(findPara‌​metersPattern.patter‌​n(), "?"));
     }
     public void setString(String name, String value) throws SQLException {        
         preparedStatement.setString(getIndex(name), value);
@@ -50,7 +51,13 @@ public class NamedParameterStatement {
     private int getIndex(String name) {
         return fields.indexOf(name)+1;
     }
+    public ResultSet executeQuery() throws SQLException {
+        return preparedStatement.executeQuery();
+    }
+    public void close() throws SQLException {
+        preparedStatement.close();
+    }
     public PreparedStatement getPreparedStatement() {
-        return this.preparedStatement;
+        return preparedStatement;
     }
 }

@@ -19,9 +19,13 @@ public abstract class AbstractController<E, K> {
     private Connection connection;
     private ConnectionPool connectionPool;
 
-    public AbstractController() {
-        connectionPool = ConnectionPool.getConnectionPool();
-        connection = connectionPool.getConnection();
+    public AbstractController() throws SQLException {
+        try {
+            connectionPool = ConnectionPool.getConnectionPool();
+            connection = connectionPool.getConnection();
+        } catch (SQLException e) {
+            throw new SQLException("asd");
+        }
     }
 
     public abstract String getTableName() throws Exception;
@@ -68,7 +72,7 @@ public abstract class AbstractController<E, K> {
     public void closeNamedParameterStatement(NamedParameterStatement nps) {
         if (nps != null) {
             try {
-                nps.getPreparedStatement().close();
+                nps.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }

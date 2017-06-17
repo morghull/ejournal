@@ -67,7 +67,11 @@ public class ejrdokCrudAjaxServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("UTF-8");
+        String tableName = null;
+        String mode = null;
+        String idd;
     }
 
     /**
@@ -108,6 +112,9 @@ public class ejrdokCrudAjaxServlet extends HttpServlet {
 
             ejrdokController controller = new ejrdokController();
             newId = controller.create(object);
+            //controller.returnConnectionInPool();
+            object.setIdd(newId);
+            controller.update(object);
             controller.returnConnectionInPool();
 
         } catch (Throwable e) {

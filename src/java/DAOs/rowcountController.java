@@ -6,19 +6,20 @@
 package DAOs;
 
 import dataControllerCore.AbstractController;
+import java.sql.SQLException;
 
 /**
  *
  * @author u27brvz04
  */
 public class rowcountController extends AbstractController {
-    
+
     private final String tableName;
-    
-    public rowcountController(String tableName){
+
+    public rowcountController(String tableName) throws SQLException {
         this.tableName = tableName;
     }
-    
+
     @Override
     public String getTableName() throws Exception {
         return this.tableName;
