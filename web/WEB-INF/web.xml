@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
+    <!--url mapping ******************************************************-->
+    <servlet>
+        <servlet-name>journal</servlet-name>
+        <jsp-file>/jsp/pages/journal.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>journal</servlet-name>
+        <url-pattern>/journal</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>ejrdok</servlet-name>
+        <jsp-file>/jsp/pages/ejrdok.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ejrdok</servlet-name>
+        <url-pattern>/journal/ejrdok</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>ejkiz</servlet-name>
+        <jsp-file>/jsp/pages/ejkiz.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ejkiz</servlet-name>
+        <url-pattern>/journal/ejkiz</url-pattern>
+    </servlet-mapping>
+    
+    <!--ajax servlets ******************************************************-->
+    <servlet>
+        <servlet-name>ejrdokCrudAjaxServlet</servlet-name>
+        <servlet-class>ajaxServlets.ejrdokCrudAjaxServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ejrdokCrudAjaxServlet</servlet-name>
+        <url-pattern>/servlets/ajax/ejrdokCrud</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>ejrdokGetPageAjaxServlet</servlet-name>
+        <servlet-class>ajaxServlets.ejrdokGetPageAjaxServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ejrdokGetPageAjaxServlet</servlet-name>
+        <url-pattern>/servlets/ajax/ejrdokGetPage</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>rowcountAjaxServlet</servlet-name>
+        <servlet-class>ajaxServlets.rowcountAjaxServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>rowcountAjaxServlet</servlet-name>
+        <url-pattern>/servlets/ajax/getRowCount</url-pattern>
+    </servlet-mapping>
+    <!--********************************************************************-->
+    <servlet>
+        <servlet-name>software</servlet-name>
+        <jsp-file>/jsp/pages/software.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>software</servlet-name>
+        <url-pattern>/dictionaries/software</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>employees</servlet-name>
+        <jsp-file>/jsp/pages/employees.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>employees</servlet-name>
+        <url-pattern>/dictionaries/employees</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>softscrollable</servlet-name>
+        <jsp-file>/jsp/pages/softscrollable.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>softscrollable</servlet-name>
+        <url-pattern>/dictionaries/softscrollable</url-pattern>
+    </servlet-mapping>
+    <!-- *****************************************************************-->
+    
+    <!--testing block begins here ******************************************************-->
+    <servlet>
+        <servlet-name>test</servlet-name>
+        <jsp-file>/jsp/pages/test.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>test</servlet-name>
+        <url-pattern>/dictionaries/test</url-pattern>
+    </servlet-mapping>
+    <!--testing block ends here ********************************************************-->
+    <servlet>
+        <servlet-name>ajaxWebServlet</servlet-name>
+        <servlet-class>ajaxDataController.AjaxDataHttpServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ajaxWebServlet</servlet-name>
+        <url-pattern>/ajaxdata</url-pattern>
+    </servlet-mapping>
+    <session-config>
+        <session-timeout>
+            90
+        </session-timeout>
+    </session-config>
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+</web-app>

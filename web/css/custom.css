@@ -1,0 +1,129 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Nov 11, 2016, 4:39:57 PM
+    Author     : u27brvz04
+*/
+@charset "utf-8";
+.dictionary-content,.table-content{
+    padding:5px;
+}
+table.table-unbordered{
+    border:none;
+}
+table.table-unbordered tr td{
+    border:none;
+}
+table.table-layout{
+    width:100%;
+}
+table.table-layout tr td{
+    padding-top:5px;
+}
+.table-title-caption {
+    display:inline-block;
+    padding-left: 20px;
+}
+.border-right-none{
+    border-right:none !important;
+}
+.arrow-down {
+    float:right;
+    cursor: pointer;
+    width: 0; 
+    height: 0; 
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-top: 7px solid rgba(0,0,0,0.5);
+}
+#scrollable-container {
+    display: block;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border-top: 1px solid rgb(221,221,221);
+}
+.nested-error {
+    padding-left:5px;
+}
+.overlay {
+    z-index: 999;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+.overlay-pagination {
+    width: 200px;
+    height: 38px;
+    background: rgba(0, 0, 0, 0) url("/ejournal/images/loading.gif") no-repeat 10px 7px / contain;
+    /*border: 1px solid #ccc;
+    border-radius: 4px;*/
+    background-size: 20px;
+    opacity: 0.65;
+}
+.overlay-pagination:before {
+    content:"Завантаження";
+    display: inline-block;
+    font-size: 16px;
+    color: #3cc4f0;
+    font-weight: 600;
+    padding: 6px 12px 6px 30px;
+    animation: loading 1s linear infinite alternate;
+    -moz-animation: loading 1s linear infinite alternate;
+    transition: all 0.5s ease;
+}
+@-moz-keyframes loading { 0% {content: "Завантаження";} 33% {content: "Завантаження.";} 66% {content: "Завантаження..";} 100% {content: "Завантаження...";}}
+@keyframes loading { 0% {content: "Завантаження";} 33% {content: "Завантаження.";} 66% {content: "Завантаження..";} 100% {content: "Завантаження...";}}
+
+.toolbar-page-size>button {
+    line-height: 24px;
+    color: #000;
+}
+#fieldset-rd,#fieldset-ord {
+    border: 1px solid rgba(0,0,0,0.1);
+    padding: 20px 10px 10px 30px;
+    margin-bottom: 10px;
+}
+#fieldset-rd:before,#fieldset-ord:before {
+    background:#ffffff;
+    position:absolute;
+    margin-top:-31px;
+    margin-left:-15px;
+}
+#fieldset-rd:before {
+    content:"Розпорядчий документ:";
+}
+#fieldset-ord:before {
+    content:"Основний розпорядчий документ:";
+}
+.width60px {
+    width:60px;
+}
+.width90px {
+    width:90px;
+}
+.width100px {
+    width:100px;
+}
+.width200px {
+    width:200px;
+}
+.width300px {
+    width:300px;
+}
+.width400px {
+    width:400px;
+}
+.width500px {
+    width:500px;
+}
+.width600px {
+    width:600px;
+}
+.width100perc{
+    width:100%;
+}

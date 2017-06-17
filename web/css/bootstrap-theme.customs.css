@@ -1,0 +1,80 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Nov 21, 2016, 9:34:47 AM
+    Author     : u27brvz04
+*/
+/*Bookstrap rearrange of classes*/
+label {
+    font-weight: normal;
+}
+.btn {
+    border: 1px solid #ccc;
+}
+.btn-custom-help {
+    font-weight: bold;
+    color: rgba(0, 0, 0, 0.3);
+    background-color: #eee;
+}
+.input-group-label {
+    display: table-cell;
+    vertical-align: middle;
+    z-index: 2;
+    padding-right: 10px;
+}
+.form-control[readonly] {
+    background:#ffffff;
+    cursor:default;
+}
+.glyphicon-calendar {
+    color:rgba(92,161,53,0.7);
+}
+.help-btn {
+    cursor:pointer;
+}
+.help-btn:hover>.glyphicon-calendar {
+    color:rgba(92,161,53,0.9);
+}
+.pagination {
+    margin:0;
+    transition: all 0.5s ease;
+}
+.pagination > li > a {
+    line-height: 24px;
+    cursor: pointer;
+}
+.pagination > .active > a,
+.pagination > .active > a:hover,
+.pagination > .active > a:focus{
+    background-color: #3cc4f0;
+    border-color: transparent;
+}
+#toolbar-page-sizes-list::after {
+    top: -14px;
+    right: 5px;
+    left: auto;
+}
+#toolbar-page-sizes-list::after {
+    border: 7px solid transparent;
+    border-bottom-color: #fff;
+}
+#toolbar-page-sizes-list::before {
+    top: -16px;
+    right: 4px;
+    left: auto;
+}
+#toolbar-page-sizes-list::before {
+    border: 8px solid transparent;
+    border-bottom-color: rgba(27,31,35,0.15);
+}
+#toolbar-page-sizes-list::before, #toolbar-page-sizes-list::after {
+    position: absolute;
+    display: inline-block;
+    content: "";
+}
+.dropdown-menu > li > a {
+    cursor:pointer;
+}
