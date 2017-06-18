@@ -111,22 +111,22 @@ public class ejrdokController extends AbstractCrudController<ejrdok, Integer> {
         try {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                ejrdok ejrdok = new ejrdok();
-                ejrdok.setIdd(rs.getInt(1));
-                ejrdok.setRdk(rs.getString(2));
-                ejrdok.setRdn(rs.getString(3));
-                ejrdok.setRdd(rs.getDate(4));
-                ejrdok.setNazz(rs.getString(5));
-                ejrdok.setRdsh(rs.getString(6));
-                ejrdok.setOrdk(rs.getString(7));
-                ejrdok.setOrdn(rs.getString(8));
-                ejrdok.setOrdd(rs.getDate(9));
-                ejrdok.setDvd(rs.getDate(10));
-                ejrdok.setNzak(rs.getString(11));
-                ejrdok.setPrim(rs.getString(12));
+                ejrdok entity = new ejrdok();
+                entity.setIdd(rs.getInt(1));
+                entity.setRdk(rs.getString(2));
+                entity.setRdn(rs.getString(3));
+                entity.setRdd(rs.getDate(4));
+                entity.setNazz(rs.getString(5));
+                entity.setRdsh(rs.getString(6));
+                entity.setOrdk(rs.getString(7));
+                entity.setOrdn(rs.getString(8));
+                entity.setOrdd(rs.getDate(9));
+                entity.setDvd(rs.getDate(10));
+                entity.setNzak(rs.getString(11));
+                entity.setPrim(rs.getString(12));
                 //ejrdok.setUfid(rs.getInt(12));
 
-                lst.add(ejrdok);
+                lst.add(entity);
             }
         } catch (SQLException e) {
             throw new SQLException("Помилка при виконанні SQL-запиту</br>"
@@ -140,7 +140,40 @@ public class ejrdokController extends AbstractCrudController<ejrdok, Integer> {
 
     @Override
     public ejrdok getEntityById(Integer id) throws SQLException {
-        return null;
+        ejrdok entity;
+        String query
+                = "select idd,rdk,rdn,rdd,nazz,rdsh,ordk,ordn,ordd,dvd,nzak,prim "
+                + "from " + TABLE_NAME + " "
+                + "where idd=? limit 1";
+        PreparedStatement ps = getPrepareStatement(query);
+        try {
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                entity = new ejrdok();
+                entity.setIdd(rs.getInt(1));
+                entity.setRdk(rs.getString(2));
+                entity.setRdn(rs.getString(3));
+                entity.setRdd(rs.getDate(4));
+                entity.setNazz(rs.getString(5));
+                entity.setRdsh(rs.getString(6));
+                entity.setOrdk(rs.getString(7));
+                entity.setOrdn(rs.getString(8));
+                entity.setOrdd(rs.getDate(9));
+                entity.setDvd(rs.getDate(10));
+                entity.setNzak(rs.getString(11));
+                entity.setPrim(rs.getString(12));
+            } else {
+                throw new SQLException("За заданим ідентифікатором відсутній запис");
+            }
+            //ejrdok.setUfid(rs.getInt(12));
+        } catch (SQLException e) {
+            throw new SQLException("Помилка при виконанні SQL-запиту</br>"
+                    + "<div class=\"nested-error\">" + e.getMessage() + "</div>");
+        } finally {
+            closePrepareStatement(ps);
+        }
+        return entity;
     }
 
     @Override
@@ -154,22 +187,22 @@ public class ejrdokController extends AbstractCrudController<ejrdok, Integer> {
         try {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                ejrdok ejrdok = new ejrdok();
-                ejrdok.setIdd(rs.getInt(1));
-                ejrdok.setRdk(rs.getString(2));
-                ejrdok.setRdn(rs.getString(3));
-                ejrdok.setRdd(rs.getDate(4));
-                ejrdok.setNazz(rs.getString(5));
-                ejrdok.setRdsh(rs.getString(6));
-                ejrdok.setOrdk(rs.getString(7));
-                ejrdok.setOrdn(rs.getString(8));
-                ejrdok.setOrdd(rs.getDate(9));
-                ejrdok.setDvd(rs.getDate(10));
-                ejrdok.setNzak(rs.getString(11));
-                ejrdok.setPrim(rs.getString(12));
+                ejrdok entity = new ejrdok();
+                entity.setIdd(rs.getInt(1));
+                entity.setRdk(rs.getString(2));
+                entity.setRdn(rs.getString(3));
+                entity.setRdd(rs.getDate(4));
+                entity.setNazz(rs.getString(5));
+                entity.setRdsh(rs.getString(6));
+                entity.setOrdk(rs.getString(7));
+                entity.setOrdn(rs.getString(8));
+                entity.setOrdd(rs.getDate(9));
+                entity.setDvd(rs.getDate(10));
+                entity.setNzak(rs.getString(11));
+                entity.setPrim(rs.getString(12));
                 //ejrdok.setUfid(rs.getInt(12));
 
-                lst.add(ejrdok);
+                lst.add(entity);
             }
         } catch (SQLException e) {
             throw new SQLException("Помилка при виконанні SQL-запиту</br>"

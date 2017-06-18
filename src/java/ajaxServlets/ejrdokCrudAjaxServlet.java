@@ -70,8 +70,30 @@ public class ejrdokCrudAjaxServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
         String tableName = null;
-        String mode = null;
-        String idd;
+        String id = null;
+
+        try {
+            tableName = request.getParameter("q_table_name");
+            id = request.getParameter("q_id");
+
+            ejrdokController controller = new ejrdokController();
+            ejrdok entity = controller.getEntityById(Integer.parseInt(id));
+            controller.returnConnectionInPool();
+
+            PrintWriter out = response.getWriter();
+            out.print("{\"row\":" + entity.toString() + "}");
+            out.flush();
+            //response.getWriter().write(json);
+        } catch (Throwable e) {
+            response.setContentType("application/json; charset=utf-8");
+            response.addHeader("error", URLEncoder.encode("Помилка при роботі з sql-сервером</br>Помилка при "
+                    + " отримати інформацію запису таблиці " + tableName + " для редагування", "UTF-8")
+            );
+            response.addHeader("error_details", URLEncoder.encode("<div class=\"nested-error\">" + e.getClass().getName() + ": " + e.getMessage() + "</div>", "UTF-8"));
+
+            //response.setStatus(500);
+            throw new ServletException();
+        }
     }
 
     /**
@@ -93,30 +115,30 @@ public class ejrdokCrudAjaxServlet extends HttpServlet {
 
         DateFormat format = new SimpleDateFormat("dd.MM.yyyy");
 
-        ejrdok object = new ejrdok();
+        ejrdok entity = new ejrdok();
         try {
             tableName = request.getParameter("q_table_name");
             mode = request.getParameter("q_mode");
 
-            object.setRdk(request.getParameter("rdk"));
-            object.setRdn(request.getParameter("rdn"));
-            object.setRdd(format.parse(request.getParameter("rdd")));
-            object.setNazz(request.getParameter("nazz"));
-            object.setRdsh(request.getParameter("rdsh"));
-            object.setOrdk(request.getParameter("ordk"));
-            object.setOrdn(request.getParameter("ordn"));
-            object.setOrdd(format.parse(request.getParameter("ordd")));
-            object.setDvd(format.parse(request.getParameter("dvd")));
-            object.setNzak(request.getParameter("nzak"));
-            object.setPrim(request.getParameter("prim"));
+            entity.setRdk(request.getParameter("rdk"));
+            entity.setRdn(request.getParameter("rdn"));
+            entity.setRdd(format.parse(request.getParameter("rdd")));
+            entity.setNazz(request.getParameter("nazz"));
+            entity.setRdsh(request.getParameter("rdsh"));
+            entity.setOrdk(request.getParameter("ordk"));
+            entity.setOrdn(request.getParameter("ordn"));
+            entity.setOrdd(format.parse(request.getParameter("ordd")));
+            entity.setDvd(format.parse(request.getParameter("dvd")));
+            entity.setNzak(request.getParameter("nzak"));
+            entity.setPrim(request.getParameter("prim"));
 
             ejrdokController controller = new ejrdokController();
             if (mode.equals("add")) {
-                newId = controller.create(object);
+                newId = controller.create(entity);
             } else if (mode.equals("edit")) {
-                object.setIdd(Integer.parseInt(request.getParameter("idd")));
-                newId = Integer.parseInt(request.getParameter("idd"));
-                controller.update(object);
+                entity.setIdd(Integer.parseInt(request.getParameter("idd")));
+                newId = entity.getIdd();
+                controller.update(entity);
             }
 
             controller.returnConnectionInPool();
@@ -134,7 +156,7 @@ public class ejrdokCrudAjaxServlet extends HttpServlet {
             response.addHeader("error", URLEncoder.encode("Помилка при роботі з sql-сервером</br>Помилка при "
                     + stringModes.get(mode).trim() + " запису у таблиці " + tableName, "UTF-8")
             );
-            response.addHeader("error_details", URLEncoder.encode("<div class=\"nested-error\">" + e.getMessage() + "</div>", "UTF-8"));
+            response.addHeader("error_details", URLEncoder.encode("<div class=\"nested-error\">" + e.getClass().getName() + ": " + e.getMessage() + "</div>", "UTF-8"));
 
             //response.setStatus(500);
             throw new ServletException();

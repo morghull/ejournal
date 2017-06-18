@@ -55,10 +55,10 @@ public class uplfileController extends AbstractCrudController<uplfile, Integer> 
         }
         PreparedStatement ps = getPrepareStatement(query);
         try {
-            for (uplfile uplfile : list) {
-                ps.setString(1, uplfile.getUfname());
-                ps.setBinaryStream(2, uplfile.getUfcontent());
-                ps.setInt(3, uplfile.getIdd());
+            for (uplfile entity : list) {
+                ps.setString(1, entity.getUfname());
+                ps.setBinaryStream(2, entity.getUfcontent());
+                ps.setInt(3, entity.getIdd());
             }
         } catch (SQLException e) {
             throw new SQLException("Помилка при створенні записів зі списку</br>"

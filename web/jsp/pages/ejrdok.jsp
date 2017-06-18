@@ -338,7 +338,7 @@
                     autoOpen: false,
                     resizable: false,
                     height: "auto",
-                    width: 400,
+                    width: 500,
                     modal: true,
                     buttons: [{id: "ok",
                             "class": "ui-button",
@@ -374,15 +374,19 @@
                     $("#dialog-form").siblings().children("span.ui-dialog-title").html("Редагування запису");
                     $("#dialog-form").removeClass("hidden");
                     mode = "edit";
-                    id = $("tr.active").children("td.hidden").html();
-                    var atc = "0";
-                    var filter = {softid: $("tr.active").children("td.hidden").html()};
-                    $.getJSON("${pageContext.servletContext.contextPath}/ajaxdata", {atc: atc, tbl_nm: tbl_nm, filter: JSON.stringify(filter)})
-                            .done(function (result) {
+                    id = $("tr.active").attr("data-id");
+                    $.getJSON("${pageContext.servletContext.contextPath}/servlets/ajax/ejrdokCrud", {q_id: id, q_table_name: tableName})
+                            .success(function (data) {
                                 dialogForAddOrEdit.dialog("open");
-                                $('input#softname').val(result[0].softname);
-                                $('input#sysname').val((result[0].sysname === null) ? "" : result[0].sysname);
-                                $('input#schemaname').val((result[0].schemaname === null) ? "" : result[0].schemaname);
+                                $.each(data.row, function (key, value) {
+                                    $("#dialog-form input#" + key).val(value);
+                                });
+                            })
+                            .error(function (xhr, status, error) {
+                                $(dialogErrorMessage).find("#error-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error"))).replace(/\s*\++\s*/g, " "));
+                                $(dialogErrorMessage).find("#error-details-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error_details"))).replace(/\s*\++\s*/g, " "));
+                                dialogErrorMessage.dialog("open");
+                                console.log("pre-edit getJSON ERROR : ", error);
                             });
                 });
 
@@ -497,7 +501,7 @@
                 }
                 //this prevents native refreshing after pressing F5 button, and makes it customized
                 function disableF5(e) {
-                    if ((e.which || e.keyCode) === 116 || (e.which || e.keyCode) === 82) {
+                    if ((e.which || e.keyCode) === 116 || ((e.which || e.keyCode) === 82) && e.ctrlKey) {
                         e.preventDefault();
                         getPage();
                     }

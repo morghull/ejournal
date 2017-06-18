@@ -74,7 +74,7 @@ public class rowcountAjaxServlet extends HttpServlet {
             controller.returnConnectionInPool();
 
             PrintWriter out = response.getWriter();
-            out.print("{\"total_row_count\":" + rowCount+"}");
+            out.print("{\"total_row_count\":" + rowCount + "}");
             out.flush();
             //response.getWriter().write(json);
         } catch (Throwable e) {
@@ -82,7 +82,7 @@ public class rowcountAjaxServlet extends HttpServlet {
             response.addHeader("error", URLEncoder.encode("Помилка при роботі з sql-сервером</br>Помилка при "
                     + " спробі підрахувати загальну кількість записів з таблиці " + tableName, "UTF-8")
             );
-            response.addHeader("error_details", URLEncoder.encode("<div class=\"nested-error\">" + e.getMessage() + "</div>", "UTF-8"));
+            response.addHeader("error_details", URLEncoder.encode("<div class=\"nested-error\">" + e.getClass().getName() + ": " + e.getMessage() + "</div>", "UTF-8"));
 
             //response.setStatus(500);
             throw new ServletException();

@@ -81,8 +81,8 @@ public class ejrdokGetPageAjaxServlet extends HttpServlet {
 
             PrintWriter out = response.getWriter();
             String jsonList = "";
-            for (ejrdok ejrdok : list) {
-                jsonList += ((jsonList.equals("")) ? "" : ",") + ejrdok.toString();
+            for (ejrdok entity : list) {
+                jsonList += ((jsonList.equals("")) ? "" : ",") + entity.toString();
             }
             out.print("{\"page\":[" + jsonList + "],"
                     + "\"q_page_size\":" + pageSize
@@ -94,7 +94,7 @@ public class ejrdokGetPageAjaxServlet extends HttpServlet {
             response.addHeader("error", URLEncoder.encode("Помилка при роботі з sql-сервером</br>Помилка при "
                     + " спробі отримати дінні з таблиці " + tableName, "UTF-8")
             );
-            response.addHeader("error_details", URLEncoder.encode("<div class=\"nested-error\">" + e.getMessage() + "</div>", "UTF-8"));
+            response.addHeader("error_details", URLEncoder.encode("<div class=\"nested-error\">" + e.getClass().getName() + ": " + e.getMessage() + "</div>", "UTF-8"));
 
             //response.setStatus(500);
             throw new ServletException();
