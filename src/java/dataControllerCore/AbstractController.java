@@ -24,11 +24,12 @@ public abstract class AbstractController<E, K> {
             connectionPool = ConnectionPool.getConnectionPool();
             connection = connectionPool.getConnection();
         } catch (SQLException e) {
-            throw new SQLException("asd");
+            throw new SQLException("Помилка при створенні контроллера обробки даних </br>"
+                    + "<div class=\"nested-error\">" + e.getMessage() + "</div>");
         }
     }
 
-    public abstract String getTableName() throws Exception;
+    public abstract String getTableName();
 
     // Возвращения экземпляра Connection в пул соединений
     public void returnConnectionInPool() throws SQLException {
@@ -36,23 +37,25 @@ public abstract class AbstractController<E, K> {
     }
 
     // Получение экземпляра PrepareStatement
-    public PreparedStatement getPrepareStatement(String sql) {
+    public PreparedStatement getPrepareStatement(String sql) throws SQLException {
         PreparedStatement ps = null;
         try {
             ps = connection.prepareStatement(sql);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new SQLException("Помилка при створенні PrepareStatement для sql-запиту </br>"
+                    + "<div class=\"nested-error\">" + e.getMessage() + "</div>");
         }
         return ps;
     }
 
     // Получение экземпляра NamedParameterStatement
-    public NamedParameterStatement getNamedParameterStatement(String sql) {
+    public NamedParameterStatement getNamedParameterStatement(String sql) throws SQLException {
         NamedParameterStatement nps = null;
         try {
             nps = new NamedParameterStatement(connection, sql);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new SQLException("Помилка при створенні NamedParameterStatement для sql-запиту </br>"
+                    + "<div class=\"nested-error\">" + e.getMessage() + "</div>");
         }
         return nps;
     }
@@ -79,7 +82,7 @@ public abstract class AbstractController<E, K> {
         }
     }
 
-    public Integer getTotalRowCount() throws Exception {
+    public Integer getTotalRowCount() throws SQLException {
         Integer totalRowCount;
         String query
                 = "select public.sp_get_total_row_count(?) as cnt;";
@@ -90,7 +93,7 @@ public abstract class AbstractController<E, K> {
             rs.next();
             totalRowCount = Integer.parseInt(rs.getString("cnt"));
         } catch (SQLException e) {
-            throw new Exception("Помилка при виконанні SQL-запиту</br>"
+            throw new SQLException("Помилка при виконанні SQL-запиту</br>"
                     + "<div class=\"nested-error\">" + e.getMessage() + "</div>");
         } finally {
             closePrepareStatement(ps);

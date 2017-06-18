@@ -19,16 +19,16 @@ public abstract class AbstractCrudController<E, K> extends AbstractController {
     public AbstractCrudController() throws SQLException {
     }
 
-    public abstract K create(E entity) throws Exception;
+    public abstract K create(E entity) throws SQLException;
 
-    public abstract void update(E entity) throws Exception;
+    public abstract void update(E entity) throws SQLException;
 
-    public abstract boolean delete(K id) throws Exception;
+    public abstract boolean delete(K id) throws SQLException;
 
-    public abstract List<E> getAll() throws Exception;
+    public abstract List<E> getAll() throws SQLException;
 
-    public abstract E getEntityById(K id) throws Exception;
+    public abstract E getEntityById(K id) throws SQLException;
 
-    public abstract List<E> getPage(int pageNumber, int pageSize) throws Exception;
+    public abstract List<E> getPage(int pageNumber, int pageSize) throws SQLException;
 
 }

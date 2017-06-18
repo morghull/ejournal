@@ -89,7 +89,7 @@ public class ejrdokCrudAjaxServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String tableName = null;
         String mode = null;
-        int newId;
+        int newId = -1;
 
         DateFormat format = new SimpleDateFormat("dd.MM.yyyy");
 
@@ -111,10 +111,14 @@ public class ejrdokCrudAjaxServlet extends HttpServlet {
             object.setPrim(request.getParameter("prim"));
 
             ejrdokController controller = new ejrdokController();
-            newId = controller.create(object);
-            //controller.returnConnectionInPool();
-            object.setIdd(newId);
-            controller.update(object);
+            if (mode.equals("add")) {
+                newId = controller.create(object);
+            } else if (mode.equals("edit")) {
+                object.setIdd(Integer.parseInt(request.getParameter("idd")));
+                newId = Integer.parseInt(request.getParameter("idd"));
+                controller.update(object);
+            }
+
             controller.returnConnectionInPool();
 
         } catch (Throwable e) {
@@ -130,12 +134,12 @@ public class ejrdokCrudAjaxServlet extends HttpServlet {
             response.addHeader("error", URLEncoder.encode("Помилка при роботі з sql-сервером</br>Помилка при "
                     + stringModes.get(mode).trim() + " запису у таблиці " + tableName, "UTF-8")
             );
-            response.addHeader("error_details", URLEncoder.encode("<div class=\"nested-error\">"+e.getMessage()+"</div>", "UTF-8"));
+            response.addHeader("error_details", URLEncoder.encode("<div class=\"nested-error\">" + e.getMessage() + "</div>", "UTF-8"));
 
             //response.setStatus(500);
             throw new ServletException();
         }
-        response.addHeader("new_id",Integer.toString(newId));
+        response.addHeader("new_id", Integer.toString(newId));
     }
 
     /**

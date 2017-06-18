@@ -21,17 +21,23 @@ public class ConnectionPool {
     private InitialContext initContext;
     private DataSource dataSource;
 
-    public ConnectionPool() {
+    public ConnectionPool() throws Exception {
         try {
             initContext = new InitialContext();
             dataSource = (DataSource) initContext.lookup("java:comp/env/jdbc/pgAnt");
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new SQLException("Помилка при ініціалізації pool'а підключеннь до sql-сервера</br>"
+                    + "<div class=\"nested-error\"> " + e.getMessage() + "</div>");
         }
     }
 
-    public static ConnectionPool getConnectionPool() {
-        return new ConnectionPool();
+    public static ConnectionPool getConnectionPool() throws SQLException {
+        try {
+            return new ConnectionPool();
+        } catch (Exception e) {
+            throw new SQLException("Помилка при створенні pool'а підключеннь до sql-сервера</br>"
+                    + "<div class=\"nested-error\"> " + e.getMessage() + "</div>");
+        }
     }
 
     public Connection getConnection() throws SQLException {
@@ -39,7 +45,8 @@ public class ConnectionPool {
         try {
             conn = dataSource.getConnection();;
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new SQLException("Помилка при створенні підключення до sql-сервера</br>"
+                    + "<div class=\"nested-error\"> " + e.getMessage() + "</div>");
         }
         return conn;
     }

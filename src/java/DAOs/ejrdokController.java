@@ -27,7 +27,7 @@ public class ejrdokController extends AbstractCrudController<ejrdok, Integer> {
     }
 
     @Override
-    public Integer create(ejrdok entity) throws Exception {
+    public Integer create(ejrdok entity) throws SQLException {
         String query
                 = "insert into " + TABLE_NAME + "(rdk,rdn,rdd,nazz,rdsh,ordk,ordn,ordd,dvd,nzak,prim)"
                 + "values (?,?,?,?,?,?,?,?,?,?,?) returning idd";
@@ -53,8 +53,8 @@ public class ejrdokController extends AbstractCrudController<ejrdok, Integer> {
             rs = ps.executeQuery();
             rs.next();
             newId = Integer.parseInt(rs.getString("idd"));
-        } catch (Exception e) {
-            throw new Exception("Помилка при виконанні SQL-запиту</br>"
+        } catch (SQLException e) {
+            throw new SQLException("Помилка при виконанні SQL-запиту</br>"
                     + "<div class=\"nested-error\">" + e.getMessage() + "</div>");
         } finally {
             closePrepareStatement(ps);
@@ -63,7 +63,7 @@ public class ejrdokController extends AbstractCrudController<ejrdok, Integer> {
     }
 
     @Override
-    public void update(ejrdok entity) throws Exception {
+    public void update(ejrdok entity) throws SQLException {
         String query
                 = "update " + TABLE_NAME + " set rdk=@rdk,rdn=@rdn,rdd=@rdd,"
                 + "nazz=@nazz,rdsh=@rdsh,ordk=@ordk,ordn=@ordn,ordd=@ordd,"
@@ -86,9 +86,9 @@ public class ejrdokController extends AbstractCrudController<ejrdok, Integer> {
             nps.setString("nzak", entity.getNzak());
             nps.setString("prim", entity.getPrim());
 
-            nps.executeQuery();
-        } catch (Exception e) {
-            throw new Exception("Помилка при виконанні SQL-запиту</br>"
+            nps.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException("Помилка при виконанні SQL-запиту</br>"
                     + "<div class=\"nested-error\">" + e.getMessage() + "</div>");
         } finally {
             closeNamedParameterStatement(nps);
@@ -96,12 +96,12 @@ public class ejrdokController extends AbstractCrudController<ejrdok, Integer> {
     }
 
     @Override
-    public boolean delete(Integer id) throws Exception {
+    public boolean delete(Integer id) throws SQLException {
         return false;
     }
 
     @Override
-    public List<ejrdok> getAll() throws Exception {
+    public List<ejrdok> getAll() throws SQLException {
         List<ejrdok> lst = new LinkedList<>();
         String query
                 = "select idd,rdk,rdn,rdd,nazz,rdsh,ordk,ordn,ordd,dvd,nzak,prim "
@@ -129,7 +129,7 @@ public class ejrdokController extends AbstractCrudController<ejrdok, Integer> {
                 lst.add(ejrdok);
             }
         } catch (SQLException e) {
-            throw new Exception("Помилка при виконанні SQL-запиту</br>"
+            throw new SQLException("Помилка при виконанні SQL-запиту</br>"
                     + "<div class=\"nested-error\">" + e.getMessage() + "</div>");
         } finally {
             closePrepareStatement(ps);
@@ -139,12 +139,12 @@ public class ejrdokController extends AbstractCrudController<ejrdok, Integer> {
     }
 
     @Override
-    public ejrdok getEntityById(Integer id) throws Exception {
+    public ejrdok getEntityById(Integer id) throws SQLException {
         return null;
     }
 
     @Override
-    public List<ejrdok> getPage(int pageNumber, int pageSize) throws Exception {
+    public List<ejrdok> getPage(int pageNumber, int pageSize) throws SQLException {
         List<ejrdok> lst = new LinkedList<>();
         String query
                 = "select idd,rdk,rdn,rdd,nazz,rdsh,ordk,ordn,ordd,dvd,nzak,prim "
@@ -172,7 +172,7 @@ public class ejrdokController extends AbstractCrudController<ejrdok, Integer> {
                 lst.add(ejrdok);
             }
         } catch (SQLException e) {
-            throw new Exception("Помилка при виконанні SQL-запиту</br>"
+            throw new SQLException("Помилка при виконанні SQL-запиту</br>"
                     + "<div class=\"nested-error\">" + e.getMessage() + "</div>");
         } finally {
             closePrepareStatement(ps);
@@ -181,7 +181,7 @@ public class ejrdokController extends AbstractCrudController<ejrdok, Integer> {
     }
 
     @Override
-    public String getTableName() throws Exception {
+    public String getTableName() {
         return TABLE_NAME;
     }
 }

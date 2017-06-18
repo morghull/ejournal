@@ -17,34 +17,37 @@ import java.util.List;
  */
 public class uplfileController extends AbstractCrudController<uplfile, Integer> {
 
-    private static final String TABLE_NAME = "xxx.ejrdok";
-
+    private static final String TABLE_NAME = "xxx.uplfiles";
+    
+    public uplfileController() throws SQLException {
+    }
+    
     @Override
-    public Integer create(uplfile entity) {
+    public Integer create(uplfile entity) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void update(uplfile entity) {
+    public void update(uplfile entity) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public boolean delete(Integer id) {
+    public boolean delete(Integer id) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<uplfile> getAll() {
+    public List<uplfile> getAll() throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public uplfile getEntityById(Integer id) {
+    public uplfile getEntityById(Integer id) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public boolean createFromList(List<uplfile> list) {
+    public boolean createFromList(List<uplfile> list) throws SQLException {
         String query
                 = "insert into " + TABLE_NAME + "(ufname,ufcontent,idd) values";
         for (int i = 0; i < list.size(); i++) {
@@ -58,7 +61,8 @@ public class uplfileController extends AbstractCrudController<uplfile, Integer> 
                 ps.setInt(3, uplfile.getIdd());
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new SQLException("Помилка при створенні записів зі списку</br>"
+                    + "<div class=\"nested-error\">" + e.getMessage() + "</div>");
         } finally {
             closePrepareStatement(ps);
         }
@@ -66,17 +70,17 @@ public class uplfileController extends AbstractCrudController<uplfile, Integer> 
     }
 
     @Override
-    public List<uplfile> getPage(int pageNumber, int pageSize) throws Exception {
+    public List<uplfile> getPage(int pageNumber, int pageSize) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Integer getTotalRowCount() throws Exception {
+    public Integer getTotalRowCount() throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public String getTableName() throws Exception {
+    public String getTableName() {
         return TABLE_NAME;
     }
 

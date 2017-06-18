@@ -21,7 +21,7 @@ public class rowcountController extends AbstractController {
     }
 
     @Override
-    public String getTableName() throws Exception {
+    public String getTableName() {
         return this.tableName;
     }
 }

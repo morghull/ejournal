@@ -54,6 +54,9 @@ public class NamedParameterStatement {
     public ResultSet executeQuery() throws SQLException {
         return preparedStatement.executeQuery();
     }
+    public int executeUpdate() throws SQLException {
+        return preparedStatement.executeUpdate();
+    }
     public void close() throws SQLException {
         preparedStatement.close();
     }
