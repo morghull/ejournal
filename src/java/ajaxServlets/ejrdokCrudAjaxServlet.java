@@ -111,38 +111,43 @@ public class ejrdokCrudAjaxServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String tableName = null;
         String mode = null;
-        int newId = -1;
+        int outId = -1;
+        int outRowNumber = -1;
 
         DateFormat format = new SimpleDateFormat("dd.MM.yyyy");
 
-        ejrdok entity = new ejrdok();
         try {
             tableName = request.getParameter("q_table_name");
             mode = request.getParameter("q_mode");
-
-            entity.setRdk(request.getParameter("rdk"));
-            entity.setRdn(request.getParameter("rdn"));
-            entity.setRdd(format.parse(request.getParameter("rdd")));
-            entity.setNazz(request.getParameter("nazz"));
-            entity.setRdsh(request.getParameter("rdsh"));
-            entity.setOrdk(request.getParameter("ordk"));
-            entity.setOrdn(request.getParameter("ordn"));
-            entity.setOrdd(format.parse(request.getParameter("ordd")));
-            entity.setDvd(format.parse(request.getParameter("dvd")));
-            entity.setNzak(request.getParameter("nzak"));
-            entity.setPrim(request.getParameter("prim"));
-
             ejrdokController controller = new ejrdokController();
-            if (mode.equals("add")) {
-                newId = controller.create(entity);
-            } else if (mode.equals("edit")) {
-                entity.setIdd(Integer.parseInt(request.getParameter("idd")));
-                newId = entity.getIdd();
-                controller.update(entity);
+
+            if (mode.equals("add") || mode.equals("edit")) {
+                ejrdok entity = new ejrdok();
+                entity.setRdk(request.getParameter("rdk"));
+                entity.setRdn(request.getParameter("rdn"));
+                entity.setRdd(format.parse(request.getParameter("rdd")));
+                entity.setNazz(request.getParameter("nazz"));
+                entity.setRdsh(request.getParameter("rdsh"));
+                entity.setOrdk(request.getParameter("ordk"));
+                entity.setOrdn(request.getParameter("ordn"));
+                entity.setOrdd(format.parse(request.getParameter("ordd")));
+                entity.setDvd(format.parse(request.getParameter("dvd")));
+                entity.setNzak(request.getParameter("nzak"));
+                entity.setPrim(request.getParameter("prim"));
+
+                if (mode.equals("add")) {
+                    outId = controller.create(entity);
+                } else if (mode.equals("edit")) {
+                    entity.setIdd(Integer.parseInt(request.getParameter("q_id")));
+                    outId = entity.getIdd();
+                    controller.update(entity);
+                }
+                outRowNumber = controller.getRowNumberInOrdering(outId);
+
+            } else if (mode.equals("delete")) {
+                controller.delete(Integer.parseInt(request.getParameter("q_id")));
             }
-
             controller.returnConnectionInPool();
-
         } catch (Throwable e) {
             Map<String, String> stringModes = new HashMap<String, String>();
             stringModes.putAll(new HashMap<String, String>() {
@@ -161,7 +166,10 @@ public class ejrdokCrudAjaxServlet extends HttpServlet {
             //response.setStatus(500);
             throw new ServletException();
         }
-        response.addHeader("new_id", Integer.toString(newId));
+        if (mode.equals("add") || mode.equals("edit")) {
+            response.addHeader("ret_id", Integer.toString(outId));
+            response.addHeader("ret_rn", Integer.toString(outRowNumber));
+        }
     }
 
     /**

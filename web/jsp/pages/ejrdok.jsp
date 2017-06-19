@@ -220,6 +220,7 @@
                         // If you want to add an extra field for the FormData
                         data.append("q_mode", mode);
                         data.append("q_table_name", tableName);
+                        data.append("q_id", $("tr.active").attr("data-id"));
 
                         $.ajax({
                             type: "POST",
@@ -235,13 +236,17 @@
                             },
                             success: function (data, status, xhr) {
                                 if ($("#currentId").length) {
-                                    $("#currentId").empty().append(xhr.getResponseHeader("new_id"));
+                                    $("#currentId").empty().append(xhr.getResponseHeader("ret_id"));
                                 } else {
-                                    $("body").append($("<span>").prop("id", "currentId").attr("new-one", "true").addClass("hidden").append(xhr.getResponseHeader("new_id")));
+                                    $("body").append($("<span>").prop("id", "currentId").attr("new-one", "true").addClass("hidden").append(xhr.getResponseHeader("ret_id")));
                                 }
+                                var newRowNumber = xhr.getResponseHeader("ret_rn");
+                                pageNumber = ((newRowNumber - (newRowNumber % pageSize)) / pageSize) + (((newRowNumber % pageSize) === 0) ? 0 : 1);
                                 dialogForAddOrEdit.dialog("close");
-                                console.log("addRecord() SUCCESS : ", xhr.getResponseHeader("new_id"));
+                                console.log("addRecord() SUCCESS: ", "retId:", xhr.getResponseHeader("ret_id"), "; retRowNumber:", xhr.getResponseHeader("ret_rn"));
                                 getPage();
+                                getTotalRowCount();
+                                //$("html, body").animate({scrollTop: $("tr.active").offset().top}, 500);
                             },
                             error: function (xhr, status, error) {
                                 $(dialogErrorMessage).find("#error-content").html(stringFormat(decodeURIComponent(xhr.getResponseHeader("error")).replace(/\s*\++\s*/g, " ")));
@@ -301,27 +306,33 @@
                             "class": "ui-button",
                             text: "Так",
                             click: function () {
-                                var rowData = {softid: id,
-                                    softname: $('input#softname').val(),
-                                    sysname: $('input#sysname').val(),
-                                    schemaname: $('input#schemaname').val()};
-                                $.post("${pageContext.servletContext.contextPath}/ajaxdata", {
-                                    mode: mode,
-                                    tbl_nm: tbl_nm,
-                                    row_data: JSON.stringify(rowData)
-                                }).done(function () {
-                                    var previousHref = window.location.href;
-                                    var hrefStr = window.location.href.replace(window.location.search, "").replace(/#.*/, "");
-                                    if (previousHref === hrefStr) {
-                                        window.location.reload();
-                                    } else {
-                                        window.location.href = hrefStr;
+                                $.ajax({
+                                    type: "POST",
+                                    url: "${pageContext.servletContext.contextPath}/servlets/ajax/ejrdokCrud",
+                                    data: {
+                                        q_table_name: tableName,
+                                        q_mode: mode,
+                                        q_id: $("tr.active").attr("data-id")
+                                    },
+                                    timeout: 600000,
+                                    beforeSend: function () {
+                                        $("#overlay-wrapper").fadeIn("fast");
+                                    },
+                                    success: function (data, status, xhr) {
+                                        dialogForDelete.dialog("close");
+                                        console.log("deleteRecord() SUCCESS ");
+                                        getPage();
+                                        getTotalRowCount();
+                                    },
+                                    error: function (xhr, status, error) {
+                                        $(dialogErrorMessage).find("#error-content").html(stringFormat(decodeURIComponent(xhr.getResponseHeader("error")).replace(/\s*\++\s*/g, " ")));
+                                        $(dialogErrorMessage).find("#error-details-content").html(decodeURIComponent(xhr.getResponseHeader("error_details")).replace(/\s*\++\s*/g, " "));
+                                        dialogErrorMessage.dialog("open");
+                                        console.log("addRecord() ERROR : ", error);
+                                    },
+                                    complete: function () {
+                                        $("#overlay-wrapper").fadeOut("fast");
                                     }
-                                }).fail(function (xhr, status, error) {
-                                    $(dialogErrorMessage).find("#error-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error"))).replace(/\s*\++\s*/g, " "));
-                                    $(dialogErrorMessage).find("#error-details-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error_details"))).replace(/\s*\++\s*/g, " "));
-                                    dialogErrorMessage.dialog("open");
-                                    console.log("ERROR : ", error);
                                 });
                             }},
                         {id: "cancel",
@@ -398,10 +409,6 @@
                     id = $("tr.active").children("td.hidden").html();
                     dialogForDelete.dialog("open");
                 });
-
-                // this scrolls down to active current row if it's present here
-                if ($("#current-row").length !== 0)
-                    $("html, body").animate({scrollTop: $("#current-row").offset().top}, 500);
 
                 $("#rdd").datepicker();
                 $("#rdd-help-btn").click(function () {

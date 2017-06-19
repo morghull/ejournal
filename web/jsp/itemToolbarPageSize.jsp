@@ -14,8 +14,6 @@
         <span class="sr-only">Toggle Dropdown</span>
     </button> 
     <ul id="toolbar-page-sizes-list" class="dropdown-menu dropdown-menu-right">
-        <li><a>1</a></li>
-        <li><a>2</a></li>
         <li><a>5</a></li>
         <li><a>10</a></li>
         <li><a>15</a></li>

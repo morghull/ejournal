@@ -31,4 +31,6 @@ public abstract class AbstractCrudController<E, K> extends AbstractController {
 
     public abstract List<E> getPage(int pageNumber, int pageSize) throws SQLException;
 
+    public abstract int getRowNumberInOrdering(K id) throws SQLException;
+
 }

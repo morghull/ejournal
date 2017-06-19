@@ -97,7 +97,22 @@ public class ejrdokController extends AbstractCrudController<ejrdok, Integer> {
 
     @Override
     public boolean delete(Integer id) throws SQLException {
-        return false;
+        String query
+                = "delete from "+TABLE_NAME+" where idd=?;";
+
+        PreparedStatement ps = getPrepareStatement(query);
+
+        try {
+            ps.setInt(1, id);
+
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException("Помилка при виконанні SQL-запиту</br>"
+                    + "<div class=\"nested-error\">" + e.getMessage() + "</div>");
+        } finally {
+            closePrepareStatement(ps);
+        }
+        return true;
     }
 
     @Override
@@ -216,5 +231,37 @@ public class ejrdokController extends AbstractCrudController<ejrdok, Integer> {
     @Override
     public String getTableName() {
         return TABLE_NAME;
+    }
+
+    @Override
+    public int getRowNumberInOrdering(Integer id) throws SQLException {
+        String query
+                = "with src as ("
+                + "   select row_number() over(order by rdd,rdk,rdn,nzak) as rn,idd"
+                + "   from " + TABLE_NAME
+                + "   )"
+                + "select rn "
+                + "from src "
+                + "where idd=?;";
+
+        ResultSet rs = null;
+        int rowNumber;
+
+        PreparedStatement ps = getPrepareStatement(query);
+
+        try {
+            ps.setInt(1, id);
+
+            rs = ps.executeQuery();
+            rs.next();
+            rowNumber = Integer.parseInt(rs.getString("rn"));
+        } catch (SQLException e) {
+            throw new SQLException("Помилка при виконанні SQL-запиту</br>"
+                    + "<div class=\"nested-error\">" + e.getMessage() + "</div>");
+        } finally {
+            closePrepareStatement(ps);
+        }
+
+        return rowNumber;
     }
 }
