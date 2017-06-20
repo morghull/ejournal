@@ -36,3 +36,8 @@ and open the template in the editor.
 .ui-state-highlight {
     padding: 10px;
 }
+.ui-autocomplete .ui-menu-item .ui-state-active{
+    border: 1px solid rgba(92,161,53,0.8);
+    background: rgba(92,161,53,0.8);
+    color: #f0f0f0;
+}

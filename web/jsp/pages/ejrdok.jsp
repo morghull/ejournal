@@ -73,7 +73,8 @@
                         <div class="form-group">
                             <div class="input-group width500px">
                                 <label for="rdk" class="input-group-label width60px">Код</label>
-                                <input id="rdk" name="rdk" type="text" maxlength="1" class="form-control" placeholder="Введіть код або скористайтесь допомогою...">
+                                <input id="rdk" name="rdk" type="text" maxlength="1" class="form-control" placeholder="Введіть код або скористайтесь допомогою..."
+                                       autocomplete="on" atc-table-name="zapas.rdt" atc-field-name="rdtk">
                                 <span class="input-group-btn">
                                     <button class="btn btn-secondary btn-custom-help" type="button">...</button>
                                 </span>
@@ -88,7 +89,7 @@
                         <div class="form-group">
                             <div class="input-group date" id="datetimepicker" style="width:24.1em;width:calc(17em + 60px + 39px);">
                                 <label for="rdd" class="input-group-label width60px">Дата</label>
-                                <input id="rdd" name="rdd" type="text" class="form-control" style="position: relative; z-index: 100000;" readonly placeholder="Оберіть дату...">
+                                <input id="rdd" name="rdd" type="text" class="form-control" style="position: relative; z-index: 100;" readonly placeholder="Оберіть дату...">
                                 <span id="rdd-help-btn" class="input-group-addon help-btn">
                                     <span class="glyphicon glyphicon-calendar">
                                     </span>
@@ -130,7 +131,7 @@
                         <div class="form-group">
                             <div class="input-group date" id="datetimepicker" style="width:24.1em;width:calc(17em + 60px + 39px);">
                                 <label for="ordd" class="input-group-label width60px">Дата</label>
-                                <input id="ordd" name="ordd" type="text" class="form-control" style="position: relative; z-index: 100000;" readonly placeholder="Оберіть дату...">
+                                <input id="ordd" name="ordd" type="text" class="form-control" style="position: relative; z-index: 100;" readonly placeholder="Оберіть дату...">
                                 <span id="ordd-help-btn" class="input-group-addon help-btn">
                                     <span class="glyphicon glyphicon-calendar">
                                     </span>
@@ -141,7 +142,7 @@
                     <div class="form-group">
                         <div class="input-group date" id="datetimepicker" style="width:calc(17em + 215px + 39px);">
                             <label for="dvd" class="input-group-label" style="width:215px;">Дата виконання по документу</label>
-                            <input id="dvd" name="dvd" type="text" class="form-control" style="position: relative; z-index: 100000;" readonly placeholder="Оберіть дату...">
+                            <input id="dvd" name="dvd" type="text" class="form-control" style="position: relative; z-index: 100;" readonly placeholder="Оберіть дату...">
                             <span id="dvd-help-btn" class="input-group-addon help-btn">
                                 <span class="glyphicon glyphicon-calendar">
                                 </span>
@@ -223,7 +224,7 @@
                         data.append("q_id", $("tr.active").attr("data-id"));
 
                         $.ajax({
-                            type: "POST",
+                            type: "post",
                             enctype: 'multipart/form-data',
                             url: "${pageContext.servletContext.contextPath}/servlets/ajax/ejrdokCrud",
                             data: data,
@@ -307,7 +308,7 @@
                             text: "Так",
                             click: function () {
                                 $.ajax({
-                                    type: "POST",
+                                    type: "post",
                                     url: "${pageContext.servletContext.contextPath}/servlets/ajax/ejrdokCrud",
                                     data: {
                                         q_table_name: tableName,
@@ -429,7 +430,7 @@
                         $("#currentId").attr("new-one", "false");
                     }
                     $.ajax({
-                        type: "GET",
+                        type: "get",
                         url: "${pageContext.servletContext.contextPath}/servlets/ajax/ejrdokGetPage",
                         dataType: "json",
                         data: {
@@ -478,7 +479,7 @@
                 getTotalRowCount();
                 function getTotalRowCount() {
                     $.ajax({
-                        type: "GET",
+                        type: "get",
                         url: "${pageContext.servletContext.contextPath}/servlets/ajax/getRowCount",
                         dataType: "json",
                         data: {
@@ -592,7 +593,50 @@
                     });
                 }
                 //test - li:not(:first - child):not(:last - child)
-
+                $("#dialog-form input:text").each(function () {
+                    if ($(this).attr("autocomplete") === "on") {
+                        var atcTableName = $(this).attr("atc-table-name");
+                        var atcFieldName = $(this).attr("atc-field-name");
+                        var ownerId = $(this).prop("id");
+                        $(this).autocomplete({
+                            source: function (request, response) {
+                                $(".ui-autocomplete").css({display: "none"});
+                                var atcWaitDiv = $("<div>").html("Зачекайте, іде пошук інформації для допомоги......")
+                                        .prop("id", "atc-wait")
+                                        .css("display", "block")
+                                        .css("padding", "6px 30px")
+                                        .css("position", "absolute")
+                                        .css("top", ($("#" + ownerId).offset().top + $("#" + ownerId).outerHeight()).toString() + "px")
+                                        .css("left", $("#" + ownerId).offset().left.toString() + "px")
+                                        .css("z-index", "110")
+                                        .css("width", $("#" + ownerId).outerWidth().toString() + "px")
+                                        .css("background", "url(\"${pageContext.servletContext.contextPath}/images/loading.gif\") 6px 6px no-repeat #fff")
+                                        .css("background-size", "20px")
+                                        .addClass("ui-widget-content");
+                                $("body").append(atcWaitDiv);
+                                $.ajax({
+                                    url: "${pageContext.servletContext.contextPath}/servlets/ajax/autocomplete",
+                                    type: "get",
+                                    data: {q_string_pattern: request.term,
+                                        q_table_name: atcTableName,
+                                        q_field_name: atcFieldName},
+                                    dataType: "json",
+                                    success: function (data) {
+                                        $("#atc-wait").remove();
+                                        response(data.autocomplete);
+                                    },
+                                    error: function (xhr, status, error) {
+                                        $("#atc-wait").remove();
+                                        $(dialogErrorMessage).find("#error-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error"))).replace(/\s*\++\s*/g, " "));
+                                        $(dialogErrorMessage).find("#error-details-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error_details"))).replace(/\s*\++\s*/g, " "));
+                                        dialogErrorMessage.dialog("open");
+                                        console.log("autocomplete()", "tableName:", atcTableName, "fieldName", atcFieldName, "ERROR : ", error);
+                                    }
+                                });
+                            },
+                        });
+                    }
+                });
             });
         </script>
     </body>

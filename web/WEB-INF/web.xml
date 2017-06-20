@@ -55,6 +55,14 @@
         <servlet-name>rowcountAjaxServlet</servlet-name>
         <url-pattern>/servlets/ajax/getRowCount</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>autocompleteAjaxServlet</servlet-name>
+        <servlet-class>ajaxServlets.autocompleteAjaxServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>autocompleteAjaxServlet</servlet-name>
+        <url-pattern>/servlets/ajax/autocomplete</url-pattern>
+    </servlet-mapping>
     <!--********************************************************************-->
     <servlet>
         <servlet-name>software</servlet-name>
