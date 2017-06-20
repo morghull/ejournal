@@ -33,7 +33,7 @@ public class uplfileController extends AbstractCrudController<uplfile, Integer> 
     }
 
     @Override
-    public boolean delete(Integer id) throws SQLException {
+    public void delete(Integer id) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

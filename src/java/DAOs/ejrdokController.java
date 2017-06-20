@@ -96,7 +96,7 @@ public class ejrdokController extends AbstractCrudController<ejrdok, Integer> {
     }
 
     @Override
-    public boolean delete(Integer id) throws SQLException {
+    public void delete(Integer id) throws SQLException {
         String query
                 = "delete from "+TABLE_NAME+" where idd=?;";
 
@@ -112,7 +112,6 @@ public class ejrdokController extends AbstractCrudController<ejrdok, Integer> {
         } finally {
             closePrepareStatement(ps);
         }
-        return true;
     }
 
     @Override

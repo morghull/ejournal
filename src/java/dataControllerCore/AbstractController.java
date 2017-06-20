@@ -11,14 +11,23 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
+ * abstract controller to manage data in sql data provider
  *
  * @author u27brvz04
+ * @param <E> type of entity of data object
+ * @param <K> type of key value
  */
 public abstract class AbstractController<E, K> {
 
     private Connection connection;
     private ConnectionPool connectionPool;
 
+    /**
+     * abstract controller to manage data in sql data provider connection gets
+     * in ConnectionPool by connectionPool.getConnection();
+     *
+     * @throws SQLException
+     */
     public AbstractController() throws SQLException {
         try {
             connectionPool = ConnectionPool.getConnectionPool();
@@ -29,14 +38,31 @@ public abstract class AbstractController<E, K> {
         }
     }
 
+    /**
+     * useful in query strings to get table name, contained in some constant
+     *
+     * @return table name
+     */
     public abstract String getTableName();
 
-    // Возвращения экземпляра Connection в пул соединений
+    /**
+     * returns current connection in pool by calling
+     * connectionPool.returnConnection(connection) method
+     *
+     * @throws SQLException
+     */
     public void returnConnectionInPool() throws SQLException {
         connectionPool.returnConnection(this.connection);
     }
 
-    // Получение экземпляра PrepareStatement
+    /**
+     * gets new instance of PreparedStatement by calling
+     * connection.prepareStatement(sql);
+     *
+     * @param sql sql-query
+     * @return instance of PreparedStatement
+     * @throws SQLException
+     */
     public PreparedStatement getPrepareStatement(String sql) throws SQLException {
         PreparedStatement ps = null;
         try {
@@ -48,7 +74,14 @@ public abstract class AbstractController<E, K> {
         return ps;
     }
 
-    // Получение экземпляра NamedParameterStatement
+    /**
+     * gets new instance of NamedParameterStatement by calling new
+     * NamedParameterStatement(connection, sql);
+     *
+     * @param sql sql-query
+     * @return instance of PreparedStatement
+     * @throws SQLException
+     */
     public NamedParameterStatement getNamedParameterStatement(String sql) throws SQLException {
         NamedParameterStatement nps = null;
         try {
@@ -60,7 +93,11 @@ public abstract class AbstractController<E, K> {
         return nps;
     }
 
-    // Закрытие PrepareStatement
+    /**
+     * closes PreparedStatement from parameter
+     *
+     * @param ps PreparedStatement to close
+     */
     public void closePrepareStatement(PreparedStatement ps) {
         if (ps != null) {
             try {
@@ -72,6 +109,11 @@ public abstract class AbstractController<E, K> {
     }
 
     // Закрытие PrepareStatement
+    /**
+     * closes NamedParameterStatement from parameter
+     *
+     * @param nps NamedParameterStatement to close
+     */
     public void closeNamedParameterStatement(NamedParameterStatement nps) {
         if (nps != null) {
             try {
@@ -82,6 +124,12 @@ public abstract class AbstractController<E, K> {
         }
     }
 
+    /**
+     * counts total rows in table, table name gets with this.getTableName()
+     *
+     * @return total row count
+     * @throws SQLException
+     */
     public Integer getTotalRowCount() throws SQLException {
         Integer totalRowCount;
         String query

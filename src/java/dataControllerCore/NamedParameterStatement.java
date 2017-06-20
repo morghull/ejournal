@@ -37,29 +37,37 @@ public class NamedParameterStatement {
         while (matcher.find()) {
             fields.add(matcher.group().substring(1));
         }
-        preparedStatement = connection.prepareStatement(query.replaceAll(findPara‌​metersPattern.patter‌​n(), "?"));
+        preparedStatement = connection.prepareStatement(query.replaceAll(findParametersPattern.pattern(), "?"));
     }
-    public void setString(String name, String value) throws SQLException {        
+
+    public void setString(String name, String value) throws SQLException {
         preparedStatement.setString(getIndex(name), value);
     }
-    public void setDate(String name, Date value) throws SQLException {        
+
+    public void setDate(String name, Date value) throws SQLException {
         preparedStatement.setDate(getIndex(name), value);
     }
-    public void setInt(String name, int value) throws SQLException {        
+
+    public void setInt(String name, int value) throws SQLException {
         preparedStatement.setInt(getIndex(name), value);
     }
+
     private int getIndex(String name) {
-        return fields.indexOf(name)+1;
+        return fields.indexOf(name) + 1;
     }
+
     public ResultSet executeQuery() throws SQLException {
         return preparedStatement.executeQuery();
     }
+
     public int executeUpdate() throws SQLException {
         return preparedStatement.executeUpdate();
     }
+
     public void close() throws SQLException {
         preparedStatement.close();
     }
+
     public PreparedStatement getPreparedStatement() {
         return preparedStatement;
     }
