@@ -15,6 +15,6 @@
     <body>
         <jsp:include page="/jsp/itemNavbar.jsp"/>
         
-        <jsp:include page="/jsp/jscript.jsp"/>
+        <jsp:include page="/jsp/js/jscript.jsp"/>
     </body>
 </html>

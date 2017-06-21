@@ -11,7 +11,7 @@
         $("#btnAdd").button().on("click", function () {
             $("#dialog-form").siblings().children("span.ui-dialog-title").html("Додання нового запису");
             $("#dialog-form").removeClass("hidden");
-            mode = "add";
+            $.iskra.mode = "add";
             $.iskra.setInputDefaults();
             $.iskra.dialogForAddOrEdit.dialog("open");
         });
@@ -22,9 +22,9 @@
                 return false;
             $("#dialog-form").siblings().children("span.ui-dialog-title").html("Редагування запису");
             $("#dialog-form").removeClass("hidden");
-            mode = "edit";
-            id = $("tr.active").attr("data-id");
-            $.getJSON("${pageContext.servletContext.contextPath}/servlets/ajax/ejrdokCrud", {q_id: id, q_table_name: tableName})
+            $.iskra.mode = "edit";
+            $.iskra.id = $("tr.active").attr("data-id");
+            $.getJSON("${pageContext.servletContext.contextPath}/servlets/ajax/" + $.iskra.servletUrlPatternCrud, {q_id: $.iskra.id, q_table_name: $.iskra.tableName})
                     .success(function (data) {
                         $.iskra.dialogForAddOrEdit.dialog("open");
                         $.each(data.row, function (key, value) {
@@ -43,8 +43,7 @@
         $("#btnDel").button().on("click", function () {
             if ($("tr.active").length === 0)
                 return false;
-            mode = "delete";
-            id = $("tr.active").children("td.hidden").html();
+            $.iskra.mode = "delete";
             $.iskra.dialogForDelete.dialog("open");
         });
     });

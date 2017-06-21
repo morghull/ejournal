@@ -36,7 +36,7 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Електронний журнал<span class="caret"></span></a>
                 <ul class="dropdown-menu">
                     <li><a href="#" onClick="window.open('${pageContext.servletContext.contextPath}/journal', 'popupEjournal', 'location=0,toolbar=0,menubar=0,scrollbars=1,width=900,height=600,top=100,left=' + (($(window).width() / 2) - (900 / 2))).focus();">Журнал</a></li>
-                    <li><a href="#" onClick="window.open('${pageContext.servletContext.contextPath}/journal/ejrdok', 'tabEjRdok').focus();">Розпорядчі документи</a></li>
+                    <li><a href="#" onClick="event.preventDefault();window.open('${pageContext.servletContext.contextPath}/journal/ejrdok', 'tabEjRdok').focus();">Розпорядчі документи</a></li>
                     <!--<li><a href="#" onClick="window.open('${pageContext.servletContext.contextPath}/journal/ejrdok', 'popupEjRdok', 'location=0,toolbar=0,menubar=0,scrollbars=1,fullscreen=1').focus();">Розпорядчі документи</a></li>-->
                     <li><a href="#" onClick="window.open('${pageContext.servletContext.contextPath}/journal/ejkiz', 'popupEjKiz', 'location=0,toolbar=0,menubar=0,scrollbars=1,width=900,height=600,top=100,left=' + (($(window).width() / 2) - (900 / 2))).focus();">Вироби</a></li>
                 </ul>

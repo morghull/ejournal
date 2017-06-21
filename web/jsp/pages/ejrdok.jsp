@@ -174,14 +174,10 @@
                 </fieldset>
             </form>
         </div>
-        <jsp:include page="/jsp/jscript.jsp"/>
-        <jsp:include page="/jsp/js/initDialogPlaceholders.jsp"/>
-        <jsp:include page="/jsp/js/initClickableTableRow.jsp"/>
+        <jsp:include page="/jsp/js/jscript.jsp"/>
         <script type="text/javascript">
             $(function () {
-                var mode, id;
-                var dialogForAddOrEdit, dialogForDelete, dialogErrorMessage, form,
-                        emailRegex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
+                var emailRegex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
                         rdk = $("#rdk"),
                         rdn = $("#rdn"),
                         rdd = $("#rdd"),
@@ -198,18 +194,37 @@
                         .add(rdsh).add(ordk).add(ordn).add(ordd).add(nzak)
                         .add(prim);
                 $.iskra.pageSize = 15;
-                var pageSize = 15, pageNumber = 1, totalRowCount;
-                var tableName = "xxx.ejrdok";
-
-                function addRecord() {
+                $.iskra.pageNumber = 1;
+                $.iskra.totalRowCount = 0;
+                $.iskra.tableName = "xxx.ejrdok";
+                $.iskra.mode = "";
+                $.iskra.id = "";
+                $.iskra.servletUrlPatternCrud = "ejrdokCrud";
+                $.iskra.servletUrlPatternGetPage = "ejrdokGetPage";
+                $.iskra.pageSizeListPlaceholder = $("#toolbar-page-sizes-list");
+                $.iskra.paginationListPlaceholder = $("#toolbar-pagination-list");
+            });
+        </script>
+        <jsp:include page="/jsp/js/initClickableTableRow.jsp"/>
+        <jsp:include page="/jsp/js/initDialogPlaceholders.jsp"/>
+        <jsp:include page="/jsp/js/initDialogs.jsp"/>
+        <jsp:include page="/jsp/js/initCrudButtons.jsp"/>
+        <jsp:include page="/jsp/js/initAutocomplete.jsp"/>
+        <jsp:include page="/jsp/js/initTotalRowCount.jsp"/>
+        <jsp:include page="/jsp/js/initCustomPageRefresh.jsp"/>
+        <jsp:include page="/jsp/js/initPageSizeList.jsp"/>
+        <jsp:include page="/jsp/js/initPagination.jsp"/>
+        <script type="text/javascript">
+            $(function () {
+                $.iskra.addRecord = function () {
                     var valid = true;
                     resetTips();
                     $.iskra.allFields.removeClass("ui-state-error");
-                    valid = valid && checkLength(rdk, 1, 1,
+                    valid = valid && checkLength($("#rdk"), 1, 1,
                             "Код розпорядчого документу не повинен бути пустим!");
-                    valid = valid && checkLength(rdn, 1, 4,
+                    valid = valid && checkLength($("#rdn"), 1, 4,
                             "Номер розпорядчого документу не повинен бути пустим!");
-                    valid = valid && checkLength(nzak, 1, 9,
+                    valid = valid && checkLength($("#nzak"), 1, 9,
                             "Номер основного фінансового замовлення не повинен бути пустим!");
                     /*valid = valid && checkRegexp(sysname, /^[a-zа-яіґ\"'\s_0-9]+$/i,
                      "Назва програмного забезпечення повинна повинна містити літери англійскої або української мови, пробіли, цифри, символ \" або апостроф");
@@ -222,14 +237,14 @@
                         //console.log();
                         var data = new FormData($("#formdata")[0]);
                         // If you want to add an extra field for the FormData
-                        data.append("q_mode", mode);
-                        data.append("q_table_name", tableName);
+                        data.append("q_mode", $.iskra.mode);
+                        data.append("q_table_name", $.iskra.tableName);
                         data.append("q_id", $("tr.active").attr("data-id"));
 
                         $.ajax({
                             type: "post",
                             enctype: 'multipart/form-data',
-                            url: "${pageContext.servletContext.contextPath}/servlets/ajax/ejrdokCrud",
+                            url: "${pageContext.servletContext.contextPath}/servlets/ajax/" + $.iskra.servletUrlPatternCrud,
                             data: data,
                             processData: false, // Important!
                             contentType: false,
@@ -245,11 +260,11 @@
                                     $("body").append($("<span>").prop("id", "currentId").attr("new-one", "true").addClass("hidden").append(xhr.getResponseHeader("ret_id")));
                                 }
                                 var newRowNumber = xhr.getResponseHeader("ret_rn");
-                                pageNumber = ((newRowNumber - (newRowNumber % $.iskra.pageSize)) / $.iskra.pageSize) + (((newRowNumber % $.iskra.pageSize) === 0) ? 0 : 1);
+                                $.iskra.pageNumber = ((newRowNumber - (newRowNumber % $.iskra.pageSize)) / $.iskra.pageSize) + (((newRowNumber % $.iskra.pageSize) === 0) ? 0 : 1);
                                 $.iskra.dialogForAddOrEdit.dialog("close");
                                 console.log("addRecord() SUCCESS: ", "retId:", xhr.getResponseHeader("ret_id"), "; retRowNumber:", xhr.getResponseHeader("ret_rn"));
-                                getPage();
-                                getTotalRowCount();
+                                $.iskra.getPage();
+                                $.iskra.getTotalRowCount();
                                 //$("html, body").animate({scrollTop: $("tr.active").offset().top}, 500);
                             },
                             error: function (xhr, status, error) {
@@ -264,107 +279,7 @@
                         });
                     }
                     return valid;
-                }
-
-                // this initializes the dialog to add or edit information in table
-                $.iskra.dialogForAddOrEdit = $("#dialog-form").dialog({
-                    autoOpen: false,
-                    height: "auto",
-                    width: "75%",
-                    resizable: false,
-                    modal: true,
-                    buttons: [{id: "ok",
-                            "class": "ui-button",
-                            text: "Ok",
-                            click: function () {
-                                addRecord();
-                            }},
-                        {id: "cancel",
-                            "class": "ui-button",
-                            text: "Відмінити",
-                            click: function () {
-                                $(this).dialog("close");
-                            }}
-                    ],
-                    close: function () {
-                        $.iskra.form[0].reset();
-                        $.iskra.allFields.removeClass("ui-state-error");
-                    }
-                });
-
-                // this makes an object form, used for reseting while pressing "cancel" button
-                $.iskra.form = $.iskra.dialogForAddOrEdit.find("form").on("submit", function (event) {
-                    event.preventDefault();
-                    addRecord();
-                });
-
-                // this initializes the dialog to delete information from table
-                $.iskra.dialogForDelete = $("#dialog-confirm-deletion").dialog({
-                    autoOpen: false,
-                    resizable: false,
-                    height: "auto",
-                    width: 400,
-                    modal: true,
-                    buttons: [{id: "ok",
-                            "class": "ui-button",
-                            text: "Так",
-                            click: function () {
-                                $.ajax({
-                                    type: "post",
-                                    url: "${pageContext.servletContext.contextPath}/servlets/ajax/ejrdokCrud",
-                                    data: {
-                                        q_table_name: tableName,
-                                        q_mode: mode,
-                                        q_id: $("tr.active").attr("data-id")
-                                    },
-                                    timeout: 600000,
-                                    beforeSend: function () {
-                                        $("#overlay-wrapper").fadeIn("fast");
-                                    },
-                                    success: function (data, status, xhr) {
-                                        $.iskra.dialogForDelete.dialog("close");
-                                        console.log("deleteRecord() SUCCESS ");
-                                        getPage();
-                                        getTotalRowCount();
-                                    },
-                                    error: function (xhr, status, error) {
-                                        $($.iskra.dialogErrorMessage).find("#error-content").html(stringFormat(decodeURIComponent(xhr.getResponseHeader("error")).replace(/\s*\++\s*/g, " ")));
-                                        $($.iskra.dialogErrorMessage).find("#error-details-content").html(decodeURIComponent(xhr.getResponseHeader("error_details")).replace(/\s*\++\s*/g, " "));
-                                        $.iskra.dialogErrorMessage.dialog("open");
-                                        console.log("addRecord() ERROR : ", error);
-                                    },
-                                    complete: function () {
-                                        $("#overlay-wrapper").fadeOut("fast");
-                                    }
-                                });
-                            }},
-                        {id: "cancel",
-                            "class": "ui-button",
-                            text: "Ні",
-                            click: function () {
-                                $(this).dialog("close");
-                            }}
-                    ]
-                });
-
-                // this initializes the dialog for error message
-                $.iskra.dialogErrorMessage = $("#dialog-error-message").dialog({
-                    autoOpen: false,
-                    resizable: false,
-                    height: "auto",
-                    width: 500,
-                    modal: true,
-                    buttons: [{id: "ok",
-                            "class": "ui-button",
-                            text: "Так",
-                            click: function () {
-                                $(this).dialog("close");
-                            }
-                        }]
-                });
-
-                // this makes more pleasant look for dialog title close button
-                $('button.ui-dialog-titlebar-close').addClass('ui-button').addClass("ui-icon-closethick");
+                };
 
                 $.iskra.setInputDefaults = function () {
                     //set defaults
@@ -372,7 +287,7 @@
                     $("#dialog-form").find("#rdd").val(("0" + d.getDate()).slice(-2) + "." + ("0" + (d.getMonth() + 1)).slice(-2) + "." + d.getFullYear());
                     $("#dialog-form").find("#ordd").val(("0" + d.getDate()).slice(-2) + "." + ("0" + (d.getMonth() + 1)).slice(-2) + "." + d.getFullYear());
                     $("#dialog-form").find("#dvd").val(("0" + d.getDate()).slice(-2) + "." + ("0" + (d.getMonth() + 1)).slice(-2) + "." + d.getFullYear());
-                }
+                };
 
                 $("#rdd").datepicker();
                 $("#rdd-help-btn").click(function () {
@@ -386,21 +301,20 @@
                 $("#dvd-help-btn").click(function () {
                     $("#dvd").datepicker("show");
                 });
-                
-                getPage();
-                function getPage() {
+
+                $.iskra.getPage = function () {
                     var currentId = ($("#currentId").length) ? parseInt($("#currentId").text()) : -1;
                     if ($("#currentId").length && $("#currentId").attr("new-one") === "true") {
                         $("#currentId").attr("new-one", "false");
                     }
                     $.ajax({
                         type: "get",
-                        url: "${pageContext.servletContext.contextPath}/servlets/ajax/ejrdokGetPage",
+                        url: "${pageContext.servletContext.contextPath}/servlets/ajax/" + $.iskra.servletUrlPatternGetPage,
                         dataType: "json",
                         data: {
-                            q_table_name: tableName,
+                            q_table_name: $.iskra.tableName,
                             q_page_size: $.iskra.pageSize,
-                            q_page_number: pageNumber
+                            q_page_number: $.iskra.pageNumber
                         },
                         timeout: 600000,
                         beforeSend: function () {
@@ -408,7 +322,7 @@
                         },
                         success: function (data, status, xhr) {
                             var tableBody = $("#content-table-body");
-                            var rowNumber = $.iskra.pageSize * (pageNumber - 1);
+                            var rowNumber = $.iskra.pageSize * ($.iskra.pageNumber - 1);
                             tableBody.empty();
                             $.each(data.page, function (key, val) {
                                 rowNumber++;
@@ -426,7 +340,6 @@
                                         .append($("<td>"))
                                         );
                             });
-                            //redrawPagination();
                             console.log("getPage() SUCCESS : ", data);
                         },
                         error: function (xhr, status, error) {
@@ -439,126 +352,11 @@
                             $("#overlay-wrapper").fadeOut("fast");
                         }
                     });
-                }
-                getTotalRowCount();
-                function getTotalRowCount() {
-                    $.ajax({
-                        type: "get",
-                        url: "${pageContext.servletContext.contextPath}/servlets/ajax/getRowCount",
-                        dataType: "json",
-                        data: {
-                            q_table_name: tableName
-                        },
-                        timeout: 600000,
-                        beforeSend: function () {
-                            $("#toolbar-pagination-list").empty();
-                            $("#toolbar-pagination-list").addClass("overlay-pagination");
-                        },
-                        success: function (data, status, xhr) {
-                            totalRowCount = data.total_row_count;
-                            $("#toolbar-pagination-list").removeClass("overlay-pagination");
-                            redrawPagination();
-                            console.log("getTotalRowCount() SUCCESS : ", data);
-                        },
-                        error: function (xhr, status, error) {
-                            $($.iskra.dialogErrorMessage).find("#error-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error"))).replace(/\s*\++\s*/g, " "));
-                            $($.iskra.dialogErrorMessage).find("#error-details-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error_details"))).replace(/\s*\++\s*/g, " "));
-                            $.iskra.dialogErrorMessage.dialog("open");
-                            console.log("getTotalRowCount() ERROR : ", error);
-                        },
-                        complete: function () {
-
-                        }
-                    });
-                }
-                //this prevents native refreshing after pressing F5 button, and makes it customized
-                function disableF5(e) {
-                    if ((e.which || e.keyCode) === 116 || ((e.which || e.keyCode) === 82) && e.ctrlKey) {
-                        e.preventDefault();
-                        getPage();
-                    }
-                }
-                $(document).ready(function () {
-                    $(document).on("keydown", disableF5);
-                });
-
-                //this initializes choosing of page size
-                $("#toolbar-page-sizes-list")
-                        .children("li").click(function (e) {
-                    e.preventDefault();
-                    $("#page-size").text($(this).text());
-                    $.iskra.pageSize = parseInt($(this).text());
-                    pageNumber = 1;
-                    getPage();
-                    getTotalRowCount();
-                });
-
-                function redrawPagination() {
-                    $("#toolbar-pagination-list").empty();
-                    var totalPagesCount = ((totalRowCount - (totalRowCount % $.iskra.pageSize)) / $.iskra.pageSize) + (((totalRowCount % $.iskra.pageSize) === 0) ? 0 : 1);
-                    var paginationDiapazonSize = (totalPagesCount < 5) ? totalPagesCount : 5;
-                    var paginationMin, paginationMax;
-                    if (totalPagesCount < 5) {
-                        paginationMin = 1;
-                        paginationMax = paginationDiapazonSize;
-                    } else {
-                        paginationMin = (pageNumber <= (paginationDiapazonSize - 1) / 2) ? 1 : (pageNumber >= totalPagesCount - ((paginationDiapazonSize - 1) / 2)) ? totalPagesCount - paginationDiapazonSize + 1 : pageNumber - ((paginationDiapazonSize - 1) / 2);
-                        paginationMax = (paginationMin + paginationDiapazonSize - 1 >= totalPagesCount) ? totalPagesCount : paginationMin + paginationDiapazonSize - 1;
-                    }
-                    $("#toolbar-pagination-list")
-                            .append($("<li>")
-                                    .append($("<a>")
-                                            .attr("aria-label", "Previous")
-                                            .append($("<span>")
-                                                    .attr("aria-hidden", "true")
-                                                    .text("«")
-                                                    )
-                                            .append($("<span>")
-                                                    .addClass("sr-only")
-                                                    .text("Previous")
-                                                    )
-                                            )
-                                    );
-                    for (var i = paginationMin; i <= paginationMax; i++) {
-                        $("#toolbar-pagination-list")
-                                .append($("<li>")
-                                        .addClass((i === pageNumber) ? "active" : "")
-                                        .append($("<a>")
-                                                .text(i)
-                                                )
-                                        );
-                    }
-                    $("#toolbar-pagination-list")
-                            .append($("<li>")
-                                    .append($("<a>")
-                                            .attr("aria-label", "Next")
-                                            .append($("<span>")
-                                                    .attr("aria-hidden", "true")
-                                                    .text("»")
-                                                    )
-                                            .append($("<span>")
-                                                    .addClass("sr-only")
-                                                    .text("Next")
-                                                    )
-                                            )
-                                    );
-                    //this initializes choosing of page number            
-                    $("#toolbar-pagination-list")
-                            .children("li").click(function (e) {
-                        e.preventDefault();
-                        if ($(this).is(":first-child"))
-                            pageNumber = (pageNumber - 1 < 1) ? 1 : pageNumber - 1;
-                        else if ($(this).is(":last-child"))
-                            pageNumber = (pageNumber + 1 > totalPagesCount) ? totalPagesCount : pageNumber + 1;
-                        else
-                            pageNumber = parseInt($(this).text());
-                        redrawPagination();
-                        getPage();
-                    });
-                }
+                };
+                $.iskra.getPage();
+                $.iskra.getTotalRowCount();
+                $.iskra.pageSizeList();
             });
         </script>
-        <jsp:include page="/jsp/js/initCrudButtons.jsp"/>
-        <jsp:include page="/jsp/js/initAutocomplete.jsp"/>
     </body>
 </html>

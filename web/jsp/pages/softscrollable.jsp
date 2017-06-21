@@ -101,7 +101,7 @@
             </form>
         </div>
 
-        <jsp:include page="/jsp/jscript.jsp"/>
+        <jsp:include page="/jsp/js/jscript.jsp"/>
         <script type="text/javascript">
             $(function () {
                 var mode, id;

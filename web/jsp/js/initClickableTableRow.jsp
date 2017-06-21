@@ -8,7 +8,7 @@
 <script type="text/javascript">
     $(function () {
         //clickable table row click
-        $('table' || '#table' || '.table').on('click', '.clickable-row', function (event) {
+        $('table' || '#table' || '.table').on('click', '.clickable-row', function () {
             $(this).addClass('active').siblings().removeClass('active').children().removeClass('border-right-none');
             $(this).children("td:not(.hidden):last").addClass('border-right-none');
             $("#footer-placeholder").html($(this).children("#hidden-content").html());
