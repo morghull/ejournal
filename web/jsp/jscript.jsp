@@ -13,67 +13,6 @@
 <script type="text/javascript">
     var tips = $(".validateTips");
 
-    $(function () {
-        //clickable table row click
-        $('table' || '#table' || '.table').on('click', '.clickable-row', function (event) {
-            $(this).addClass('active').siblings().removeClass('active').children().removeClass('border-right-none');
-            $(this).children("td:not(.hidden):last").addClass('border-right-none');
-            $("#footer-placeholder").html($(this).children("#hidden-content").html());
-            if ($("#currentId").length) {
-                $("#currentId").empty().append($(this).attr("data-id"));
-            } else {
-                $("body").append($("<span>").prop("id", "currentId").attr("new-one","false").addClass("hidden").append($(this).attr("data-id")));
-            }
-        });
-    });
-
-    // this creates overlay placeholder with preloader gif
-    //$("body").append(
-    //        $("<div>")
-    //        .prop("id", "overlay-wrapper")
-    //        .addClass("overlay")
-    //        .hide()
-    //        );
-
-    // this creates dialog placeholder for deletion confirmation
-    $("body").append($("<div>")
-            .prop("id", "dialog-confirm-deletion")
-            .prop("title", "Видалити обраний запис?")
-            .append($("<p>")
-                    .prop("id", "confirm-content")
-                    .html("Чи дійсно ви бажаєте видатили обраний запис?</br>Обраний запис буде видалено з БД")
-                    )
-            .hide()
-            );
-
-    // this creates dialog placeholder for error message        
-    $("body").append(
-            $("<div>")
-            .prop("id", "dialog-error-message")
-            .prop("title", "Помилка")
-            .append($("<div>")
-                    .append($("<img>")
-                            .prop("src", "${pageContext.servletContext.contextPath}/images/48px_error.png")
-                            .prop("alt", "error")
-                            .css("float", "left")
-                            )
-                    .append($("<div>").prop("id", "error-content")
-                            .css("display", "inline-block")
-                            .css("min-height", "50px")
-                            .css("padding-left", "10px")
-                            .css("width", "85%")
-                            )
-                    )
-            .append($("<div>").addClass("arrow-down").click(function () {
-                $(this).siblings("#error-details-content").toggle(400);
-            }))
-            .append($("<div>").prop("id", "error-details-content")
-                    .css("display", "none")
-                    .css("padding-top", "5px")
-                    )
-            .hide()
-            );
-
     function stringFormat(s) {
         return (typeof s === 'string' && !s.trim() || typeof s === 'undefined' || s === null) ? "&nbsp;" : s;
     }

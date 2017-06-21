@@ -175,10 +175,11 @@
             </form>
         </div>
         <jsp:include page="/jsp/jscript.jsp"/>
+        <jsp:include page="/jsp/js/initDialogPlaceholders.jsp"/>
+        <jsp:include page="/jsp/js/initClickableTableRow.jsp"/>
         <script type="text/javascript">
             $(function () {
                 var mode, id;
-                var tbl_nm = "software";
                 var dialogForAddOrEdit, dialogForDelete, dialogErrorMessage, form,
                         emailRegex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
                         rdk = $("#rdk"),
@@ -191,17 +192,19 @@
                         ordd = $("#ordd"),
                         dvd = $("#dvd"),
                         nzak = $("#nzak"),
-                        prim = $("#prim"),
-                        allFields = $([]).add(rdk).add(rdn).add(rdd).add(nazz)
+                        prim = $("#prim");
+                $.iskra = $.fn;
+                $.iskra.allFields = $([]).add(rdk).add(rdn).add(rdd).add(nazz)
                         .add(rdsh).add(ordk).add(ordn).add(ordd).add(nzak)
                         .add(prim);
+                $.iskra.pageSize = 15;
                 var pageSize = 15, pageNumber = 1, totalRowCount;
                 var tableName = "xxx.ejrdok";
 
                 function addRecord() {
                     var valid = true;
                     resetTips();
-                    allFields.removeClass("ui-state-error");
+                    $.iskra.allFields.removeClass("ui-state-error");
                     valid = valid && checkLength(rdk, 1, 1,
                             "Код розпорядчого документу не повинен бути пустим!");
                     valid = valid && checkLength(rdn, 1, 4,
@@ -242,17 +245,17 @@
                                     $("body").append($("<span>").prop("id", "currentId").attr("new-one", "true").addClass("hidden").append(xhr.getResponseHeader("ret_id")));
                                 }
                                 var newRowNumber = xhr.getResponseHeader("ret_rn");
-                                pageNumber = ((newRowNumber - (newRowNumber % pageSize)) / pageSize) + (((newRowNumber % pageSize) === 0) ? 0 : 1);
-                                dialogForAddOrEdit.dialog("close");
+                                pageNumber = ((newRowNumber - (newRowNumber % $.iskra.pageSize)) / $.iskra.pageSize) + (((newRowNumber % $.iskra.pageSize) === 0) ? 0 : 1);
+                                $.iskra.dialogForAddOrEdit.dialog("close");
                                 console.log("addRecord() SUCCESS: ", "retId:", xhr.getResponseHeader("ret_id"), "; retRowNumber:", xhr.getResponseHeader("ret_rn"));
                                 getPage();
                                 getTotalRowCount();
                                 //$("html, body").animate({scrollTop: $("tr.active").offset().top}, 500);
                             },
                             error: function (xhr, status, error) {
-                                $(dialogErrorMessage).find("#error-content").html(stringFormat(decodeURIComponent(xhr.getResponseHeader("error")).replace(/\s*\++\s*/g, " ")));
-                                $(dialogErrorMessage).find("#error-details-content").html(decodeURIComponent(xhr.getResponseHeader("error_details")).replace(/\s*\++\s*/g, " "));
-                                dialogErrorMessage.dialog("open");
+                                $($.iskra.dialogErrorMessage).find("#error-content").html(stringFormat(decodeURIComponent(xhr.getResponseHeader("error")).replace(/\s*\++\s*/g, " ")));
+                                $($.iskra.dialogErrorMessage).find("#error-details-content").html(decodeURIComponent(xhr.getResponseHeader("error_details")).replace(/\s*\++\s*/g, " "));
+                                $.iskra.dialogErrorMessage.dialog("open");
                                 console.log("addRecord() ERROR : ", error);
                             },
                             complete: function () {
@@ -264,7 +267,7 @@
                 }
 
                 // this initializes the dialog to add or edit information in table
-                dialogForAddOrEdit = $("#dialog-form").dialog({
+                $.iskra.dialogForAddOrEdit = $("#dialog-form").dialog({
                     autoOpen: false,
                     height: "auto",
                     width: "75%",
@@ -284,20 +287,19 @@
                             }}
                     ],
                     close: function () {
-                        form[0].reset();
-                        allFields.removeClass("ui-state-error");
+                        $.iskra.form[0].reset();
+                        $.iskra.allFields.removeClass("ui-state-error");
                     }
                 });
 
                 // this makes an object form, used for reseting while pressing "cancel" button
-                form = dialogForAddOrEdit.find("form").on("submit", function (event) {
+                $.iskra.form = $.iskra.dialogForAddOrEdit.find("form").on("submit", function (event) {
                     event.preventDefault();
-                    //dialogForAddOrEdit.find("#ok").click();
                     addRecord();
                 });
 
                 // this initializes the dialog to delete information from table
-                dialogForDelete = $("#dialog-confirm-deletion").dialog({
+                $.iskra.dialogForDelete = $("#dialog-confirm-deletion").dialog({
                     autoOpen: false,
                     resizable: false,
                     height: "auto",
@@ -320,15 +322,15 @@
                                         $("#overlay-wrapper").fadeIn("fast");
                                     },
                                     success: function (data, status, xhr) {
-                                        dialogForDelete.dialog("close");
+                                        $.iskra.dialogForDelete.dialog("close");
                                         console.log("deleteRecord() SUCCESS ");
                                         getPage();
                                         getTotalRowCount();
                                     },
                                     error: function (xhr, status, error) {
-                                        $(dialogErrorMessage).find("#error-content").html(stringFormat(decodeURIComponent(xhr.getResponseHeader("error")).replace(/\s*\++\s*/g, " ")));
-                                        $(dialogErrorMessage).find("#error-details-content").html(decodeURIComponent(xhr.getResponseHeader("error_details")).replace(/\s*\++\s*/g, " "));
-                                        dialogErrorMessage.dialog("open");
+                                        $($.iskra.dialogErrorMessage).find("#error-content").html(stringFormat(decodeURIComponent(xhr.getResponseHeader("error")).replace(/\s*\++\s*/g, " ")));
+                                        $($.iskra.dialogErrorMessage).find("#error-details-content").html(decodeURIComponent(xhr.getResponseHeader("error_details")).replace(/\s*\++\s*/g, " "));
+                                        $.iskra.dialogErrorMessage.dialog("open");
                                         console.log("addRecord() ERROR : ", error);
                                     },
                                     complete: function () {
@@ -346,7 +348,7 @@
                 });
 
                 // this initializes the dialog for error message
-                dialogErrorMessage = $("#dialog-error-message").dialog({
+                $.iskra.dialogErrorMessage = $("#dialog-error-message").dialog({
                     autoOpen: false,
                     resizable: false,
                     height: "auto",
@@ -364,52 +366,13 @@
                 // this makes more pleasant look for dialog title close button
                 $('button.ui-dialog-titlebar-close').addClass('ui-button').addClass("ui-icon-closethick");
 
-                // this initializes click on "Add" button                
-                $("#btnAdd").button().on("click", function () {
-                    $("#dialog-form").siblings().children("span.ui-dialog-title").html("Додання нового запису");
-                    $("#dialog-form").removeClass("hidden");
-                    mode = "add";
-
+                $.iskra.setInputDefaults = function () {
                     //set defaults
                     var d = $.datepicker.parseDate("dd.mm.yy", "<%=strCurDate%>");
                     $("#dialog-form").find("#rdd").val(("0" + d.getDate()).slice(-2) + "." + ("0" + (d.getMonth() + 1)).slice(-2) + "." + d.getFullYear());
                     $("#dialog-form").find("#ordd").val(("0" + d.getDate()).slice(-2) + "." + ("0" + (d.getMonth() + 1)).slice(-2) + "." + d.getFullYear());
                     $("#dialog-form").find("#dvd").val(("0" + d.getDate()).slice(-2) + "." + ("0" + (d.getMonth() + 1)).slice(-2) + "." + d.getFullYear());
-
-                    dialogForAddOrEdit.dialog("open");
-                });
-
-                // this initializes click on "Edit" button                
-                $("#btnEdit").button().on("click", function () {
-                    if ($("tr.active").length === 0)
-                        return false;
-                    $("#dialog-form").siblings().children("span.ui-dialog-title").html("Редагування запису");
-                    $("#dialog-form").removeClass("hidden");
-                    mode = "edit";
-                    id = $("tr.active").attr("data-id");
-                    $.getJSON("${pageContext.servletContext.contextPath}/servlets/ajax/ejrdokCrud", {q_id: id, q_table_name: tableName})
-                            .success(function (data) {
-                                dialogForAddOrEdit.dialog("open");
-                                $.each(data.row, function (key, value) {
-                                    $("#dialog-form input#" + key).val(value);
-                                });
-                            })
-                            .error(function (xhr, status, error) {
-                                $(dialogErrorMessage).find("#error-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error"))).replace(/\s*\++\s*/g, " "));
-                                $(dialogErrorMessage).find("#error-details-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error_details"))).replace(/\s*\++\s*/g, " "));
-                                dialogErrorMessage.dialog("open");
-                                console.log("pre-edit getJSON ERROR : ", error);
-                            });
-                });
-
-                // this initializes click on "Delete" button              
-                $("#btnDel").button().on("click", function () {
-                    if ($("tr.active").length === 0)
-                        return false;
-                    mode = "delete";
-                    id = $("tr.active").children("td.hidden").html();
-                    dialogForDelete.dialog("open");
-                });
+                }
 
                 $("#rdd").datepicker();
                 $("#rdd-help-btn").click(function () {
@@ -423,6 +386,7 @@
                 $("#dvd-help-btn").click(function () {
                     $("#dvd").datepicker("show");
                 });
+                
                 getPage();
                 function getPage() {
                     var currentId = ($("#currentId").length) ? parseInt($("#currentId").text()) : -1;
@@ -435,7 +399,7 @@
                         dataType: "json",
                         data: {
                             q_table_name: tableName,
-                            q_page_size: pageSize,
+                            q_page_size: $.iskra.pageSize,
                             q_page_number: pageNumber
                         },
                         timeout: 600000,
@@ -444,7 +408,7 @@
                         },
                         success: function (data, status, xhr) {
                             var tableBody = $("#content-table-body");
-                            var rowNumber = pageSize * (pageNumber - 1);
+                            var rowNumber = $.iskra.pageSize * (pageNumber - 1);
                             tableBody.empty();
                             $.each(data.page, function (key, val) {
                                 rowNumber++;
@@ -466,9 +430,9 @@
                             console.log("getPage() SUCCESS : ", data);
                         },
                         error: function (xhr, status, error) {
-                            $(dialogErrorMessage).find("#error-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error"))).replace(/\s*\++\s*/g, " "));
-                            $(dialogErrorMessage).find("#error-details-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error_details"))).replace(/\s*\++\s*/g, " "));
-                            dialogErrorMessage.dialog("open");
+                            $($.iskra.dialogErrorMessage).find("#error-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error"))).replace(/\s*\++\s*/g, " "));
+                            $($.iskra.dialogErrorMessage).find("#error-details-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error_details"))).replace(/\s*\++\s*/g, " "));
+                            $.iskra.dialogErrorMessage.dialog("open");
                             console.log("getPage() ERROR : ", error);
                         },
                         complete: function () {
@@ -497,9 +461,9 @@
                             console.log("getTotalRowCount() SUCCESS : ", data);
                         },
                         error: function (xhr, status, error) {
-                            $(dialogErrorMessage).find("#error-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error"))).replace(/\s*\++\s*/g, " "));
-                            $(dialogErrorMessage).find("#error-details-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error_details"))).replace(/\s*\++\s*/g, " "));
-                            dialogErrorMessage.dialog("open");
+                            $($.iskra.dialogErrorMessage).find("#error-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error"))).replace(/\s*\++\s*/g, " "));
+                            $($.iskra.dialogErrorMessage).find("#error-details-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error_details"))).replace(/\s*\++\s*/g, " "));
+                            $.iskra.dialogErrorMessage.dialog("open");
                             console.log("getTotalRowCount() ERROR : ", error);
                         },
                         complete: function () {
@@ -523,7 +487,7 @@
                         .children("li").click(function (e) {
                     e.preventDefault();
                     $("#page-size").text($(this).text());
-                    pageSize = parseInt($(this).text());
+                    $.iskra.pageSize = parseInt($(this).text());
                     pageNumber = 1;
                     getPage();
                     getTotalRowCount();
@@ -531,7 +495,7 @@
 
                 function redrawPagination() {
                     $("#toolbar-pagination-list").empty();
-                    var totalPagesCount = ((totalRowCount - (totalRowCount % pageSize)) / pageSize) + (((totalRowCount % pageSize) === 0) ? 0 : 1);
+                    var totalPagesCount = ((totalRowCount - (totalRowCount % $.iskra.pageSize)) / $.iskra.pageSize) + (((totalRowCount % $.iskra.pageSize) === 0) ? 0 : 1);
                     var paginationDiapazonSize = (totalPagesCount < 5) ? totalPagesCount : 5;
                     var paginationMin, paginationMax;
                     if (totalPagesCount < 5) {
@@ -592,52 +556,9 @@
                         getPage();
                     });
                 }
-                //test - li:not(:first - child):not(:last - child)
-                $("#dialog-form input:text").each(function () {
-                    if ($(this).attr("autocomplete") === "on") {
-                        var atcTableName = $(this).attr("atc-table-name");
-                        var atcFieldName = $(this).attr("atc-field-name");
-                        var ownerId = $(this).prop("id");
-                        $(this).autocomplete({
-                            source: function (request, response) {
-                                $(".ui-autocomplete").css({display: "none"});
-                                var atcWaitDiv = $("<div>").html("Зачекайте, іде пошук інформації для допомоги......")
-                                        .prop("id", "atc-wait")
-                                        .css("display", "block")
-                                        .css("padding", "6px 30px")
-                                        .css("position", "absolute")
-                                        .css("top", ($("#" + ownerId).offset().top + $("#" + ownerId).outerHeight()).toString() + "px")
-                                        .css("left", $("#" + ownerId).offset().left.toString() + "px")
-                                        .css("z-index", "110")
-                                        .css("width", $("#" + ownerId).outerWidth().toString() + "px")
-                                        .css("background", "url(\"${pageContext.servletContext.contextPath}/images/loading.gif\") 6px 6px no-repeat #fff")
-                                        .css("background-size", "20px")
-                                        .addClass("ui-widget-content");
-                                $("body").append(atcWaitDiv);
-                                $.ajax({
-                                    url: "${pageContext.servletContext.contextPath}/servlets/ajax/autocomplete",
-                                    type: "get",
-                                    data: {q_string_pattern: request.term,
-                                        q_table_name: atcTableName,
-                                        q_field_name: atcFieldName},
-                                    dataType: "json",
-                                    success: function (data) {
-                                        $("#atc-wait").remove();
-                                        response(data.autocomplete);
-                                    },
-                                    error: function (xhr, status, error) {
-                                        $("#atc-wait").remove();
-                                        $(dialogErrorMessage).find("#error-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error"))).replace(/\s*\++\s*/g, " "));
-                                        $(dialogErrorMessage).find("#error-details-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error_details"))).replace(/\s*\++\s*/g, " "));
-                                        dialogErrorMessage.dialog("open");
-                                        console.log("autocomplete()", "tableName:", atcTableName, "fieldName", atcFieldName, "ERROR : ", error);
-                                    }
-                                });
-                            },
-                        });
-                    }
-                });
             });
         </script>
+        <jsp:include page="/jsp/js/initCrudButtons.jsp"/>
+        <jsp:include page="/jsp/js/initAutocomplete.jsp"/>
     </body>
 </html>
