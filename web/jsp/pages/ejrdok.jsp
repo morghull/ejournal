@@ -191,7 +191,7 @@
                         prim = $("#prim");
                 $.iskra = $.fn;
                 $.iskra.allFields = $([]).add(rdk).add(rdn).add(rdd).add(nazz)
-                        .add(rdsh).add(ordk).add(ordn).add(ordd).add(nzak)
+                        .add(rdsh).add(ordk).add(ordn).add(ordd).add(dvd).add(nzak)
                         .add(prim);
                 $.iskra.pageSize = 15;
                 $.iskra.pageNumber = 1;
@@ -203,6 +203,22 @@
                 $.iskra.servletUrlPatternGetPage = "ejrdokGetPage";
                 $.iskra.pageSizeListPlaceholder = $("#toolbar-page-sizes-list");
                 $.iskra.paginationListPlaceholder = $("#toolbar-pagination-list");
+
+                var options = {
+                    allFields: $([]).add(rdk).add(rdn).add(rdd).add(nazz)
+                            .add(rdsh).add(ordk).add(ordn).add(ordd).add(dvd).add(nzak)
+                            .add(prim),
+                    pageSize: 15,
+                    pageNumber: 1,
+                    totalRowCount: 0,
+                    tableName: "xxx.ejrdok",
+                    mode: "",
+                    id: "",
+                    urlGetPageServlet: "${pageContext.servletContext.contextPath}/servlets/ajax/ejrdokGetPage",
+                    urlCrudServlet: "${pageContext.servletContext.contextPath}/servlets/ajax/ejrdokCrud",
+                    pageSizeListPlaceholder: $("#toolbar-page-sizes-list"),
+                    paginationListPlaceholder: $("#toolbar-pagination-list")
+                };
             });
         </script>
         <jsp:include page="/jsp/js/initClickableTableRow.jsp"/>
