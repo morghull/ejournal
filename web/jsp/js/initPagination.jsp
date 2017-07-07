@@ -10,6 +10,7 @@
         $.iskra.redrawPagination = function () {
             $.iskra.paginationListPlaceholder.empty();
             var totalPagesCount = (($.iskra.totalRowCount - ($.iskra.totalRowCount % $.iskra.pageSize)) / $.iskra.pageSize) + ((($.iskra.totalRowCount % $.iskra.pageSize) === 0) ? 0 : 1);
+            totalPagesCount = (totalPagesCount === 0) ? 1 : totalPagesCount; //there is always must be at least one page    
             var paginationDiapazonSize = (totalPagesCount < 5) ? totalPagesCount : 5;
             var paginationMin, paginationMax;
             if (totalPagesCount < 5) {

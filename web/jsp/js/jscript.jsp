@@ -23,6 +23,7 @@
         return 100 - widthWithScroll;
     }
     function resetTips() {
+        $("div.error-popup").remove();
         tips.text("").removeClass("ui-state-highlight");
     }
     function updateTips(t) {
@@ -31,7 +32,9 @@
     function checkLength(o, min, max, message) {
         if (o.val().length > max || o.val().length < min) {
             o.addClass("ui-state-error", 250);
-            updateTips(message);
+            var err = $("<div>").append(message).addClass("error-popup");
+            o.after(err.show("fast"));
+            //updateTips(message);
             o.focus();
             return false;
         } else {

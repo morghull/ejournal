@@ -48,6 +48,41 @@ table.table-layout tr td{
 .nested-error {
     padding-left:5px;
 }
+.error-popup {
+    position: absolute;
+    margin-top: 40px;
+    z-index: 101;
+    background: #fff;
+    border: 1px solid #f1a899;
+    padding: 6px 12px;
+    border-radius: 4px;
+    margin-left: 20px;
+    box-shadow: 0px 0px 8px #fddfdf;
+    color: #f1a899;
+}
+.error-popup::after {
+    top: -14px;
+    right: auto;
+    left: 8px;
+}
+.error-popup::after {
+    border: 7px solid transparent;
+    border-bottom-color: #fff;
+}
+.error-popup::before {
+    top: -16px;
+    right: auto;
+    left: 7px;
+}
+.error-popup::before {
+    border: 8px solid transparent;
+    border-bottom-color: #f1a899;
+}
+.error-popup::before, .error-popup::after {
+    position: absolute;
+    display: inline-block;
+    content: "";
+}
 .overlay {
     z-index: 999;
     position: fixed;

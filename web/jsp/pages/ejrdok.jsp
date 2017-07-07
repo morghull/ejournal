@@ -71,14 +71,16 @@
                 <fieldset>
                     <div id="fieldset-rd">
                         <div class="form-group">
-                            <div class="input-group width500px">
+                            <div class="input-group width100perc">
                                 <label for="rdk" class="input-group-label width60px">Код</label>
-                                <input id="rdk" name="rdk" type="text" maxlength="1" class="form-control" placeholder="Введіть код або скористайтесь допомогою..."
+                                <input id="rdk" name="rdk" type="text" maxlength="1" class="form-control width60px" placeholder="Введіть код..."
                                        autocomplete="on" atc-table-name="zapas.rdt" atc-field-name="rdtk">
                                 <span class="input-group-btn">
-                                    <button class="btn btn-secondary btn-custom-help" type="button">...</button>
+                                    <button class="btn btn-group btn-custom-help" type="button">...</button>
                                 </span>
+                                <span id="rdk-rdtn" class="input-group-addon-more width500px"></span>
                             </div>
+                             <label for="rdk" class="input-group-label width500px" style="padding-left: 60px;"></label>
                         </div>
                         <div class="form-group">
                             <div class="input-group width500px">
@@ -105,21 +107,19 @@
                         <div class="form-group">
                             <div class="input-group width500px">
                                 <label for="rdsh" class="input-group-label width60px">Шифр</label>
-                                <input id="rdsh" name="rdsh" type="text" maxlength="5" class="form-control" placeholder="Введіть шифр або скористайтесь допомогою...">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-secondary btn-custom-help" type="button">...</button>
-                                </span>
+                                <input id="rdsh" name="rdsh" type="text" maxlength="5" class="form-control" placeholder="Введіть шифр...">
                             </div>
                         </div>
                     </div>
                     <div id="fieldset-ord">
                         <div class="form-group">
-                            <div class="input-group width500px">
+                            <div class="input-group width100perc">
                                 <label for="ordk" class="input-group-label width60px">Код</label>
-                                <input id="ordk" name="ordk" type="text" maxlength="1" class="form-control" placeholder="Введіть код або скористайтесь допомогою...">
+                                <input id="ordk" name="ordk" type="text" maxlength="1" class="form-control" placeholder="Введіть код...">
                                 <span class="input-group-btn">
                                     <button class="btn btn-secondary btn-custom-help" type="button">...</button>
                                 </span>
+                                <span id="ordk-rdtn" class="input-group-addon-more width500px"></span>
                             </div>
                         </div>
                         <div class="form-group">
@@ -225,7 +225,6 @@
         <jsp:include page="/jsp/js/initDialogPlaceholders.jsp"/>
         <jsp:include page="/jsp/js/initDialogs.jsp"/>
         <jsp:include page="/jsp/js/initCrudButtons.jsp"/>
-        <jsp:include page="/jsp/js/initAutocomplete.jsp"/>
         <jsp:include page="/jsp/js/initTotalRowCount.jsp"/>
         <jsp:include page="/jsp/js/initCustomPageRefresh.jsp"/>
         <jsp:include page="/jsp/js/initPageSizeList.jsp"/>
@@ -342,7 +341,7 @@
                             tableBody.empty();
                             $.each(data.page, function (key, val) {
                                 rowNumber++;
-                                tableBody.append($("<tr>").addClass("clickable-row").attr("data-id", val.idd).addClass((val.idd === currentId) ? "active" : "")
+                                tableBody.append($("<tr>").addClass("clickable-row").attr("data-id", val.idd)
                                         .append($("<td>").append(rowNumber).addClass("text-center"))
                                         .append($("<td>").append(stringFormat(val.rdk)).addClass("text-center"))
                                         .append($("<td>").append(stringFormat(val.rdn)).addClass("text-center"))
@@ -366,6 +365,7 @@
                         },
                         complete: function () {
                             $("#overlay-wrapper").fadeOut("fast");
+                            $("tr[data-id^="+currentId+"]").click();
                         }
                     });
                 };
