@@ -63,6 +63,14 @@
         <servlet-name>autocompleteAjaxServlet</servlet-name>
         <url-pattern>/servlets/ajax/autocomplete</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>rdtValidationAjaxServlet</servlet-name>
+        <servlet-class>ajaxServlets.rdtValidationAjaxServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>rdtValidationAjaxServlet</servlet-name>
+        <url-pattern>/servlets/api/validate_rdt</url-pattern>
+    </servlet-mapping>
     <!--********************************************************************-->
     <servlet>
         <servlet-name>software</servlet-name>

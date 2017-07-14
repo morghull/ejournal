@@ -73,19 +73,23 @@
                         <div class="form-group">
                             <div class="input-group width100perc">
                                 <label for="rdk" class="input-group-label width60px">Код</label>
-                                <input id="rdk" name="rdk" type="text" maxlength="1" class="form-control width60px" placeholder="Введіть код..."
-                                       autocomplete="on" atc-table-name="zapas.rdt" atc-field-name="rdtk">
+                                <input id="rdk" name="rdk" type="text" maxlength="1" class="form-control width60px ajv-input" placeholder="Введіть код..."
+                                       autocomplete="on" atc-table-name="zapas.rdt" atc-field-name="rdtk"
+                                       ajax-validation="on" ajv-url-pattern="validate_rdt" ajv-field-name="rdtk"
+                                       required required-message="Код розпорядчого документу не повинен бути пустим!">
                                 <span class="input-group-btn">
                                     <button class="btn btn-group btn-custom-help" type="button">...</button>
                                 </span>
                                 <span id="rdk-rdtn" class="input-group-addon-more width500px"></span>
                             </div>
-                             <label for="rdk" class="input-group-label width500px" style="padding-left: 60px;"></label>
+                            <label for="rdk" class="input-group-label width500px" style="padding-left: 60px;"></label>
                         </div>
                         <div class="form-group">
                             <div class="input-group width500px">
                                 <label for="rdn" class="input-group-label width60px">Номер</label>
-                                <input id="rdn" name="rdn" type="text" maxlength="4" class="form-control" placeholder="Введіть номер...">
+                                <input id="rdn" name="rdn" type="text" maxlength="4" class="form-control" placeholder="Введіть номер..."
+                                       required required-message="Номер розпорядчого документу не повинен бути пустим!"
+                                       digitonly>
                             </div>
                         </div>
                         <div class="form-group">
@@ -101,13 +105,15 @@
                         <div class="form-group">
                             <div class="input-group width100perc">
                                 <label for="nazz" class="input-group-label width60px">Назва</label>
-                                <input id="nazz" name="nazz" type="text" maxlength="90" class="form-control" placeholder="Введіть назву...">
+                                <input id="nazz" name="nazz" type="text" maxlength="90" class="form-control" placeholder="Введіть назву..."
+                                       required required-message="Назва розпорядчого документу не повинен бути пустим!">
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="input-group width500px">
                                 <label for="rdsh" class="input-group-label width60px">Шифр</label>
-                                <input id="rdsh" name="rdsh" type="text" maxlength="5" class="form-control" placeholder="Введіть шифр...">
+                                <input id="rdsh" name="rdsh" type="text" maxlength="5" class="form-control" placeholder="Введіть шифр..."
+                                       required required-message="Шифр розпорядчого документу не повинен бути пустим!">
                             </div>
                         </div>
                     </div>
@@ -115,7 +121,8 @@
                         <div class="form-group">
                             <div class="input-group width100perc">
                                 <label for="ordk" class="input-group-label width60px">Код</label>
-                                <input id="ordk" name="ordk" type="text" maxlength="1" class="form-control" placeholder="Введіть код...">
+                                <input id="ordk" name="ordk" type="text" maxlength="1" class="form-control" placeholder="Введіть код..."
+                                       required required-message="Код основного розпорядчого документу не повинен бути пустим!">
                                 <span class="input-group-btn">
                                     <button class="btn btn-secondary btn-custom-help" type="button">...</button>
                                 </span>
@@ -125,7 +132,9 @@
                         <div class="form-group">
                             <div class="input-group width500px">
                                 <label for="ordn" class="input-group-label width60px">Номер</label>
-                                <input id="ordn" name="ordn" type="text" maxlength="4" class="form-control" placeholder="Введіть номер...">
+                                <input id="ordn" name="ordn" type="text" maxlength="4" class="form-control" placeholder="Введіть номер..."
+                                       required required-message="Номер основного розпорядчого документу не повинен бути пустим!"
+                                       digitonly>
                             </div>
                         </div>
                         <div class="form-group">
@@ -152,7 +161,8 @@
                     <div class="form-group">
                         <div class="input-group width600px">
                             <label for="nzak" class="input-group-label" style="width:215px;">Основне замовлення</label>
-                            <input id="nzak" name="nzak" type="text" maxlength="9" class="form-control" placeholder="Введіть номер або скористайтесь допомогою...">
+                            <input id="nzak" name="nzak" type="text" maxlength="9" class="form-control" placeholder="Введіть номер або скористайтесь допомогою..."
+                                   required required-message="Номер основного фінансового замовлення не повинен бути пустим!">
                             <span class="input-group-btn">
                                 <button class="btn btn-secondary btn-custom-help" type="button">...</button>
                             </span>
@@ -227,20 +237,84 @@
         <jsp:include page="/jsp/js/initCrudButtons.jsp"/>
         <jsp:include page="/jsp/js/initTotalRowCount.jsp"/>
         <jsp:include page="/jsp/js/initCustomPageRefresh.jsp"/>
+        <jsp:include page="/jsp/js/initDisableSubmitOnEnter.jsp"/>
         <jsp:include page="/jsp/js/initPageSizeList.jsp"/>
         <jsp:include page="/jsp/js/initPagination.jsp"/>
+        <jsp:include page="/jsp/js/initAjaxValidation.jsp"/>
         <script type="text/javascript">
             $(function () {
+                $("#rdn").click(function () {
+                });
+                $.fn.tablehelp = function () {
+                    $(this).attr("readonly", "");
+                    if ($("ui-tablehelp-div").length === 0)
+                        $("<div>").attr("id", "ui-tablehelp-div")
+                                .addClass("ui-tablehelp ui-widget ui-widget-content ui-helper-clearfix ui-corner-all")
+                                .appendTo("body");
+                    $(this).click(function () {
+                        $("#ui-tablehelp-div").css({
+                            "position": "absolute",
+                            "z-index": "101",
+                            "width": $(this).outerWidth(),
+                            "height": 100,
+                            "left": $(this).offset().left,
+                            "top": $(this).offset().top + $(this).outerHeight()
+                        }).fadeIn("fast");
+                    });
+                };
+                $("#rdn").tablehelp();
+
+                $(document).mouseup(function (e) {
+                    var container = $("#ui-tablehelp-div");
+                    // if the target of the click isn't the container nor a descendant of the container
+                    if (!container.is(e.target) && container.has(e.target).length === 0) {
+                        container.hide();
+                    }
+                });
+
+
+                $.iskra.form.on("keyup", "input:text", function () {
+                    $(this).removeAttr("valid-status");
+                    $(this).removeAttr("ajv-icon");
+                    $(this).parents(".form-group").find(".error-popup").remove();
+                });
+
+                //alternative way to force user type only digits
+                /*$('input[digitonly]').keyup(function (e) {
+                 if (/\D/g.test(this.value)) {
+                 // Filter non-digits from input value.
+                 this.value = this.value.replace(/\D/g, '');
+                 }
+                 });*/
+                $('input[digitonly]').on('keypress', function (evt) {
+                    var charCode = (evt.which) ? evt.which : evt.keyCode;
+                    return !(charCode !== 8 && charCode !== 9 // backspace and tab keys
+                            && charCode !== 37 && charCode !== 39 // ← → arrows keys
+                            && (charCode < 48 || charCode > 57) // 0-9 digits keys
+                            );
+                });
+
                 $.iskra.addRecord = function () {
                     var valid = true;
-                    resetTips();
-                    $.iskra.allFields.removeClass("ui-state-error");
-                    valid = valid && checkLength($("#rdk"), 1, 1,
-                            "Код розпорядчого документу не повинен бути пустим!");
-                    valid = valid && checkLength($("#rdn"), 1, 4,
-                            "Номер розпорядчого документу не повинен бути пустим!");
-                    valid = valid && checkLength($("#nzak"), 1, 9,
-                            "Номер основного фінансового замовлення не повинен бути пустим!");
+                    $.iskra.form.find('input[required]').each(function () {
+                        if ($(this).val().length === 0) {
+                            errorPopup(this, $(this).attr("required-message"), $(this).parents(".form-group"));
+                            valid = false;
+                        }
+                    });
+                    var invalidInputs = $.iskra.form.find('input[valid-status=invalid]');
+                    if (invalidInputs.length !== 0) {
+                        $.iskra.form.find('input[valid-status=invalid]:first').focus();
+                        valid = false;
+                    }
+                    /*resetTips();
+                     $.iskra.allFields.removeClass("ui-state-error");*/
+                    /*valid = valid && checkLength($("#rdk"), 1, 1,
+                     "Код розпорядчого документу не повинен бути пустим!");
+                     valid = valid && checkLength($("#rdn"), 1, 4,
+                     "Номер розпорядчого документу не повинен бути пустим!");
+                     valid = valid && checkLength($("#nzak"), 1, 9,
+                     "Номер основного фінансового замовлення не повинен бути пустим!");*/
                     /*valid = valid && checkRegexp(sysname, /^[a-zа-яіґ\"'\s_0-9]+$/i,
                      "Назва програмного забезпечення повинна повинна містити літери англійскої або української мови, пробіли, цифри, символ \" або апостроф");
                      valid = valid && checkLength(sysname, 3, 20,
@@ -365,7 +439,7 @@
                         },
                         complete: function () {
                             $("#overlay-wrapper").fadeOut("fast");
-                            $("tr[data-id^="+currentId+"]").click();
+                            $("tr[data-id^=" + currentId + "]").click();
                         }
                     });
                 };

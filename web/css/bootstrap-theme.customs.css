@@ -45,8 +45,13 @@ label {
     text-align: left;
 }
 .form-control[readonly] {
-    background:#ffffff;
     cursor:default;
+}
+.form-control[readonly]:not([valid-status=invalid]) {
+    background:#ffffff;
+}
+.form-control[readonly][valid-status=invalid] {
+    background:#fddfdf;
 }
 .glyphicon-calendar {
     color:rgba(92,161,53,0.7);

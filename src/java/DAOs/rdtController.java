@@ -7,6 +7,8 @@ package DAOs;
 
 import dataControllerCore.AbstractCrudController;
 import dataObjects.rdt;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -15,7 +17,9 @@ import java.util.List;
  * @author u27brvz04
  */
 public class rdtController extends AbstractCrudController<rdt, String> {
-
+    
+    private static final String TABLE_NAME = "zapas.rdt";
+    
     public rdtController() throws SQLException {
     }
 
@@ -41,7 +45,30 @@ public class rdtController extends AbstractCrudController<rdt, String> {
 
     @Override
     public rdt getEntityById(String id) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        rdt entity;
+        String query
+                = "select rdtk,rdtn "
+                + "from " + TABLE_NAME + " "
+                + "where rdtk=? limit 1";
+        PreparedStatement ps = getPrepareStatement(query);
+        try {
+            ps.setString(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                entity = new rdt();
+                entity.setRdtk(rs.getString(1));
+                entity.setRdtn(rs.getString(2));
+            } else {
+                throw new SQLException("За заданим ідентифікатором відсутній запис","invalid");
+            }
+            //ejrdok.setUfid(rs.getInt(12));
+        } catch (SQLException e) {
+            throw new SQLException("Помилка при виконанні SQL-запиту</br>"
+                    + "<div class=\"nested-error\">" + e.getMessage() + "</div>",e.getSQLState());
+        } finally {
+            closePrepareStatement(ps);
+        }
+        return entity;
     }
 
     @Override
@@ -56,7 +83,26 @@ public class rdtController extends AbstractCrudController<rdt, String> {
 
     @Override
     public String getTableName() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return TABLE_NAME;
     }
-
+    
+    public boolean valdiateRdtk(String rdtk) throws SQLException{
+        boolean isValid = false;
+        String query
+                = "select 1 as chk "
+                + "from " + TABLE_NAME + " "
+                + "where rdtk=? limit 1";
+        PreparedStatement ps = getPrepareStatement(query);
+        try {
+            ps.setString(1, rdtk);
+            ResultSet rs = ps.executeQuery();
+            isValid = rs.isBeforeFirst();
+        } catch (SQLException e) {
+            throw new SQLException("Помилка при виконанні SQL-запиту</br>"
+                    + "<div class=\"nested-error\">" + e.getMessage() + "</div>",e.getSQLState());
+        } finally {
+            closePrepareStatement(ps);
+        }
+        return isValid;
+    }
 }

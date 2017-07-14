@@ -23,7 +23,6 @@
         return 100 - widthWithScroll;
     }
     function resetTips() {
-        $("div.error-popup").remove();
         tips.text("").removeClass("ui-state-highlight");
     }
     function updateTips(t) {
@@ -33,8 +32,8 @@
         if (o.val().length > max || o.val().length < min) {
             o.addClass("ui-state-error", 250);
             var err = $("<div>").append(message).addClass("error-popup");
-            o.after(err.show("fast"));
-            //updateTips(message);
+            /*o.after(err.show("fast"));*/
+            o.parents(".form-group").append(err.show("fast"));
             o.focus();
             return false;
         } else {
@@ -49,6 +48,16 @@
             return false;
         } else {
             return true;
+        }
+    }
+    function errorPopup(obj, message, placeholder) {
+        $(obj).attr("valid-status", "invalid");
+        var oldoneErrorPopup = $(placeholder).find(".error-popup");
+        if (oldoneErrorPopup.length !== 0)
+            $(placeholder).find(".error-popup").empty().append(message);
+        else {
+            var err = $("<div>").append(message).addClass("error-popup").css("margin-left", $(obj).position().left + 10);
+            $(placeholder).append(err.show("fast").css("display", "inline-block"));
         }
     }
 </script>

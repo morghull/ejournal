@@ -29,7 +29,8 @@
             ],
             close: function () {
                 $.iskra.form[0].reset();
-                $.iskra.allFields.removeClass("ui-state-error");
+                $.iskra.allFields.removeAttr("valid-status").removeAttr("ajv-icon");
+                $.iskra.allFields.parents(".form-group").find(".error-popup").remove();
             }
         });
 
