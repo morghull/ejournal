@@ -71,6 +71,14 @@
         <servlet-name>rdtValidationAjaxServlet</servlet-name>
         <url-pattern>/servlets/api/validate_rdt</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>rdtGetPageAjaxServlet</servlet-name>
+        <servlet-class>ajaxServlets.rdtGetPageAjaxServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>rdtGetPageAjaxServlet</servlet-name>
+        <url-pattern>/servlets/ajax/rdtGetPage</url-pattern>
+    </servlet-mapping>
     <!--********************************************************************-->
     <servlet>
         <servlet-name>software</servlet-name>

@@ -185,6 +185,7 @@
             </form>
         </div>
         <jsp:include page="/jsp/js/jscript.jsp"/>
+        <script src="${pageContext.servletContext.contextPath}/js/jquery.tablehelp.js"></script>
         <script type="text/javascript">
             $(function () {
                 var emailRegex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
@@ -245,32 +246,32 @@
             $(function () {
                 $("#rdn").click(function () {
                 });
-                $.fn.tablehelp = function () {
-                    $(this).attr("readonly", "");
-                    if ($("ui-tablehelp-div").length === 0)
-                        $("<div>").attr("id", "ui-tablehelp-div")
-                                .addClass("ui-tablehelp ui-widget ui-widget-content ui-helper-clearfix ui-corner-all")
-                                .appendTo("body");
-                    $(this).click(function () {
-                        $("#ui-tablehelp-div").css({
-                            "position": "absolute",
-                            "z-index": "101",
-                            "width": $(this).outerWidth(),
-                            "height": 100,
-                            "left": $(this).offset().left,
-                            "top": $(this).offset().top + $(this).outerHeight()
-                        }).fadeIn("fast");
-                    });
-                };
+//                $.fn.tablehelp = function () {
+//                    $(this).attr("readonly", "");
+//                    if ($("ui-tablehelp-div").length === 0)
+//                        $("<div>").attr("id", "ui-tablehelp-div")
+//                                .addClass("ui-tablehelp ui-widget ui-widget-content ui-helper-clearfix ui-corner-all")
+//                                .appendTo("body");
+//                    $(this).click(function () {
+//                        $("#ui-tablehelp-div").css({
+//                            "position": "absolute",
+//                            "z-index": "101",
+//                            "width": $(this).outerWidth(),
+//                            "height": 100,
+//                            "left": $(this).offset().left,
+//                            "top": $(this).offset().top + $(this).outerHeight()
+//                        }).fadeIn("fast");
+//                    });
+//                };
                 $("#rdn").tablehelp();
 
-                $(document).mouseup(function (e) {
-                    var container = $("#ui-tablehelp-div");
-                    // if the target of the click isn't the container nor a descendant of the container
-                    if (!container.is(e.target) && container.has(e.target).length === 0) {
-                        container.hide();
-                    }
-                });
+//                $(document).mouseup(function (e) {
+//                    var container = $("#ui-tablehelp-div");
+//                    // if the target of the click isn't the container nor a descendant of the container
+//                    if (!container.is(e.target) && container.has(e.target).length === 0) {
+//                        container.hide();
+//                    }
+//                });
 
 
                 $.iskra.form.on("keyup", "input:text", function () {
@@ -357,8 +358,13 @@
                                 //$("html, body").animate({scrollTop: $("tr.active").offset().top}, 500);
                             },
                             error: function (xhr, status, error) {
-                                $($.iskra.dialogErrorMessage).find("#error-content").html(stringFormat(decodeURIComponent(xhr.getResponseHeader("error")).replace(/\s*\++\s*/g, " ")));
-                                $($.iskra.dialogErrorMessage).find("#error-details-content").html(decodeURIComponent(xhr.getResponseHeader("error_details")).replace(/\s*\++\s*/g, " "));
+                                if (xhr.getResponseHeader("error") === null && status === "error") {
+                                    $($.iskra.dialogErrorMessage).find("#error-content").html("Не виявлена помилка серверу");
+                                    $($.iskra.dialogErrorMessage).find("#error-details-content").html("Можливо web-сервер не выдповідає на запити. Зверніться до розробників.");
+                                } else {
+                                    $($.iskra.dialogErrorMessage).find("#error-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error"))).replace(/\s*\++\s*/g, " "));
+                                    $($.iskra.dialogErrorMessage).find("#error-details-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error_details"))).replace(/\s*\++\s*/g, " "));
+                                }
                                 $.iskra.dialogErrorMessage.dialog("open");
                                 console.log("addRecord() ERROR : ", error);
                             },
@@ -432,8 +438,13 @@
                             console.log("getPage() SUCCESS : ", data);
                         },
                         error: function (xhr, status, error) {
-                            $($.iskra.dialogErrorMessage).find("#error-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error"))).replace(/\s*\++\s*/g, " "));
-                            $($.iskra.dialogErrorMessage).find("#error-details-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error_details"))).replace(/\s*\++\s*/g, " "));
+                            if (xhr.getResponseHeader("error") === null && status === "error") {
+                                $($.iskra.dialogErrorMessage).find("#error-content").html("Не виявлена помилка серверу");
+                                $($.iskra.dialogErrorMessage).find("#error-details-content").html("Можливо web-сервер не выдповідає на запити. Зверніться до розробників.");
+                            } else {
+                                $($.iskra.dialogErrorMessage).find("#error-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error"))).replace(/\s*\++\s*/g, " "));
+                                $($.iskra.dialogErrorMessage).find("#error-details-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error_details"))).replace(/\s*\++\s*/g, " "));
+                            }
                             $.iskra.dialogErrorMessage.dialog("open");
                             console.log("getPage() ERROR : ", error);
                         },

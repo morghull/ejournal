@@ -29,6 +29,14 @@
     .overlay {
         background: rgba(0, 0, 0, 0.05) url("${pageContext.servletContext.contextPath}/images/loading.gif") no-repeat center;
     }
+    .overlay-pagination {
+        background: rgba(0, 0, 0, 0.00) url("${pageContext.servletContext.contextPath}/images/loading.gif") no-repeat 10px 7px / contain;
+        background-size: 20px;
+    }
+    .ui-tablehelp-overlay {
+        background: rgba(0, 0, 0, 0.05) url("${pageContext.servletContext.contextPath}/images/loading.gif") no-repeat center;
+        background-size: 50px;
+    }
     .ajv-input[valid-status="valid"][ajv-icon="true"] {
         background-image: url("${pageContext.servletContext.contextPath}/images/valid.svg");
         transition: 3s ease-out;

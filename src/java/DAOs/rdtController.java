@@ -10,6 +10,7 @@ import dataObjects.rdt;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -73,7 +74,28 @@ public class rdtController extends AbstractCrudController<rdt, String> {
 
     @Override
     public List<rdt> getPage(int pageNumber, int pageSize) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<rdt> lst = new LinkedList<>();
+        String query
+                = "select rdtk,rdtn "
+                + "from " + TABLE_NAME + " "
+                + "order by rdtk limit " + pageSize + " offset " + pageSize * (pageNumber - 1);
+        PreparedStatement ps = getPrepareStatement(query);
+        try {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                rdt entity = new rdt();
+                entity.setRdtk(rs.getString(1));
+                entity.setRdtn(rs.getString(2));
+
+                lst.add(entity);
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Помилка при виконанні SQL-запиту</br>"
+                    + "<div class=\"nested-error\">" + e.getMessage() + "</div>");
+        } finally {
+            closePrepareStatement(ps);
+        }
+        return lst;
     }
 
     @Override

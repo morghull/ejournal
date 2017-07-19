@@ -36,7 +36,7 @@ public class rdt implements Serializable {
     public String toString() {
         return "{"
                 + "\"rdtk\":\"" + rdtk + "\""
-                + ",\"rdtk\":\"" + rdtn + "\""
+                + ",\"rdtn\":\"" + rdtn + "\""
                 + "}";
     }
 }

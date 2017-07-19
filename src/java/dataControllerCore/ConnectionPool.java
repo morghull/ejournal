@@ -43,7 +43,7 @@ public class ConnectionPool {
     public Connection getConnection() throws SQLException {
         Connection conn = null;
         try {
-            conn = dataSource.getConnection();;
+            conn = dataSource.getConnection();
         } catch (Exception e) {
             throw new SQLException("Помилка при створенні підключення до sql-сервера</br>"
                     + "<div class=\"nested-error\"> " + e.getMessage() + "</div>");

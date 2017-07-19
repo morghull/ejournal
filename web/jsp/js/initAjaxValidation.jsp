@@ -46,10 +46,15 @@
                             }
                         },
                         error: function (xhr, status, error) {
-                            $($.iskra.dialogErrorMessage).find("#error-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error"))).replace(/\s*\++\s*/g, " "));
-                            $($.iskra.dialogErrorMessage).find("#error-details-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error_details"))).replace(/\s*\++\s*/g, " "));
+                            if (xhr.getResponseHeader("error") === null && status === "error") {
+                                $($.iskra.dialogErrorMessage).find("#error-content").html("Не виявлена помилка серверу");
+                                $($.iskra.dialogErrorMessage).find("#error-details-content").html("Можливо web-сервер не выдповідає на запити. Зверніться до розробників.");
+                            } else {
+                                $($.iskra.dialogErrorMessage).find("#error-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error"))).replace(/\s*\++\s*/g, " "));
+                                $($.iskra.dialogErrorMessage).find("#error-details-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error_details"))).replace(/\s*\++\s*/g, " "));
+                            }
                             $.iskra.dialogErrorMessage.dialog("open");
-                            console.log("validation() ERROR : ", error);
+                            console.log("ajaxValidation() ERROR : ", error);
                         },
                         complete: function () {
                         }

@@ -97,10 +97,6 @@ table.table-layout tr td{
 .overlay-pagination {
     width: 200px;
     height: 38px;
-    background: rgba(0, 0, 0, 0) url("/ejournal/images/loading.gif") no-repeat 10px 7px / contain;
-    /*border: 1px solid #ccc;
-    border-radius: 4px;*/
-    background-size: 20px;
     opacity: 0.65;
 }
 .overlay-pagination:before {
