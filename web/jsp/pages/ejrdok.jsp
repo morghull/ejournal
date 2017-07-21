@@ -214,8 +214,7 @@
                 $.iskra.servletUrlPatternGetPage = "ejrdokGetPage";
                 $.iskra.pageSizeListPlaceholder = $("#toolbar-page-sizes-list");
                 $.iskra.paginationListPlaceholder = $("#toolbar-pagination-list");
-
-                var options = {
+                var optionsu = {
                     allFields: $([]).add(rdk).add(rdn).add(rdd).add(nazz)
                             .add(rdsh).add(ordk).add(ordn).add(ordd).add(dvd).add(nzak)
                             .add(prim),
@@ -263,8 +262,52 @@
 //                        }).fadeIn("fast");
 //                    });
 //                };
-                $("#rdn").tablehelp();
-
+                $("#rdn").tablehelp({
+                    "tableCaption": "Розпорядчі документи.Типи",
+                    "tableName": "rdt",
+                    "urlToGetData": "/ejournal/servlets/ajax/rdtGetPage",
+                    "itemToPickup": "rdtk",
+                    "columns": [
+                        {"caption": "Код", "item": "rdtk"},
+                        {"caption": "Назва", "item": "rdtn", "align": "left"},
+                        {"caption": "Назва", "item": "rdtn"}
+                    ],
+                    onError: function (xhr, status, error) {
+                        riseAnError("rdn tablehelp", xhr, status, error);
+                    }
+                });
+                $("#ordk").tablehelp({
+                    "tableCaption": "Розпорядчі документи.Типи",
+                    "tableName": "rdt",
+                    "urlToGetData": "/ejournal/servlets/ajax/rdtGetPage",
+                    "itemToPickup": "rdtk",
+                    "columns": [
+                        {"caption": "Код", "item": "rdtk"},
+                        {"caption": "Назва", "item": "rdtn", "align": "left"}
+                    ],
+                    onError: function (xhr, status, error) {
+                        riseAnError("ordk tablehelp", xhr, status, error);
+                    }
+                });
+                function riseAnError(sender, xhr, status, error) {
+                    if (xhr.getResponseHeader("error") === null && status === "error") {
+                        var errorMessage, errorDetails;
+                        if (xhr.status === 404) {
+                            errorMessage = "Web-сторінка відсутня";
+                            errorDetails = "Можливо web-сервер не выдповідає на запити.";
+                        } else {
+                            errorMessage = "Не виявлена помилка серверу";
+                            errorDetails = "Можливо web-сервер не выдповідає на запити.";
+                        }
+                        $($.iskra.dialogErrorMessage).find("#error-content").html(errorMessage);
+                        $($.iskra.dialogErrorMessage).find("#error-details-content").html(errorDetails + " Зверніться до розробників.");
+                    } else {
+                        $($.iskra.dialogErrorMessage).find("#error-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error"))).replace(/\s*\++\s*/g, " "));
+                        $($.iskra.dialogErrorMessage).find("#error-details-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error_details"))).replace(/\s*\++\s*/g, " "));
+                    }
+                    $.iskra.dialogErrorMessage.dialog("open");
+                    console.log(sender + " ERROR : ", error);
+                }
 //                $(document).mouseup(function (e) {
 //                    var container = $("#ui-tablehelp-div");
 //                    // if the target of the click isn't the container nor a descendant of the container
@@ -279,7 +322,6 @@
                     $(this).removeAttr("ajv-icon");
                     $(this).parents(".form-group").find(".error-popup").remove();
                 });
-
                 //alternative way to force user type only digits
                 /*$('input[digitonly]').keyup(function (e) {
                  if (/\D/g.test(this.value)) {
@@ -294,7 +336,6 @@
                             && (charCode < 48 || charCode > 57) // 0-9 digits keys
                             );
                 });
-
                 $.iskra.addRecord = function () {
                     var valid = true;
                     $.iskra.form.find('input[required]').each(function () {
@@ -330,7 +371,6 @@
                         data.append("q_mode", $.iskra.mode);
                         data.append("q_table_name", $.iskra.tableName);
                         data.append("q_id", $("tr.active").attr("data-id"));
-
                         $.ajax({
                             type: "post",
                             enctype: 'multipart/form-data',
@@ -375,7 +415,6 @@
                     }
                     return valid;
                 };
-
                 $.iskra.setInputDefaults = function () {
                     //set defaults
                     var d = $.datepicker.parseDate("dd.mm.yy", "<%=strCurDate%>");
@@ -383,7 +422,6 @@
                     $("#dialog-form").find("#ordd").val(("0" + d.getDate()).slice(-2) + "." + ("0" + (d.getMonth() + 1)).slice(-2) + "." + d.getFullYear());
                     $("#dialog-form").find("#dvd").val(("0" + d.getDate()).slice(-2) + "." + ("0" + (d.getMonth() + 1)).slice(-2) + "." + d.getFullYear());
                 };
-
                 $("#rdd").datepicker();
                 $("#rdd-help-btn").click(function () {
                     $("#rdd").datepicker("show");
@@ -396,7 +434,6 @@
                 $("#dvd-help-btn").click(function () {
                     $("#dvd").datepicker("show");
                 });
-
                 $.iskra.getPage = function () {
                     var currentId = ($("#currentId").length) ? parseInt($("#currentId").text()) : -1;
                     if ($("#currentId").length && $("#currentId").attr("new-one") === "true") {

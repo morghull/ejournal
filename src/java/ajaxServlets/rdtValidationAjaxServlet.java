@@ -78,7 +78,7 @@ public class rdtValidationAjaxServlet extends HttpServlet {
             controller.returnConnectionInPool();
 
             if (!validation) {
-                validationMessage = "Код типу розпорядчого документа не відповідає довіднику \\\"Типи розпорядчих документів\\\"";
+                validationMessage = "Код типу розпорядчого документа не відповідає довіднику \\\"Розпорядчі документи.Типи\\\"";
             }
 
             PrintWriter out = response.getWriter();
