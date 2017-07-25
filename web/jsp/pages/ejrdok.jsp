@@ -78,7 +78,7 @@
                                        ajax-validation="on" ajv-url-pattern="validate_rdt" ajv-field-name="rdtk"
                                        required required-message="Код розпорядчого документу не повинен бути пустим!">
                                 <span class="input-group-btn">
-                                    <button class="btn btn-group btn-custom-help" type="button">...</button>
+                                    <button id="rdk-help-btn" class="btn btn-group btn-custom-help" type="button">...</button>
                                 </span>
                                 <span id="rdk-rdtn" class="input-group-addon-more width500px"></span>
                             </div>
@@ -121,10 +121,11 @@
                         <div class="form-group">
                             <div class="input-group width100perc">
                                 <label for="ordk" class="input-group-label width60px">Код</label>
-                                <input id="ordk" name="ordk" type="text" maxlength="1" class="form-control" placeholder="Введіть код..."
+                                <input id="ordk" name="ordk" type="text" maxlength="1" class="form-control ajv-input" placeholder="Введіть код..."
+                                       ajax-validation="on" ajv-url-pattern="validate_rdt" ajv-field-name="rdtk"
                                        required required-message="Код основного розпорядчого документу не повинен бути пустим!">
                                 <span class="input-group-btn">
-                                    <button class="btn btn-secondary btn-custom-help" type="button">...</button>
+                                    <button id="ordk-help-btn" class="btn btn-secondary btn-custom-help" type="button">...</button>
                                 </span>
                                 <span id="ordk-rdtn" class="input-group-addon-more width500px"></span>
                             </div>
@@ -243,39 +244,23 @@
         <jsp:include page="/jsp/js/initAjaxValidation.jsp"/>
         <script type="text/javascript">
             $(function () {
-                $("#rdn").click(function () {
-                });
-//                $.fn.tablehelp = function () {
-//                    $(this).attr("readonly", "");
-//                    if ($("ui-tablehelp-div").length === 0)
-//                        $("<div>").attr("id", "ui-tablehelp-div")
-//                                .addClass("ui-tablehelp ui-widget ui-widget-content ui-helper-clearfix ui-corner-all")
-//                                .appendTo("body");
-//                    $(this).click(function () {
-//                        $("#ui-tablehelp-div").css({
-//                            "position": "absolute",
-//                            "z-index": "101",
-//                            "width": $(this).outerWidth(),
-//                            "height": 100,
-//                            "left": $(this).offset().left,
-//                            "top": $(this).offset().top + $(this).outerHeight()
-//                        }).fadeIn("fast");
-//                    });
-//                };
-                $("#rdn").tablehelp({
+                $("#rdk").tablehelp({
                     "tableCaption": "Розпорядчі документи.Типи",
                     "tableName": "rdt",
                     "urlToGetData": "/ejournal/servlets/ajax/rdtGetPage",
                     "itemToPickup": "rdtk",
                     "columns": [
                         {"caption": "Код", "item": "rdtk"},
-                        {"caption": "Назва", "item": "rdtn", "align": "left"},
-                        {"caption": "Назва", "item": "rdtn"}
+                        {"caption": "Назва", "item": "rdtn", "align": "left"}
                     ],
                     onError: function (xhr, status, error) {
                         riseAnError("rdn tablehelp", xhr, status, error);
                     }
                 });
+                $("#rdk-help-btn").click(function () {
+                    $("#rdk").tablehelp("show");
+                });
+
                 $("#ordk").tablehelp({
                     "tableCaption": "Розпорядчі документи.Типи",
                     "tableName": "rdt",
@@ -289,6 +274,10 @@
                         riseAnError("ordk tablehelp", xhr, status, error);
                     }
                 });
+                $("#ordk-help-btn").click(function () {
+                    $("#ordk").tablehelp("show");
+                });
+
                 function riseAnError(sender, xhr, status, error) {
                     if (xhr.getResponseHeader("error") === null && status === "error") {
                         var errorMessage, errorDetails;
@@ -308,14 +297,6 @@
                     $.iskra.dialogErrorMessage.dialog("open");
                     console.log(sender + " ERROR : ", error);
                 }
-//                $(document).mouseup(function (e) {
-//                    var container = $("#ui-tablehelp-div");
-//                    // if the target of the click isn't the container nor a descendant of the container
-//                    if (!container.is(e.target) && container.has(e.target).length === 0) {
-//                        container.hide();
-//                    }
-//                });
-
 
                 $.iskra.form.on("keyup", "input:text", function () {
                     $(this).removeAttr("valid-status");

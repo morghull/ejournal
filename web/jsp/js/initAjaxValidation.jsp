@@ -20,6 +20,7 @@
         $("#dialog-form input:text[ajax-validation=\"on\"]").each(function () {
             var ajvUrlPattern = $(this).attr("ajv-url-pattern");
             var ajvFieldName = $(this).attr("ajv-field-name");
+            var ajvPreviousValue = $(this).attr("ajv-prev-value");
             var obj = $(this);
             $(this).focusout(function () {
                 var value = $(this).val();

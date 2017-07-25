@@ -42,8 +42,8 @@ and open the template in the editor.
     color: #f0f0f0;
 }
 .ui-tablehelp {
-    width: 17em;
-    padding: .2em .2em .25em;
+    /*width: 17em;*/
+    padding: .25em .2em .25em;
     display: none;
 }
 .ui-tablehelp-title {
