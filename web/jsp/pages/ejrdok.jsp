@@ -73,8 +73,7 @@
                         <div class="form-group">
                             <div class="input-group width100perc">
                                 <label for="rdk" class="input-group-label width60px">Код</label>
-                                <input id="rdk" name="rdk" type="text" maxlength="1" class="form-control width60px ajv-input" placeholder="Введіть код..."
-                                       autocomplete="on" atc-table-name="zapas.rdt" atc-field-name="rdtk"
+                                <input id="rdk" name="rdk" type="text" maxlength="1" class="form-control width120px ajv-input" placeholder="Введіть код..."
                                        ajax-validation="on" ajv-url-pattern="validate_rdt" ajv-field-name="rdtk"
                                        required required-message="Код розпорядчого документу не повинен бути пустим!">
                                 <span class="input-group-btn">
@@ -176,8 +175,9 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <div class="input-group width100perc">
-                            <label for="uplfiles" class="input-group-label width100px">Прикріпленний файл</label>
+                        <div class="input-group width100percq">
+                            <label for="uplfiles" class="input-group-label width100px">Прикріпленні файли</label>
+                            <input id="uplfiles" type="file" name="file" multiple/>
                         </div>
                     </div>
                     <!-- Allow form submission with keyboard without duplicating the dialog button -->
@@ -187,6 +187,7 @@
         </div>
         <jsp:include page="/jsp/js/jscript.jsp"/>
         <script src="${pageContext.servletContext.contextPath}/js/jquery.tablehelp.js"></script>
+        <script src="${pageContext.servletContext.contextPath}/js/jquery.fileupload.js"></script>
         <script type="text/javascript">
             $(function () {
                 var emailRegex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
@@ -277,7 +278,9 @@
                 $("#ordk-help-btn").click(function () {
                     $("#ordk").tablehelp("show");
                 });
-
+                
+                $("#uplfiles").fileupload();
+                
                 function riseAnError(sender, xhr, status, error) {
                     if (xhr.getResponseHeader("error") === null && status === "error") {
                         var errorMessage, errorDetails;
@@ -301,8 +304,22 @@
                 $.iskra.form.on("keyup", "input:text", function () {
                     $(this).removeAttr("valid-status");
                     $(this).removeAttr("ajv-icon");
+                    $(this).removeAttr("ajv-prev-value");
                     $(this).parents(".form-group").find(".error-popup").remove();
                 });
+                $.iskra.form.find("input:text").attr("autocomplete", "off");
+                $("#dialog-form input:text").bind("keydown", function (e) {
+                    if ([9, 13].indexOf(e.which || e.keyCode) >= 0) {
+                        e.preventDefault();
+                        var inputs = $("#dialog-form input:text");
+                        console.log(e.shiftKey);
+                        var nextItem = inputs.eq(inputs.index($(this)) + ((e.shiftKey) ? -1 : 1));
+                        if (nextItem.size() === 0)
+                            nextItem = $("#dialog-form input:text").eq(0);
+                        nextItem.focus();
+                    }
+                });
+
                 //alternative way to force user type only digits
                 /*$('input[digitonly]').keyup(function (e) {
                  if (/\D/g.test(this.value)) {

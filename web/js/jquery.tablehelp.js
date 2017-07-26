@@ -11,11 +11,10 @@
     };
     var methods = {
         init: function (options) {
-            $(document).mouseup(function (e) {
+            $(document).mousedown(function (e) {
                 var container = $("#ui-tablehelp-div");
                 // if the target of the click isn't the container nor a descendant of the container
                 if (container.is(":visible") && !container.is(e.target) && container.has(e.target).length === 0) {
-                    //container.fadeOut("fast");
                     container.hide();
                 }
             });
@@ -64,7 +63,13 @@
                     $.error("jquery.tablehelp: columns description array have invalid format in plugin options of " + "#" + obj.attr("id"));
                 //obj.attr("readonly", true);
                 obj.attr("autocomplete", "off");
-                obj.click(function () {
+                obj.keydown(function (e) {
+                    var container = $("#ui-tablehelp-div");
+                    if ([9, 13].indexOf(e.which || e.keyCode) >= 0 && container.is(":visible")) {
+                        container.hide();
+                    }
+                });
+                obj.focus(function () {
                     //placeholder initialization
                     if ($("#ui-tablehelp-div").length === 0)
                         $("<div>").attr("id", "ui-tablehelp-div")
@@ -80,7 +85,6 @@
                     $("<table>").addClass("ui-tablehelp-table")
                             .append($("<thead>"), $("<tbody>"))
                             .appendTo("#ui-tablehelp-div");
-                    //var tableHeader = $("<thead>").appendTo(table);
                     var tableHeader = $("<tr>");//.append($("<th>").append("№ п\п"));
                     $.each(settings.columns, function (key, col) {
                         tableHeader.append($("<th>").append(col.caption));
@@ -132,7 +136,7 @@
                                 if (settings.imitateKeyPress)
                                     obj.kepress();
                                 if (settings.returnFocus)
-                                obj.focus();
+                                    obj.focus();
                                 $("#ui-tablehelp-div").hide();
                             });
 
@@ -148,14 +152,12 @@
                             $("#ui-tablehelp-div").css({"min-height": ""});
                         }
                     });
-
-
                 });
             });
         },
         show: function ( ) {
             var obj = $(this);
-            obj.click();
+            obj.focus();
         },
         hide: function ( ) {
 

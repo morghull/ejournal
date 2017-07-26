@@ -39,12 +39,14 @@
     }
     .ajv-input[valid-status="valid"][ajv-icon="true"] {
         background-image: url("${pageContext.servletContext.contextPath}/images/valid.svg");
-        transition: 3s ease-out;
+        transition: 0.2s ease-out;
     }
     .ajv-input[valid-status="invalid"][ajv-icon="true"] {
         background-image: url("${pageContext.servletContext.contextPath}/images/invalid.svg");
+        transition: 0.2s ease-out;
     }
     .ajv-input[valid-status="pending"][ajv-icon="true"] {
         background-image: url("${pageContext.servletContext.contextPath}/images/loading.gif");
+        transition: 0.2s ease-out;
     }
 </style>

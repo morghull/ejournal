@@ -20,11 +20,11 @@
         $("#dialog-form input:text[ajax-validation=\"on\"]").each(function () {
             var ajvUrlPattern = $(this).attr("ajv-url-pattern");
             var ajvFieldName = $(this).attr("ajv-field-name");
-            var ajvPreviousValue = $(this).attr("ajv-prev-value");
             var obj = $(this);
-            $(this).focusout(function () {
-                var value = $(this).val();
-                if (value.length !== 0) {
+            obj.focusout(function () {
+                var value = obj.val();
+                var ajvPreviousValue = obj.attr("ajv-prev-value");
+                if (value.length !== 0 && value !== ajvPreviousValue) {
                     $.ajax({
                         type: "get",
                         url: "${pageContext.servletContext.contextPath}/servlets/api/" + ajvUrlPattern,
@@ -42,6 +42,7 @@
                             if (data.valid) {
                                 obj.attr("valid-status", "valid");
                                 obj.parents(".form-group").find(".error-popup").remove();
+                                obj.attr("ajv-prev-value", value);
                             } else {
                                 errorPopup(obj, data.message, $(obj).parents(".form-group"));
                             }

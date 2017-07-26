@@ -93,9 +93,15 @@ and open the template in the editor.
     background: #3cc4f0;
     color: #fff;
 }
+.ui-tablehelp-table tbody tr:first-child td {
+    border-top: 1px solid #3cc4f0;
+}
 .ui-tablehelp-table tbody tr:hover:first-child td {
     border-top: 1px solid #fff;
 }
 .ui-tablehelp-table tbody tr td {
     /*border-top: 1px solid rgba(60,196,240,0.8);*/
+}
+.ui-file-upload {
+    position: relative;
 }
