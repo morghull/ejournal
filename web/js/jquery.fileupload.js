@@ -16,8 +16,28 @@
             var settings = $.extend({}, defaults, options);
             return this.each(function () {
                 var obj = $(this);
-                
-                obj.wrap($("<div>").addClass("ui-file-upload"))
+                obj.wrap($("<div>").addClass("ui-file-upload"));
+
+                var wrapper = obj.parents(".ui-file-upload");
+                var placeholder = $("<div>")
+                        .append("Натисніть щоб обрати файл")
+                        .addClass("ui-file-upload-item ui-file-upload-placeholder");
+
+                $(wrapper).append(placeholder);
+                obj.change(function (e) {
+                    var files = e.target.files;
+                    var filesArr = Array.prototype.slice.call(files);
+                    if (filesArr.length > 0) {
+                        $(wrapper).find("div.ui-file-upload-item").remove();
+                        filesArr.forEach(function (f) {
+                            var fileDiv = $("<div>")
+                                    .append(f.name)
+                                    .addClass("ui-file-upload-item ui-file-upload-file");
+                            $(wrapper).append(fileDiv);
+                        });
+                    } else
+                        console.log("test");//$("#ui-file-upload-wrapper").append(placeholder);
+                }).change();
             });
         },
         show: function ( ) {

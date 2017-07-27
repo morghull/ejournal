@@ -100,8 +100,33 @@ and open the template in the editor.
     border-top: 1px solid #fff;
 }
 .ui-tablehelp-table tbody tr td {
-    /*border-top: 1px solid rgba(60,196,240,0.8);*/
+
 }
 .ui-file-upload {
     position: relative;
+    border: 1px solid rgba(0,0,0,0.1);
+    padding: 6px 12px;
+}
+.ui-file-upload input[type=file] {
+    position: absolute;
+    width: 100%;
+    opacity: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+.ui-file-upload-placeholder {
+    color: #999;
+}
+.ui-file-upload-item {
+    padding: 3px 6px;
+    display: inline-block;
+}
+.ui-file-upload-file {
+    border: 1px solid #eee;
+    margin-right: 10px;
+    border-radius: 4px;
+    color: #fff;
+    background: rgba(92,161,53,0.8);
 }

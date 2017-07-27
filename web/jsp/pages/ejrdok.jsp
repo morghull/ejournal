@@ -77,7 +77,7 @@
                                        ajax-validation="on" ajv-url-pattern="validate_rdt" ajv-field-name="rdtk"
                                        required required-message="Код розпорядчого документу не повинен бути пустим!">
                                 <span class="input-group-btn">
-                                    <button id="rdk-help-btn" class="btn btn-group btn-custom-help" type="button">...</button>
+                                    <span id="rdk-help-btn" class="btn btn-group btn-custom-help" type="button">...</span>
                                 </span>
                                 <span id="rdk-rdtn" class="input-group-addon-more width500px"></span>
                             </div>
@@ -124,7 +124,7 @@
                                        ajax-validation="on" ajv-url-pattern="validate_rdt" ajv-field-name="rdtk"
                                        required required-message="Код основного розпорядчого документу не повинен бути пустим!">
                                 <span class="input-group-btn">
-                                    <button id="ordk-help-btn" class="btn btn-secondary btn-custom-help" type="button">...</button>
+                                    <span id="ordk-help-btn" class="btn btn-secondary btn-custom-help" type="button">...</span>
                                 </span>
                                 <span id="ordk-rdtn" class="input-group-addon-more width500px"></span>
                             </div>
@@ -164,7 +164,7 @@
                             <input id="nzak" name="nzak" type="text" maxlength="9" class="form-control" placeholder="Введіть номер або скористайтесь допомогою..."
                                    required required-message="Номер основного фінансового замовлення не повинен бути пустим!">
                             <span class="input-group-btn">
-                                <button class="btn btn-secondary btn-custom-help" type="button">...</button>
+                                <span class="btn btn-secondary btn-custom-help" type="button">...</span>
                             </span>
                         </div>
                     </div>
@@ -175,7 +175,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <div class="input-group width100percq">
+                        <div class="input-group width100perc">
                             <label for="uplfiles" class="input-group-label width100px">Прикріпленні файли</label>
                             <input id="uplfiles" type="file" name="file" multiple/>
                         </div>
@@ -312,14 +312,13 @@
                     if ([9, 13].indexOf(e.which || e.keyCode) >= 0) {
                         e.preventDefault();
                         var inputs = $("#dialog-form input:text");
-                        console.log(e.shiftKey);
                         var nextItem = inputs.eq(inputs.index($(this)) + ((e.shiftKey) ? -1 : 1));
                         if (nextItem.size() === 0)
                             nextItem = $("#dialog-form input:text").eq(0);
                         nextItem.focus();
                     }
                 });
-
+                
                 //alternative way to force user type only digits
                 /*$('input[digitonly]').keyup(function (e) {
                  if (/\D/g.test(this.value)) {
@@ -334,6 +333,9 @@
                             && (charCode < 48 || charCode > 57) // 0-9 digits keys
                             );
                 });
+                
+                $("#dialog-form").parent().css("min-width","750px");
+                
                 $.iskra.addRecord = function () {
                     var valid = true;
                     $.iskra.form.find('input[required]').each(function () {
