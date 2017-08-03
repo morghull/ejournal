@@ -15,18 +15,13 @@
                 $(this).autocomplete({
                     source: function (request, response) {
                         $(".ui-helper-hidden-accessible").empty();
-                        $(".ui-autocomplete").css({display: "none"});
-                        var atcWaitDiv = $("<div>").html("Зачекайте, іде пошук інформації для допомоги......")
+                        $(".ui-autocomplete").hide();
+                        var atcWaitDiv = $("<div>").html("Зачекайте, іде пошук інформації для допомоги...")
                                 .prop("id", "atc-wait")
-                                .css("display", "block")
-                                .css("padding", "6px 30px")
-                                .css("position", "absolute")
                                 .css("top", ($("#" + ownerId).offset().top + $("#" + ownerId).outerHeight()).toString() + "px")
                                 .css("left", $("#" + ownerId).offset().left.toString() + "px")
-                                .css("z-index", "110")
                                 .css("width", $("#" + ownerId).outerWidth().toString() + "px")
-                                .css("background", "url(\"${pageContext.servletContext.contextPath}/images/loading.gif\") 6px 6px no-repeat #fff")
-                                .css("background-size", "20px")
+                                .addClass("ui-autocomplete-wait")
                                 .addClass("ui-widget-content");
                         $("body").append(atcWaitDiv);
                         $.ajax({
