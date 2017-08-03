@@ -9,7 +9,7 @@
     $(function () {
         /*$("#dialog-form input:text[required]").each(function () {
          $(this).focusout(function () {
-         $(this).parents(".form-group").find(".error-popup").remove();
+         $(this).parents(".form-group").find(".ui-error-popup").remove();
          var value = $(this).val();
          if (value.length === 0)
          {
@@ -41,7 +41,7 @@
                         success: function (data, status, xhr) {
                             if (data.valid) {
                                 obj.attr("valid-status", "valid");
-                                obj.parents(".form-group").find(".error-popup").remove();
+                                obj.parents(".form-group").find(".ui-error-popup").remove();
                                 obj.attr("ajv-prev-value", value);
                             } else {
                                 errorPopup(obj, data.message, $(obj).parents(".form-group"));
