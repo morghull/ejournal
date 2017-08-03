@@ -50,7 +50,7 @@
                         <td style="width:1%;" rowspan="2">Дата виконання по документу</td>
                         <td style="width:1%;" rowspan="2">Основне замовлення</td>
                         <td style="width:50%;" rowspan="2">Примітки</td>
-                        <td style="width:10%;" rowspan="2">Посилання</td>
+                        <td style="width:10%;min-width:90px;" rowspan="2">Посилання</td>
                     </tr>
                     <tr>
                         <td style="width:1%;">Код</td>
@@ -75,7 +75,8 @@
                                 <label for="rdk" class="input-group-label width60px">Код</label>
                                 <input id="rdk" name="rdk" type="text" maxlength="1" class="form-control width120px ajv-input" placeholder="Введіть код..."
                                        ajax-validation="on" ajv-url-pattern="validate_rdt" ajv-field-name="rdtk"
-                                       required required-message="Код розпорядчого документу не повинен бути пустим!">
+                                       required required-message="Код розпорядчого документу не повинен бути пустим!"
+                                       x-moz-errormessage="Код розпорядчого документу не повинен бути пустим!">
                                 <span class="input-group-btn">
                                     <span id="rdk-help-btn" class="btn btn-group btn-custom-help" type="button">...</span>
                                 </span>
@@ -88,6 +89,7 @@
                                 <label for="rdn" class="input-group-label width60px">Номер</label>
                                 <input id="rdn" name="rdn" type="text" maxlength="4" class="form-control" placeholder="Введіть номер..."
                                        required required-message="Номер розпорядчого документу не повинен бути пустим!"
+                                       x-moz-errormessage="Номер розпорядчого документу не повинен бути пустим!"
                                        digitonly>
                             </div>
                         </div>
@@ -105,14 +107,16 @@
                             <div class="input-group width100perc">
                                 <label for="nazz" class="input-group-label width60px">Назва</label>
                                 <input id="nazz" name="nazz" type="text" maxlength="90" class="form-control" placeholder="Введіть назву..."
-                                       required required-message="Назва розпорядчого документу не повинен бути пустим!">
+                                       required required-message="Назва розпорядчого документу не повинна бути пустим!"
+                                       x-moz-errormessage="Назва розпорядчого документу не повинна бути пустим!">
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="input-group width500px">
                                 <label for="rdsh" class="input-group-label width60px">Шифр</label>
                                 <input id="rdsh" name="rdsh" type="text" maxlength="5" class="form-control" placeholder="Введіть шифр..."
-                                       required required-message="Шифр розпорядчого документу не повинен бути пустим!">
+                                       required required-message="Шифр розпорядчого документу не повинен бути пустим!"
+                                       x-moz-errormessage="Шифр розпорядчого документу не повинен бути пустим!">
                             </div>
                         </div>
                     </div>
@@ -122,7 +126,8 @@
                                 <label for="ordk" class="input-group-label width60px">Код</label>
                                 <input id="ordk" name="ordk" type="text" maxlength="1" class="form-control ajv-input" placeholder="Введіть код..."
                                        ajax-validation="on" ajv-url-pattern="validate_rdt" ajv-field-name="rdtk"
-                                       required required-message="Код основного розпорядчого документу не повинен бути пустим!">
+                                       required required-message="Код основного розпорядчого документу не повинен бути пустим!"
+                                       x-moz-errormessage="Код основного розпорядчого документу не повинен бути пустим!">
                                 <span class="input-group-btn">
                                     <span id="ordk-help-btn" class="btn btn-secondary btn-custom-help" type="button">...</span>
                                 </span>
@@ -134,6 +139,7 @@
                                 <label for="ordn" class="input-group-label width60px">Номер</label>
                                 <input id="ordn" name="ordn" type="text" maxlength="4" class="form-control" placeholder="Введіть номер..."
                                        required required-message="Номер основного розпорядчого документу не повинен бути пустим!"
+                                       x-moz-errormessage="Номер основного розпорядчого документу не повинен бути пустим!"
                                        digitonly>
                             </div>
                         </div>
@@ -161,11 +167,10 @@
                     <div class="form-group">
                         <div class="input-group width600px">
                             <label for="nzak" class="input-group-label" style="width:215px;">Основне замовлення</label>
-                            <input id="nzak" name="nzak" type="text" maxlength="9" class="form-control" placeholder="Введіть номер або скористайтесь допомогою..."
-                                   required required-message="Номер основного фінансового замовлення не повинен бути пустим!">
-                            <span class="input-group-btn">
-                                <span class="btn btn-secondary btn-custom-help" type="button">...</span>
-                            </span>
+                            <input id="nzak" name="nzak" type="text" maxlength="9" class="form-control" placeholder="Введіть номер..."
+                                   atc="on" atc-table-name="clippersql.skisql" atc-field-name="nzak"
+                                   required required-message="Номер основного фінансового замовлення не повинен бути пустим!"
+                                   x-moz-errormessage="Номер основного фінансового замовлення не повинен бути пустим!">
                         </div>
                     </div>
                     <div class="form-group">
@@ -177,7 +182,7 @@
                     <div class="form-group">
                         <div class="input-group width100perc">
                             <label for="uplfiles" class="input-group-label width100px">Прикріпленні файли</label>
-                            <input id="uplfiles" type="file" name="file" multiple/>
+                            <input id="uplfiles" name="uplfiles" type="file" multiple>
                         </div>
                     </div>
                     <!-- Allow form submission with keyboard without duplicating the dialog button -->
@@ -186,8 +191,10 @@
             </form>
         </div>
         <jsp:include page="/jsp/js/jscript.jsp"/>
-        <script src="${pageContext.servletContext.contextPath}/js/jquery.tablehelp.js"></script>
-        <script src="${pageContext.servletContext.contextPath}/js/jquery.fileupload.js"></script>
+        <script src="${pageContext.servletContext.contextPath}/js/jquery.iskra.tablehelp.js"></script>
+        <script src="${pageContext.servletContext.contextPath}/js/jquery.iskra.fileupload.js"></script>
+        <script src="${pageContext.servletContext.contextPath}/js/jquery.iskra.errorpopup.js"></script>
+        <script src="${pageContext.servletContext.contextPath}/js/jquery.iskra.ajaxvalidation.js"></script>
         <script type="text/javascript">
             $(function () {
                 var emailRegex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
@@ -216,21 +223,6 @@
                 $.iskra.servletUrlPatternGetPage = "ejrdokGetPage";
                 $.iskra.pageSizeListPlaceholder = $("#toolbar-page-sizes-list");
                 $.iskra.paginationListPlaceholder = $("#toolbar-pagination-list");
-                var optionsu = {
-                    allFields: $([]).add(rdk).add(rdn).add(rdd).add(nazz)
-                            .add(rdsh).add(ordk).add(ordn).add(ordd).add(dvd).add(nzak)
-                            .add(prim),
-                    pageSize: 15,
-                    pageNumber: 1,
-                    totalRowCount: 0,
-                    tableName: "xxx.ejrdok",
-                    mode: "",
-                    id: "",
-                    urlGetPageServlet: "${pageContext.servletContext.contextPath}/servlets/ajax/ejrdokGetPage",
-                    urlCrudServlet: "${pageContext.servletContext.contextPath}/servlets/ajax/ejrdokCrud",
-                    pageSizeListPlaceholder: $("#toolbar-page-sizes-list"),
-                    paginationListPlaceholder: $("#toolbar-pagination-list")
-                };
             });
         </script>
         <jsp:include page="/jsp/js/initClickableTableRow.jsp"/>
@@ -242,62 +234,101 @@
         <jsp:include page="/jsp/js/initDisableSubmitOnEnter.jsp"/>
         <jsp:include page="/jsp/js/initPageSizeList.jsp"/>
         <jsp:include page="/jsp/js/initPagination.jsp"/>
-        <jsp:include page="/jsp/js/initAjaxValidation.jsp"/>
+
+        <jsp:include page="/jsp/js/initAutocomplete.jsp"/>
         <script type="text/javascript">
             $(function () {
-                $("#rdk").tablehelp({
+                $("#rdk,#ordk").tablehelp({
                     "tableCaption": "Розпорядчі документи.Типи",
                     "tableName": "rdt",
-                    "urlToGetData": "/ejournal/servlets/ajax/rdtGetPage",
+                    "urlToGetData": "${pageContext.servletContext.contextPath}/servlets/ajax/rdtGetPage",
                     "itemToPickup": "rdtk",
                     "columns": [
                         {"caption": "Код", "item": "rdtk"},
                         {"caption": "Назва", "item": "rdtn", "align": "left"}
                     ],
                     onError: function (xhr, status, error) {
-                        riseAnError("rdn tablehelp", xhr, status, error);
+                        riseAnError("jquery.tablehelp", xhr, status, error);
                     }
                 });
                 $("#rdk-help-btn").click(function () {
                     $("#rdk").tablehelp("show");
                 });
-
-                $("#ordk").tablehelp({
-                    "tableCaption": "Розпорядчі документи.Типи",
-                    "tableName": "rdt",
-                    "urlToGetData": "/ejournal/servlets/ajax/rdtGetPage",
-                    "itemToPickup": "rdtk",
-                    "columns": [
-                        {"caption": "Код", "item": "rdtk"},
-                        {"caption": "Назва", "item": "rdtn", "align": "left"}
-                    ],
-                    onError: function (xhr, status, error) {
-                        riseAnError("ordk tablehelp", xhr, status, error);
-                    }
-                });
                 $("#ordk-help-btn").click(function () {
                     $("#ordk").tablehelp("show");
                 });
-                
+
+                $("#rdk,#ordk").ajaxvalidation({
+                    "fieldName": "rdtk",
+                    "urlToGetData": "${pageContext.servletContext.contextPath}/servlets/api/validate_rdt",
+                    onError: function (xhr, status, error) {
+                        riseAnError("jquery.ajaxvalidation", xhr, status, error);
+                    }
+                });
+
                 $("#uplfiles").fileupload();
-                
                 function riseAnError(sender, xhr, status, error) {
-                    if (xhr.getResponseHeader("error") === null && status === "error") {
+                    // this creates dialog placeholder for error message
+                    if ($("#dialog-error-message").length === 0)
+                        $("body").append(
+                                $("<div>")
+                                .prop("id", "dialog-error-message")
+                                .prop("title", "Помилка")
+                                .append($("<div>")
+                                        .append($("<img>")
+                                                .prop("src", "${pageContext.servletContext.contextPath}/images/48px_error.png")
+                                                .prop("alt", "error")
+                                                .css("float", "left")
+                                                )
+                                        .append($("<div>").prop("id", "error-content")
+                                                .css("display", "inline-block")
+                                                .css("min-height", "50px")
+                                                .css("padding-left", "10px")
+                                                .css("width", "85%")
+                                                )
+                                        )
+                                .append($("<div>").addClass("arrow-down").click(function () {
+                                    $(this).siblings("#error-details-content").toggle(400);
+                                }))
+                                .append($("<div>").prop("id", "error-details-content")
+                                        .css("display", "none")
+                                        .css("padding-top", "5px")
+                                        )
+                                .hide()
+                                .dialog({
+                                    autoOpen: false,
+                                    resizable: false,
+                                    height: "auto",
+                                    width: 500,
+                                    modal: true,
+                                    buttons: [{id: "ok",
+                                            "class": "ui-button",
+                                            text: "Так",
+                                            click: function () {
+                                                $(this).dialog("close");
+                                            }
+                                        }]
+                                })
+                                );
+                    if (xhr.getResponseHeader !== undefined && xhr.getResponseHeader("error") === null && status === "error") {
                         var errorMessage, errorDetails;
                         if (xhr.status === 404) {
                             errorMessage = "Web-сторінка відсутня";
-                            errorDetails = "Можливо web-сервер не выдповідає на запити.";
+                            errorDetails = "Можливо web-сервер не відповідає на запити. Зверніться до розробників";
                         } else {
                             errorMessage = "Не виявлена помилка серверу";
-                            errorDetails = "Можливо web-сервер не выдповідає на запити.";
+                            errorDetails = "Можливо web-сервер не відповідає на запити. Зверніться до розробників";
                         }
-                        $($.iskra.dialogErrorMessage).find("#error-content").html(errorMessage);
-                        $($.iskra.dialogErrorMessage).find("#error-details-content").html(errorDetails + " Зверніться до розробників.");
+                    } else if (xhr.getResponseHeader !== undefined) {
+                        errorMessage = decodeURIComponent(stringFormat(xhr.getResponseHeader("error"))).replace(/\s*\++\s*/g, " ");
+                        errorDetails = decodeURIComponent(stringFormat(xhr.getResponseHeader("error_details"))).replace(/\s*\++\s*/g, " ");
                     } else {
-                        $($.iskra.dialogErrorMessage).find("#error-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error"))).replace(/\s*\++\s*/g, " "));
-                        $($.iskra.dialogErrorMessage).find("#error-details-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error_details"))).replace(/\s*\++\s*/g, " "));
+                        errorMessage = "Не виявлена помилка серверу";
+                        errorDetails = "Можливо web-сервер не відповідає на запити. Зверніться до розробників";
                     }
-                    $.iskra.dialogErrorMessage.dialog("open");
+                    $("#dialog-error-message").find("#error-content").html(errorMessage);
+                    $("#dialog-error-message").find("#error-details-content").html(errorDetails);
+                    $("#dialog-error-message").dialog("open");
                     console.log(sender + " ERROR : ", error);
                 }
 
@@ -305,7 +336,7 @@
                     $(this).removeAttr("valid-status");
                     $(this).removeAttr("ajv-icon");
                     $(this).removeAttr("ajv-prev-value");
-                    $(this).parents(".form-group").find(".error-popup").remove();
+                    $(this).errorpopup("hide");
                 });
                 $.iskra.form.find("input:text").attr("autocomplete", "off");
                 $("#dialog-form input:text").bind("keydown", function (e) {
@@ -318,7 +349,7 @@
                         nextItem.focus();
                     }
                 });
-                
+
                 //alternative way to force user type only digits
                 /*$('input[digitonly]').keyup(function (e) {
                  if (/\D/g.test(this.value)) {
@@ -333,14 +364,18 @@
                             && (charCode < 48 || charCode > 57) // 0-9 digits keys
                             );
                 });
-                
-                $("#dialog-form").parent().css("min-width","750px");
-                
+
+                $("#dialog-form").parent().css("min-width", "750px");
+
                 $.iskra.addRecord = function () {
                     var valid = true;
                     $.iskra.form.find('input[required]').each(function () {
                         if ($(this).val().length === 0) {
-                            errorPopup(this, $(this).attr("required-message"), $(this).parents(".form-group"));
+                            $(this).errorpopup({
+                                "message": $(this).attr("required-message"),
+                                "container": $(this).parents(".form-group")
+                            });
+                            //errorPopup(this, $(this).attr("required-message"), $(this).parents(".form-group"));
                             valid = false;
                         }
                     });
@@ -400,7 +435,7 @@
                             error: function (xhr, status, error) {
                                 if (xhr.getResponseHeader("error") === null && status === "error") {
                                     $($.iskra.dialogErrorMessage).find("#error-content").html("Не виявлена помилка серверу");
-                                    $($.iskra.dialogErrorMessage).find("#error-details-content").html("Можливо web-сервер не выдповідає на запити. Зверніться до розробників.");
+                                    $($.iskra.dialogErrorMessage).find("#error-details-content").html("Можливо web-сервер не відповідає на запити. Зверніться до розробників.");
                                 } else {
                                     $($.iskra.dialogErrorMessage).find("#error-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error"))).replace(/\s*\++\s*/g, " "));
                                     $($.iskra.dialogErrorMessage).find("#error-details-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error_details"))).replace(/\s*\++\s*/g, " "));
@@ -434,6 +469,11 @@
                 $("#dvd-help-btn").click(function () {
                     $("#dvd").datepicker("show");
                 });
+
+                $("#content-table-body").tooltip({
+                    selector: ".uf-file",
+                    placement: "left"
+                });
                 $.iskra.getPage = function () {
                     var currentId = ($("#currentId").length) ? parseInt($("#currentId").text()) : -1;
                     if ($("#currentId").length && $("#currentId").attr("new-one") === "true") {
@@ -458,6 +498,16 @@
                             tableBody.empty();
                             $.each(data.page, function (key, val) {
                                 rowNumber++;
+                                var uf = $("<td>").addClass("padding-off");
+                                $.each(val.files, function () {
+                                    var ext = (/[.]/.exec(this.ufname)) ? /[^.]+$/.exec(this.ufname) : undefined;
+                                    uf.append($("<div>")
+                                            .attr("uf-id", this.ufid)
+                                            .attr("uf-name", this.ufname)
+                                            .attr("title", this.ufname)
+                                            .addClass("uf-file uf-" + ext));
+                                });
+                                //uf.children(":last").attr("data-placement","left");
                                 tableBody.append($("<tr>").addClass("clickable-row").attr("data-id", val.idd)
                                         .append($("<td>").append(rowNumber).addClass("text-center"))
                                         .append($("<td>").append(stringFormat(val.rdk)).addClass("text-center"))
@@ -469,7 +519,7 @@
                                         .append($("<td>").append(stringFormat(val.dvd)).addClass("text-center"))
                                         .append($("<td>").append(stringFormat(val.nzak)).addClass("text-center"))
                                         .append($("<td>").append(stringFormat(val.prim)).addClass("text-left"))
-                                        .append($("<td>"))
+                                        .append(uf)
                                         );
                             });
                             console.log("getPage() SUCCESS : ", data);
@@ -477,7 +527,7 @@
                         error: function (xhr, status, error) {
                             if (xhr.getResponseHeader("error") === null && status === "error") {
                                 $($.iskra.dialogErrorMessage).find("#error-content").html("Не виявлена помилка серверу");
-                                $($.iskra.dialogErrorMessage).find("#error-details-content").html("Можливо web-сервер не выдповідає на запити. Зверніться до розробників.");
+                                $($.iskra.dialogErrorMessage).find("#error-details-content").html("Можливо web-сервер не відповідає на запити. Зверніться до розробників.");
                             } else {
                                 $($.iskra.dialogErrorMessage).find("#error-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error"))).replace(/\s*\++\s*/g, " "));
                                 $($.iskra.dialogErrorMessage).find("#error-details-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error_details"))).replace(/\s*\++\s*/g, " "));

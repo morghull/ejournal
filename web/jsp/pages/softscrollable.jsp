@@ -316,7 +316,7 @@
 
                 // this initializes click on "Add" button                
                 $("#btnAdd").button().on("click", function () {
-                    $("#dialog-form").siblings().children("span.ui-dialog-title").html("Додання нового запису");
+                    $("#dialog-form").siblings().children("span.ui-dialog-title").html("Додавання нового запису");
                     $("#dialog-form").removeClass("hidden");
                     mode = "add";
                     dialogForAddOrEdit.dialog("open");

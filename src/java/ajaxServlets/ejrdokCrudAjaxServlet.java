@@ -6,13 +6,19 @@
 package ajaxServlets;
 
 import DAOs.ejrdokController;
+import DAOs.uplfileController;
 import dataObjects.ejrdok;
+import dataObjects.uplfile;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -20,6 +26,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
 /**
  *
@@ -86,7 +93,7 @@ public class ejrdokCrudAjaxServlet extends HttpServlet {
             //response.getWriter().write(json);
         } catch (Throwable e) {
             response.setContentType("application/json; charset=utf-8");
-            response.addHeader("error", URLEncoder.encode("Помилка при роботі з sql-сервером</br>Помилка при "
+            response.addHeader("error", URLEncoder.encode("Помилка при роботі з sql-сервером</br>Помилка при спробі"
                     + " отримати інформацію запису таблиці " + tableName + " для редагування", "UTF-8")
             );
             response.addHeader("error_details", URLEncoder.encode("<div class=\"nested-error\">" + e.getClass().getName() + ": " + e.getMessage() + "</div>", "UTF-8"));
@@ -137,17 +144,57 @@ public class ejrdokCrudAjaxServlet extends HttpServlet {
 
                 if (mode.equals("add")) {
                     outId = controller.create(entity);
+                    outRowNumber = controller.getRowNumberInOrdering(outId);
+                    controller.returnConnectionInPool();
+
+                    Collection<Part> parts = request.getParts();
+                    List<uplfile> files = new LinkedList<uplfile>();
+
+                    uplfile temp = null;
+                    for (Part part : parts) {
+                        if (part.getContentType() != null && !part.getSubmittedFileName().isEmpty()) {
+                            temp = new uplfile();
+                            temp.setUfname(Paths.get(part.getSubmittedFileName()).getFileName().toString());
+                            temp.setUfcontent(part.getInputStream());
+                            temp.setIdd(outId);
+                            files.add(temp);
+                        }
+                    }
+                    if (!files.isEmpty()) {
+                        uplfileController upfController = new uplfileController();
+                        upfController.createFromList(files);
+                        upfController.returnConnectionInPool();
+                    }
                 } else if (mode.equals("edit")) {
                     entity.setIdd(Integer.parseInt(request.getParameter("q_id")));
                     outId = entity.getIdd();
                     controller.update(entity);
-                }
-                outRowNumber = controller.getRowNumberInOrdering(outId);
+                    outRowNumber = controller.getRowNumberInOrdering(outId);
+                    controller.returnConnectionInPool();
+                    
+                    Collection<Part> parts = request.getParts();
+                    List<uplfile> files = new LinkedList<uplfile>();
 
+                    uplfile temp = null;
+                    for (Part part : parts) {
+                        if (part.getContentType() != null && !part.getSubmittedFileName().isEmpty()) {
+                            temp = new uplfile();
+                            temp.setUfname(Paths.get(part.getSubmittedFileName()).getFileName().toString());
+                            temp.setUfcontent(part.getInputStream());
+                            temp.setIdd(outId);
+                            files.add(temp);
+                        }
+                    }
+                    if (!files.isEmpty()) {
+                        uplfileController upfController = new uplfileController();
+                        upfController.updateFromList(files);
+                        upfController.returnConnectionInPool();
+                    }
+                }
             } else if (mode.equals("delete")) {
                 controller.delete(Integer.parseInt(request.getParameter("q_id")));
+                controller.returnConnectionInPool();
             }
-            controller.returnConnectionInPool();
         } catch (Throwable e) {
             Map<String, String> stringModes = new HashMap<String, String>();
             stringModes.putAll(new HashMap<String, String>() {

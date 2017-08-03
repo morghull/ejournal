@@ -5,7 +5,8 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<link rel="shortcut icon" href="${pageContext.servletContext.contextPath}/images/favicon.ico" type="image/vnd.microsoft.icon" />
+<!--<link rel="shortcut icon" href="${pageContext.servletContext.contextPath}/images/favicon.ico" type="image/vnd.microsoft.icon" />-->
+<link rel="shortcut icon" href="${pageContext.servletContext.contextPath}/images/favicon.ico" type="image/vnd.microsoft.icon"/>
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="${pageContext.servletContext.contextPath}/css/bootstrap.min-3.1.1.css">
 <!-- Optional theme -->
@@ -48,5 +49,8 @@
     .ajv-input[valid-status="pending"][ajv-icon="true"] {
         background-image: url("${pageContext.servletContext.contextPath}/images/loading.gif");
         transition: 0.2s ease-out;
+    }
+    .uf-file {
+        background: rgba(0, 0, 0, 0.00) url("${pageContext.servletContext.contextPath}/images/24px_png_doc.png") no-repeat -2px -1px;
     }
 </style>

@@ -145,6 +145,77 @@ input[valid-status="invalid"] {
     border: 1px solid #f1a899;
     color: #5f3f3f;
 }
+.uf-file {
+    position: relative;
+    width: 20px;
+    height: 22px;
+    display: inline-block;
+    margin-bottom: -4px;
+    margin-right: 1px;
+    margin-top: 1px;
+    margin-left: 1px;
+}
+.uf-file:hover {
+    /*background-color: rgb(235,173,68);*/
+    /*box-shadow: 0px 0px 1px #f1a899;*/
+}
+.uf-file:hover:after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(60,196,240,0.4);
+}
+.uf-file:before {
+    content: "";
+    position: absolute;
+    font-size: 10px;
+    font-weight: bold;
+    background: rgba(255,255,255,0.5);
+    line-height: 10px;
+    margin-left: 1px;
+    width: 18px;
+    text-align: center;
+}
+.uf-pdf:before {
+    content: "pdf\00a0";
+    color: #dd110a;
+}
+.uf-jpg:before,.uf-jpeg:before {
+    content: "jpg";
+    color: #1406ed;
+}
+.uf-bmp:before {
+    content: "bmp";
+    color: #e035a1;
+}
+.uf-png:before {
+    content: "png";
+    color: #a516da;
+}
+.uf-xls:before,.uf-xlsx:before {
+    content: "xls";
+    color: #5ca135;
+}
+.uf-doc:before,.uf-docx:before {
+    content: "doc";
+    color: #079ce1;
+}
+.uf-txt:before {
+    content: "txt";
+    color: #f3b400;
+}
+.uf-ico:before {
+    content: "ico";
+    color: #f39200;
+}
+.uf-exe:before {
+    content: "exe";
+    color: #dd110a;
+}
+.padding-off {
+    padding:0;
+}
 .width60px {
     width:60px;
     min-width: 60px;

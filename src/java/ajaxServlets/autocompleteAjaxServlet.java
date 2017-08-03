@@ -73,7 +73,6 @@ public class autocompleteAjaxServlet extends HttpServlet {
             stringPattern = request.getParameter("q_string_pattern");
 
             autocompleteController controller = new autocompleteController(tableName, fieldName);
-            //autocompleteController controller = new autocompleteController("clippersql.skisql", "nzak");
             List<String> list = controller.getAutocompleteByPart(stringPattern);
             controller.returnConnectionInPool();
 

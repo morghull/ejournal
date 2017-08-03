@@ -40,8 +40,8 @@ public class autocompleteController extends AbstractController {
     /**
      * gets values tableName.fieldName that matched part+"%" clause
      *
-     * @param pattern part of string to search in tableName.fieldName to get autocomplete
-     * list
+     * @param pattern part of string to search in tableName.fieldName to get
+     * autocomplete list
      * @return returns list of strings with tableName.fieldName values
      * max:AUTOCOMPLETE_LIMIT
      * @throws SQLException
@@ -49,6 +49,7 @@ public class autocompleteController extends AbstractController {
     public List<String> getAutocompleteByPart(String pattern) throws SQLException {
         List<String> lst = new LinkedList<>();
         String query;
+        String type = "like"; //in some cases it uses regexp matching
         if (tableName.equals("clippersql.mm76030sql") && fieldName.equals("osd")) {
             query = "select distinct osd_t,osd_r,osd_c,osd_c||osd_r as atc_fld"
                     + " from clippersql.mm76030sql"
@@ -84,7 +85,8 @@ public class autocompleteController extends AbstractController {
         } else if (tableName.equals("clippersql.skisql") && fieldName.equals("nzak")) {
             query = "select distinct nzak as atc_fld"
                     + " from clippersql.skisql"
-                    + " where nzak like ? order by nzak limit " + AUTOCOMPLETE_LIMIT + ";";
+                    + " where nzak ~* ? order by nzak limit " + AUTOCOMPLETE_LIMIT + ";";
+            type = "regexp";
         } else if (tableName.equals("clippersql.skisql") && fieldName.equals("osd")) {
             query = "select osd_c||osd_r as atc_fld"
                     + " from clippersql.skisql"
@@ -110,7 +112,7 @@ public class autocompleteController extends AbstractController {
         }
         PreparedStatement ps = getPrepareStatement(query);
         try {
-            ps.setString(1, pattern + "%");
+            ps.setString(1, (type.equals("like")) ? pattern + "%" : "^" + pattern);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 lst.add(rs.getString("atc_fld"));

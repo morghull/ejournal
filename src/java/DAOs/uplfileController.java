@@ -8,7 +8,9 @@ package DAOs;
 import dataControllerCore.AbstractCrudController;
 import dataObjects.uplfile;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -18,10 +20,10 @@ import java.util.List;
 public class uplfileController extends AbstractCrudController<uplfile, Integer> {
 
     private static final String TABLE_NAME = "xxx.uplfiles";
-    
+
     public uplfileController() throws SQLException {
     }
-    
+
     @Override
     public Integer create(uplfile entity) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -50,23 +52,73 @@ public class uplfileController extends AbstractCrudController<uplfile, Integer> 
     public boolean createFromList(List<uplfile> list) throws SQLException {
         String query
                 = "insert into " + TABLE_NAME + "(ufname,ufcontent,idd) values";
-        for (int i = 0; i < list.size(); i++) {
-            query += "(?,?,?)";
-        }
+        int index = 0;
+        query += new String(new char[list.size()]).replace("\0", ",(?,?,?)").substring(1);
         PreparedStatement ps = getPrepareStatement(query);
         try {
             for (uplfile entity : list) {
-                ps.setString(1, entity.getUfname());
-                ps.setBinaryStream(2, entity.getUfcontent());
-                ps.setInt(3, entity.getIdd());
+                ps.setString(++index, entity.getUfname());
+                ps.setBinaryStream(++index, entity.getUfcontent());
+                ps.setInt(++index, entity.getIdd());
             }
+            ps.executeUpdate();
         } catch (SQLException e) {
             throw new SQLException("Помилка при створенні записів зі списку</br>"
                     + "<div class=\"nested-error\">" + e.getMessage() + "</div>");
         } finally {
             closePrepareStatement(ps);
         }
-        return false;
+        return true;
+    }
+
+    public boolean updateFromList(List<uplfile> list) throws SQLException {
+        String query
+                = "delete from " + TABLE_NAME + " where idd=?;insert into " + TABLE_NAME + "(ufname,ufcontent,idd) values";
+        int index = 0;
+        query += new String(new char[list.size()]).replace("\0", ",(?,?,?)").substring(1);
+        PreparedStatement ps = getPrepareStatement(query);
+        ps.setInt(++index, list.get(0).getIdd());
+        try {
+            for (uplfile entity : list) {
+                ps.setString(++index, entity.getUfname());
+                ps.setBinaryStream(++index, entity.getUfcontent());
+                ps.setInt(++index, entity.getIdd());
+            }
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException("Помилка при створенні записів зі списку</br>"
+                    + "<div class=\"nested-error\">" + e.getMessage() + "</div>");
+        } finally {
+            closePrepareStatement(ps);
+        }
+        return true;
+    }
+
+    public List<uplfile> getListByIdd(int idd) throws SQLException {
+        List<uplfile> lst = new LinkedList<uplfile>();
+        String query
+                = "select ufid,ufname,idd"
+                + "from " + TABLE_NAME
+                + "where idd=?";
+        PreparedStatement ps = getPrepareStatement(query);
+        try {
+            ps.setInt(1, idd);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                uplfile entity = new uplfile();
+                entity.setUfid(rs.getInt(1));
+                entity.setUfname(rs.getString(2));
+                entity.setIdd(rs.getInt(3));
+
+                lst.add(entity);
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Помилка при спробі отримати завантажені файли поточного документа</br>"
+                    + "<div class=\"nested-error\">" + e.getMessage() + "</div>");
+        } finally {
+            closePrepareStatement(ps);
+        }
+        return lst;
     }
 
     @Override

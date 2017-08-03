@@ -6,11 +6,9 @@
 package ajaxServlets;
 
 import DAOs.rdtController;
-import dataObjects.rdt;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
-import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;

@@ -8,7 +8,6 @@ package DAOs;
 import dataControllerCore.AbstractCrudController;
 import dataControllerCore.NamedParameterStatement;
 import dataObjects.ejrdok;
-import dataObjects.uplfile;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -98,7 +97,7 @@ public class ejrdokController extends AbstractCrudController<ejrdok, Integer> {
     @Override
     public void delete(Integer id) throws SQLException {
         String query
-                = "delete from "+TABLE_NAME+" where idd=?;";
+                = "delete from " + TABLE_NAME + " where idd=?;";
 
         PreparedStatement ps = getPrepareStatement(query);
 
@@ -156,12 +155,24 @@ public class ejrdokController extends AbstractCrudController<ejrdok, Integer> {
     public ejrdok getEntityById(Integer id) throws SQLException {
         ejrdok entity;
         String query
-                = "select idd,rdk,rdn,rdd,nazz,rdsh,ordk,ordn,ordd,dvd,nzak,prim "
+                = "with uplfiles as ("
+                + "      select ufid,ufname,idd"
+                + "      from xxx.uplfiles"
+                + "      where idd=?"
+                + "      ),"
+                + "     uf_agg as ("
+                + "      select idd,json_agg(row_to_json(uf)) as json"
+                + "      from uplfiles uf"
+                + "      group by idd"
+                + "     )"
+                + "select idd,rdk,rdn,rdd,nazz,rdsh,ordk,ordn,ordd,dvd,nzak,prim,json "
                 + "from " + TABLE_NAME + " "
+                + "left join uf_agg using(idd) "
                 + "where idd=? limit 1";
         PreparedStatement ps = getPrepareStatement(query);
         try {
             ps.setInt(1, id);
+            ps.setInt(2, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 entity = new ejrdok();
@@ -177,10 +188,11 @@ public class ejrdokController extends AbstractCrudController<ejrdok, Integer> {
                 entity.setDvd(rs.getDate(10));
                 entity.setNzak(rs.getString(11));
                 entity.setPrim(rs.getString(12));
+                entity.setFilesjson(rs.getString(13));
             } else {
                 throw new SQLException("За заданим ідентифікатором відсутній запис");
             }
-            //ejrdok.setUfid(rs.getInt(12));
+
         } catch (SQLException e) {
             throw new SQLException("Помилка при виконанні SQL-запиту</br>"
                     + "<div class=\"nested-error\">" + e.getMessage() + "</div>");
@@ -194,8 +206,18 @@ public class ejrdokController extends AbstractCrudController<ejrdok, Integer> {
     public List<ejrdok> getPage(int pageNumber, int pageSize) throws SQLException {
         List<ejrdok> lst = new LinkedList<>();
         String query
-                = "select idd,rdk,rdn,rdd,nazz,rdsh,ordk,ordn,ordd,dvd,nzak,prim "
+                = "with uplfiles as ("
+                + "      select ufid,ufname,idd"
+                + "      from xxx.uplfiles"
+                + "      ),"
+                + "     uf_agg as ("
+                + "      select idd,json_agg(row_to_json(uf)) as json"
+                + "      from uplfiles uf"
+                + "      group by idd"
+                + "     )"
+                + "select idd,rdk,rdn,rdd,nazz,rdsh,ordk,ordn,ordd,dvd,nzak,prim,json "
                 + "from " + TABLE_NAME + " "
+                + "   left join uf_agg using(idd)"
                 + "order by rdd,rdk,rdn,nzak limit " + pageSize + " offset " + pageSize * (pageNumber - 1);
         PreparedStatement ps = getPrepareStatement(query);
         try {
@@ -214,7 +236,7 @@ public class ejrdokController extends AbstractCrudController<ejrdok, Integer> {
                 entity.setDvd(rs.getDate(10));
                 entity.setNzak(rs.getString(11));
                 entity.setPrim(rs.getString(12));
-                //ejrdok.setUfid(rs.getInt(12));
+                entity.setFilesjson(rs.getString(13));
 
                 lst.add(entity);
             }

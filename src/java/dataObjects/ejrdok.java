@@ -30,6 +30,7 @@ public class ejrdok implements Serializable {
     private String nzak;
     private String prim;
     private List<uplfile> uplfiles;
+    private String filesjson;
     private DateFormat dateFormater = new SimpleDateFormat("dd.MM.yyyy");
 
     public int getIdd() {
@@ -136,6 +137,14 @@ public class ejrdok implements Serializable {
         this.uplfiles = uplfiles;
     }
 
+    public String getFilesjson() {
+        return filesjson;
+    }
+
+    public void setFilesjson(String jsonUpf) {
+        this.filesjson = jsonUpf;
+    }
+
     @Override
     public String toString() {
         return "{"
@@ -151,6 +160,7 @@ public class ejrdok implements Serializable {
                 + ",\"dvd\":\"" + dateFormater.format(dvd) + "\""
                 + ",\"nzak\":\"" + nzak + "\""
                 + ",\"prim\":\"" + prim + "\""
+                + ",\"files\":" + filesjson
                 + "}";
     }
 }

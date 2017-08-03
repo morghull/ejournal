@@ -18,34 +18,6 @@
                     container.hide();
                 }
             });
-            // this creates dialog placeholder for error message
-            if ($("#dialog-error-message").length === 0)
-                $("body").append(
-                        $("<div>")
-                        .prop("id", "dialog-error-message")
-                        .prop("title", "Помилка")
-                        .append($("<div>")
-                                .append($("<img>")
-                                        .prop("src", "${pageContext.servletContext.contextPath}/images/48px_error.png")
-                                        .prop("alt", "error")
-                                        .css("float", "left")
-                                        )
-                                .append($("<div>").prop("id", "error-content")
-                                        .css("display", "inline-block")
-                                        .css("min-height", "50px")
-                                        .css("padding-left", "10px")
-                                        .css("width", "85%")
-                                        )
-                                )
-                        .append($("<div>").addClass("arrow-down").click(function () {
-                            $(this).siblings("#error-details-content").toggle(400);
-                        }))
-                        .append($("<div>").prop("id", "error-details-content")
-                                .css("display", "none")
-                                .css("padding-top", "5px")
-                                )
-                        .hide()
-                        );
             var settings = $.extend({}, defaults, options);
             return this.each(function () {
                 var obj = $(this);
@@ -54,6 +26,8 @@
                     $.error("jquery.tablehelp: missing onError handler in plugin options of " + "#" + obj.attr("id"));
                 if (settings.columns === undefined)
                     $.error("jquery.tablehelp: missing columns description option in plugin options of " + "#" + obj.attr("id"));
+                if (settings.urlToGetData === undefined)
+                    $.error("jquery.tablehelp: missing urlToGetData (url of servlet\service where data can be acquired) option in plugin options of " + "#" + obj.attr("id"));
                 if (settings.itemToPickup === undefined)
                     $.error("jquery.tablehelp: missing itemToPickup (data item value to pickup for help) option in plugin options of " + "#" + obj.attr("id"));
                 var columnsWithInvalidItems = $.grep(settings.columns, function (c) {
@@ -61,11 +35,12 @@
                 });
                 if (settings.columns.length === 0 || columnsWithInvalidItems.length !== 0)
                     $.error("jquery.tablehelp: columns description array have invalid format in plugin options of " + "#" + obj.attr("id"));
+
                 //obj.attr("readonly", true);
                 obj.attr("autocomplete", "off");
                 obj.keydown(function (e) {
                     var container = $("#ui-tablehelp-div");
-                    if ([9, 13].indexOf(e.which || e.keyCode) >= 0 && container.is(":visible")) {
+                    if ([9, 13, 27].indexOf(e.which || e.keyCode) >= 0 && container.is(":visible")) {
                         container.hide();
                     }
                 });
@@ -155,11 +130,11 @@
                 });
             });
         },
-        show: function ( ) {
+        show: function () {
             var obj = $(this);
             obj.focus();
         },
-        hide: function ( ) {
+        hide: function () {
 
         },
         update: function (content) {

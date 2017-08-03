@@ -8,12 +8,13 @@
 <script type="text/javascript">
     $(function () {
         $("#dialog-form input:text").each(function () {
-            if ($(this).attr("autocomplete") === "on") {
+            if ($(this).attr("atc") === "on") {
                 var atcTableName = $(this).attr("atc-table-name");
                 var atcFieldName = $(this).attr("atc-field-name");
                 var ownerId = $(this).prop("id");
                 $(this).autocomplete({
                     source: function (request, response) {
+                        $(".ui-helper-hidden-accessible").empty();
                         $(".ui-autocomplete").css({display: "none"});
                         var atcWaitDiv = $("<div>").html("Зачекайте, іде пошук інформації для допомоги......")
                                 .prop("id", "atc-wait")
@@ -43,7 +44,7 @@
                                 $("#atc-wait").remove();
                                 if (xhr.getResponseHeader("error") === null && status === "error") {
                                     $($.iskra.dialogErrorMessage).find("#error-content").html("Не виявлена помилка серверу");
-                                    $($.iskra.dialogErrorMessage).find("#error-details-content").html("Можливо web-сервер не выдповідає на запити. Зверніться до розробників.");
+                                    $($.iskra.dialogErrorMessage).find("#error-details-content").html("Можливо web-сервер не відповідає на запити. Зверніться до розробників.");
                                 } else {
                                     $($.iskra.dialogErrorMessage).find("#error-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error"))).replace(/\s*\++\s*/g, " "));
                                     $($.iskra.dialogErrorMessage).find("#error-details-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error_details"))).replace(/\s*\++\s*/g, " "));

@@ -68,3 +68,9 @@ table.singleline>tbody>tr:last-child>td{
 table.singleline>tbody>tr:hover>td {
     background-color: #f0f0f0 !important;
 }
+table.singleline>tbody>tr>td>a {
+    display: inline-block;
+}
+table.singleline>tbody>tr.active>td>a {
+    color :#f0f0f0;
+}

@@ -5,8 +5,10 @@
  */
 (function ($) {
     var defaults = {
-        "mime-type": "application/pdf,image/jpeg,image/bmp,application/msword"
-                + ",image/png,application/excel",
+        "mimeType": "image/jpeg,image/bmp,image/png,application/pdf"
+                + ",application/msword,application/vnd.ms-excel",
+                //+ ",application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                //+ ",application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         "imitateKeyUp": true,
         "returnFocus": true
     };
@@ -17,27 +19,36 @@
             return this.each(function () {
                 var obj = $(this);
                 obj.wrap($("<div>").addClass("ui-file-upload"));
-
+                obj.attr("accept", settings.mimeType);
                 var wrapper = obj.parents(".ui-file-upload");
                 var placeholder = $("<div>")
                         .append("Натисніть щоб обрати файл")
                         .addClass("ui-file-upload-item ui-file-upload-placeholder");
 
-                $(wrapper).append(placeholder);
                 obj.change(function (e) {
                     var files = e.target.files;
                     var filesArr = Array.prototype.slice.call(files);
+                    $(wrapper).find("div.ui-file-upload-item").remove();
                     if (filesArr.length > 0) {
-                        $(wrapper).find("div.ui-file-upload-item").remove();
                         filesArr.forEach(function (f) {
+                            //var closeSpan = $("<span>").addClass("glyphicon glyphicon-remove");
                             var fileDiv = $("<div>")
                                     .append(f.name)
                                     .addClass("ui-file-upload-item ui-file-upload-file");
+                            //.append(closeSpan);
                             $(wrapper).append(fileDiv);
+                            //$(closeSpan).click(function(){
+                            //    var index = filesArr.indexOf(f);
+                            //    files.splice(index,1);
+                            //});
                         });
                     } else
-                        console.log("test");//$("#ui-file-upload-wrapper").append(placeholder);
+                        $(wrapper).append(placeholder);
                 }).change();
+                obj.parents("form").bind("reset", function () {
+                    obj.val("");
+                    obj.change();
+                });
             });
         },
         show: function ( ) {
