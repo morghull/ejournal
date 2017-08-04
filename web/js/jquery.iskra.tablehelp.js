@@ -23,13 +23,13 @@
                 var obj = $(this);
 
                 if (settings.onError === undefined)
-                    $.error("jquery.tablehelp: missing onError handler in plugin options of " + "#" + obj.attr("id"));
+                    $.error("jquery.iskra.tablehelp: missing onError handler in plugin options of " + "#" + obj.attr("id"));
                 if (settings.columns === undefined)
-                    $.error("jquery.tablehelp: missing columns description option in plugin options of " + "#" + obj.attr("id"));
+                    $.error("jquery.iskra.tablehelp: missing columns description option in plugin options of " + "#" + obj.attr("id"));
                 if (settings.urlToGetData === undefined)
-                    $.error("jquery.tablehelp: missing urlToGetData (url of servlet\service where data can be acquired) option in plugin options of " + "#" + obj.attr("id"));
+                    $.error("jquery.iskra.tablehelp: missing urlToGetData (url of servlet\service where data can be acquired) option in plugin options of " + "#" + obj.attr("id"));
                 if (settings.itemToPickup === undefined)
-                    $.error("jquery.tablehelp: missing itemToPickup (data item value to pickup for help) option in plugin options of " + "#" + obj.attr("id"));
+                    $.error("jquery.iskra.tablehelp: missing itemToPickup (data item value to pickup for help) option in plugin options of " + "#" + obj.attr("id"));
                 var columnsWithInvalidItems = $.grep(settings.columns, function (c) {
                     return (c.caption === undefined || c.item === undefined);
                 });
@@ -148,7 +148,7 @@
         } else if (typeof method === 'object' || !method) {
             return methods.init.apply(this, arguments);
         } else {
-            $.error('Method ' + method + ' does not exist on jquery.tablehelp');
+            $.error('Method ' + method + ' does not exist on jquery.iskra.tablehelp');
         }
     };
 })(jQuery);

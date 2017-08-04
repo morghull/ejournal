@@ -7,8 +7,8 @@
     var defaults = {
         "mimeType": "image/jpeg,image/bmp,image/png,application/pdf"
                 + ",application/msword,application/vnd.ms-excel",
-                //+ ",application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                //+ ",application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        //+ ",application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        //+ ",application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         "imitateKeyUp": true,
         "returnFocus": true
     };
@@ -51,10 +51,10 @@
                 });
             });
         },
-        show: function ( ) {
+        show: function () {
 
         },
-        hide: function ( ) {
+        hide: function () {
 
         },
         update: function (content) {
@@ -68,7 +68,7 @@
         } else if (typeof method === 'object' || !method) {
             return methods.init.apply(this, arguments);
         } else {
-            $.error('Method ' + method + ' does not exist on jquery.fileupload');
+            $.error('Method ' + method + ' does not exist on jquery.iskra.fileupload');
         }
     };
 })(jQuery);

@@ -12,16 +12,16 @@
             var settings = $.extend({}, defaults, options);
             return this.each(function () {
                 var obj = $(this);
-                
+
                 if (settings.container === undefined)
-                    $.error("jquery.errorpopup: missing container (container where error will pops) option in plugin options of " + "#" + obj.attr("id"));
-                
+                    $.error("jquery.iskra.errorpopup: missing container (container where error will pops) option in plugin options of " + "#" + obj.attr("id"));
+
                 $(obj).attr("valid-status", "invalid");
-                var oldoneErrorPopup = $(settings.container).find(".error-popup");
+                var oldoneErrorPopup = $(settings.container).find(".ui-error-popup");
                 if (oldoneErrorPopup.length !== 0)
-                    $(settings.container).find(".error-popup").empty().append(settings.message);
+                    $(settings.container).find(".ui-error-popup").empty().append(settings.message);
                 else {
-                    var err = $("<div>").append(settings.message).addClass("error-popup").css("margin-left", $(obj).position().left + 10);
+                    var err = $("<div>").append(settings.message).addClass("ui-error-popup").css("margin-left", $(obj).position().left + 10);
                     $(settings.container).append(err.show("fast").css("display", "inline-block"));
                 }
                 obj.data("errorpopup-container", settings.container);
@@ -31,9 +31,12 @@
 
         },
         hide: function () {
-            if ($(this).data("errorpopup-container") !== undefined)
-                $(this).data("errorpopup-container").children(".error-popup").remove();
-            //else $.error("jquery.errorpopup: plugin is not initialized for " + "#" + $(this).attr("id"));
+            return this.each(function () {
+               var obj = $(this);
+                if (obj.data("errorpopup-container") !== undefined)
+                    obj.data("errorpopup-container").children(".ui-error-popup").remove();
+                //else $.error("jquery.errorpopup: plugin is not initialized for " + "#" + obj.attr("id"));
+            });
         },
         update: function (content) {
 
@@ -46,7 +49,7 @@
         } else if (typeof method === 'object' || !method) {
             return methods.init.apply(this, arguments);
         } else {
-            $.error('Method ' + method + ' does not exist on jquery.errorpopup');
+            $.error('Method ' + method + ' does not exist on jquery.iskra.errorpopup');
         }
     };
 })(jQuery);

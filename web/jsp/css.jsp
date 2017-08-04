@@ -38,15 +38,19 @@
         background: rgba(0, 0, 0, 0.05) url("${pageContext.servletContext.contextPath}/images/loading.gif") no-repeat center;
         background-size: 50px;
     }
-    .ajv-input[valid-status="valid"][ajv-icon="true"] {
+    .ui-autocomplete-wait {
+        background: url("${pageContext.servletContext.contextPath}/images/loading.gif") 6px center no-repeat #fff;
+        background-size: 20px;
+    }
+    .ui-ajv-input[valid-status="valid"][ajv-icon="true"] {
         background-image: url("${pageContext.servletContext.contextPath}/images/valid.svg");
         transition: 0.2s ease-out;
     }
-    .ajv-input[valid-status="invalid"][ajv-icon="true"] {
+    .ui-ajv-input[valid-status="invalid"][ajv-icon="true"] {
         background-image: url("${pageContext.servletContext.contextPath}/images/invalid.svg");
         transition: 0.2s ease-out;
     }
-    .ajv-input[valid-status="pending"][ajv-icon="true"] {
+    .ui-ajv-input[valid-status="pending"][ajv-icon="true"] {
         background-image: url("${pageContext.servletContext.contextPath}/images/loading.gif");
         transition: 0.2s ease-out;
     }

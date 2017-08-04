@@ -30,7 +30,7 @@
             close: function () {
                 $.iskra.form[0].reset();
                 $.iskra.allFields.removeAttr("valid-status").removeAttr("ajv-icon");
-                $.iskra.allFields.errorpopup("hide");
+                $("#dialog-form input:text").errorpopup("hide");
             }
         });
 

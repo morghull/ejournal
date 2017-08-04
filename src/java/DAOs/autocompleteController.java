@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class autocompleteController extends AbstractController {
 
-    private final static String AUTOCOMPLETE_LIMIT = "10";
+    private final static String AUTOCOMPLETE_LIMIT = "7";
 
     private final String tableName;
     private final String fieldName;

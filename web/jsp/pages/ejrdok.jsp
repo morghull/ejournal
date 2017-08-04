@@ -73,7 +73,7 @@
                         <div class="form-group">
                             <div class="input-group width100perc">
                                 <label for="rdk" class="input-group-label width60px">Код</label>
-                                <input id="rdk" name="rdk" type="text" maxlength="1" class="form-control width120px ajv-input" placeholder="Введіть код..."
+                                <input id="rdk" name="rdk" type="text" maxlength="1" class="form-control width120px" placeholder="Введіть код..."
                                        ajax-validation="on" ajv-url-pattern="validate_rdt" ajv-field-name="rdtk"
                                        required required-message="Код розпорядчого документу не повинен бути пустим!"
                                        x-moz-errormessage="Код розпорядчого документу не повинен бути пустим!">
@@ -124,7 +124,7 @@
                         <div class="form-group">
                             <div class="input-group width100perc">
                                 <label for="ordk" class="input-group-label width60px">Код</label>
-                                <input id="ordk" name="ordk" type="text" maxlength="1" class="form-control ajv-input" placeholder="Введіть код..."
+                                <input id="ordk" name="ordk" type="text" maxlength="1" class="form-control" placeholder="Введіть код..."
                                        ajax-validation="on" ajv-url-pattern="validate_rdt" ajv-field-name="rdtk"
                                        required required-message="Код основного розпорядчого документу не повинен бути пустим!"
                                        x-moz-errormessage="Код основного розпорядчого документу не повинен бути пустим!">
@@ -168,7 +168,6 @@
                         <div class="input-group width600px">
                             <label for="nzak" class="input-group-label" style="width:215px;">Основне замовлення</label>
                             <input id="nzak" name="nzak" type="text" maxlength="9" class="form-control" placeholder="Введіть номер..."
-                                   atc="on" atc-table-name="clippersql.skisql" atc-field-name="nzak"
                                    required required-message="Номер основного фінансового замовлення не повинен бути пустим!"
                                    x-moz-errormessage="Номер основного фінансового замовлення не повинен бути пустим!">
                         </div>
@@ -195,6 +194,7 @@
         <script src="${pageContext.servletContext.contextPath}/js/jquery.iskra.fileupload.js"></script>
         <script src="${pageContext.servletContext.contextPath}/js/jquery.iskra.errorpopup.js"></script>
         <script src="${pageContext.servletContext.contextPath}/js/jquery.iskra.ajaxvalidation.js"></script>
+        <script src="${pageContext.servletContext.contextPath}/js/jquery.iskra.autocomplete.js"></script>
         <script type="text/javascript">
             $(function () {
                 var emailRegex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
@@ -234,8 +234,6 @@
         <jsp:include page="/jsp/js/initDisableSubmitOnEnter.jsp"/>
         <jsp:include page="/jsp/js/initPageSizeList.jsp"/>
         <jsp:include page="/jsp/js/initPagination.jsp"/>
-
-        <jsp:include page="/jsp/js/initAutocomplete.jsp"/>
         <script type="text/javascript">
             $(function () {
                 $("#rdk,#ordk").tablehelp({
@@ -248,7 +246,7 @@
                         {"caption": "Назва", "item": "rdtn", "align": "left"}
                     ],
                     onError: function (xhr, status, error) {
-                        riseAnError("jquery.tablehelp", xhr, status, error);
+                        riseAnError("jquery.iskra.tablehelp", xhr, status, error);
                     }
                 });
                 $("#rdk-help-btn").click(function () {
@@ -262,11 +260,21 @@
                     "fieldName": "rdtk",
                     "urlToGetData": "${pageContext.servletContext.contextPath}/servlets/api/validate_rdt",
                     onError: function (xhr, status, error) {
-                        riseAnError("jquery.ajaxvalidation", xhr, status, error);
+                        riseAnError("jquery.iskra.ajaxvalidation", xhr, status, error);
                     }
                 });
 
                 $("#uplfiles").fileupload();
+                
+                $("#nzak").iskraAutocomplete({
+                    "tableName": "clippersql.skisql",
+                    "fieldName": "nzak",
+                    "urlToGetData": "${pageContext.servletContext.contextPath}/servlets/ajax/autocomplete",
+                    onError: function (xhr, status, error) {
+                        riseAnError("jquery.iskra.autocomplete", xhr, status, error);
+                    }
+                });
+                
                 function riseAnError(sender, xhr, status, error) {
                     // this creates dialog placeholder for error message
                     if ($("#dialog-error-message").length === 0)
@@ -335,7 +343,6 @@
                 $.iskra.form.on("keyup", "input:text", function () {
                     $(this).removeAttr("valid-status");
                     $(this).removeAttr("ajv-icon");
-                    $(this).removeAttr("ajv-prev-value");
                     $(this).errorpopup("hide");
                 });
                 $.iskra.form.find("input:text").attr("autocomplete", "off");
@@ -375,7 +382,6 @@
                                 "message": $(this).attr("required-message"),
                                 "container": $(this).parents(".form-group")
                             });
-                            //errorPopup(this, $(this).attr("required-message"), $(this).parents(".form-group"));
                             valid = false;
                         }
                     });
@@ -433,15 +439,7 @@
                                 //$("html, body").animate({scrollTop: $("tr.active").offset().top}, 500);
                             },
                             error: function (xhr, status, error) {
-                                if (xhr.getResponseHeader("error") === null && status === "error") {
-                                    $($.iskra.dialogErrorMessage).find("#error-content").html("Не виявлена помилка серверу");
-                                    $($.iskra.dialogErrorMessage).find("#error-details-content").html("Можливо web-сервер не відповідає на запити. Зверніться до розробників.");
-                                } else {
-                                    $($.iskra.dialogErrorMessage).find("#error-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error"))).replace(/\s*\++\s*/g, " "));
-                                    $($.iskra.dialogErrorMessage).find("#error-details-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error_details"))).replace(/\s*\++\s*/g, " "));
-                                }
-                                $.iskra.dialogErrorMessage.dialog("open");
-                                console.log("addRecord() ERROR : ", error);
+                                riseAnError("addRecord()", xhr, status, error);
                             },
                             complete: function () {
                                 $("#overlay-wrapper").fadeOut("fast");
@@ -525,15 +523,7 @@
                             console.log("getPage() SUCCESS : ", data);
                         },
                         error: function (xhr, status, error) {
-                            if (xhr.getResponseHeader("error") === null && status === "error") {
-                                $($.iskra.dialogErrorMessage).find("#error-content").html("Не виявлена помилка серверу");
-                                $($.iskra.dialogErrorMessage).find("#error-details-content").html("Можливо web-сервер не відповідає на запити. Зверніться до розробників.");
-                            } else {
-                                $($.iskra.dialogErrorMessage).find("#error-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error"))).replace(/\s*\++\s*/g, " "));
-                                $($.iskra.dialogErrorMessage).find("#error-details-content").html(decodeURIComponent(stringFormat(xhr.getResponseHeader("error_details"))).replace(/\s*\++\s*/g, " "));
-                            }
-                            $.iskra.dialogErrorMessage.dialog("open");
-                            console.log("getPage() ERROR : ", error);
+                            riseAnError("getPage()", xhr, status, error);
                         },
                         complete: function () {
                             $("#overlay-wrapper").fadeOut("fast");

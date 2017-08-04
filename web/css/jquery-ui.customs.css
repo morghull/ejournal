@@ -36,6 +36,12 @@ and open the template in the editor.
 .ui-state-highlight {
     padding: 10px;
 }
+.ui-autocomplete-wait {
+    display: block;
+    padding: 6px 30px;
+    position: absolute;
+    z-index: 110;
+}
 .ui-autocomplete .ui-menu-item .ui-state-active {
     border: 1px solid rgba(92,161,53,0.8);
     background: rgba(92,161,53,0.8);
@@ -102,6 +108,12 @@ and open the template in the editor.
 .ui-tablehelp-table tbody tr td {
 
 }
+.ui-ajv-input {
+    background: none;
+    background-repeat: no-repeat;
+    background-size: 20px 20px;
+    background-position: right 5px center;
+}
 .ui-file-upload {
     position: relative;
     border: 1px solid rgba(0,0,0,0.1);
@@ -140,4 +152,42 @@ and open the template in the editor.
 }
 .ui-file-upload-file span.glyphicon-remove:hover {
     text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.8);
+}
+.ui-error-popup {
+    /*position: absolute;*/
+    position: relative;
+    /*margin-top: 40px;*/
+    margin-top: 7px;
+    z-index: 101;
+    background: #fff;
+    border: 1px solid #f1a899;
+    padding: 6px 12px;
+    border-radius: 4px;
+    /*margin-left: 20px;*/
+    margin-left: 80px;
+    box-shadow: 0px 0px 8px #fddfdf;
+    color: #f1a899;
+}
+.ui-error-popup::after {
+    top: -14px;
+    right: auto;
+    left: 8px;
+}
+.ui-error-popup::after {
+    border: 7px solid transparent;
+    border-bottom-color: #fff;
+}
+.ui-error-popup::before {
+    top: -16px;
+    right: auto;
+    left: 7px;
+}
+.ui-error-popup::before {
+    border: 8px solid transparent;
+    border-bottom-color: #f1a899;
+}
+.ui-error-popup::before, .ui-error-popup::after {
+    position: absolute;
+    display: inline-block;
+    content: "";
 }
