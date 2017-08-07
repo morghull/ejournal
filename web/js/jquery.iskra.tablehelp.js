@@ -117,9 +117,9 @@
 
                             console.log("tablehelp getPage() SUCCESS : ", data);
                         },
-                        error: function (xhr, status, error) {
+                        error: function (error) {
                             if (settings.onError !== undefined) {
-                                settings.onError(xhr, status, error);
+                                settings.onError(error);
                             }
                         },
                         complete: function () {

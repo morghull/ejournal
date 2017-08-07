@@ -6,6 +6,7 @@
 package ajaxServlets;
 
 import DAOs.autocompleteController;
+import dataControllerCore.backendError;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
@@ -35,7 +36,8 @@ public class autocompleteAjaxServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
+        PrintWriter out = response.getWriter();
+        try {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
@@ -46,6 +48,8 @@ public class autocompleteAjaxServlet extends HttpServlet {
             out.println("<h1>Servlet autocompleteAjaxServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
+        } finally {
+            out.close();
         }
     }
 
@@ -61,8 +65,7 @@ public class autocompleteAjaxServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        response.setContentType("application/json");
+        response.setContentType("application/json; charset=utf-8");
         request.setCharacterEncoding("UTF-8");
 
         String tableName = null, fieldName = null, stringPattern;
@@ -85,13 +88,18 @@ public class autocompleteAjaxServlet extends HttpServlet {
             out.print("{\"autocomplete\":[" + jsonList + "]}");
             out.flush();
         } catch (Throwable e) {
-            response.setContentType("application/json; charset=utf-8");
-            response.addHeader("error", URLEncoder.encode("Помилка при роботі з sql-сервером</br>Помилка при "
-                    + " спробі отримати інформацію для функції автозоповнення з таблиці " + tableName + " поля " + fieldName, "UTF-8")
-            );
-            response.addHeader("error_details", URLEncoder.encode("<div class=\"nested-error\">" + e.getClass().getName() + ": " + e.getMessage() + "</div>", "UTF-8"));
+            backendError err = new backendError();
+            err.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            err.setText("Помилка при роботі з web-сервісом</br>Помилка при "
+                    + " спробі отримати інформацію для функції автозоповнення "
+                    + " з таблиці " + tableName + " поля " + fieldName);
+            err.setDetails("<div class=\"nested-error\">" + e.getClass().getName()
+                    + ": " + e.getMessage() + "</div>");
+            response.setStatus(err.getStatus());
+            PrintWriter outErr = response.getWriter();
+            outErr.printf(err.toString());
 
-            throw new ServletException();
+            outErr.flush();
         }
     }
 

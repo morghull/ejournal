@@ -41,7 +41,8 @@ public class AjaxDataHttpServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
+        PrintWriter out = response.getWriter();
+        try {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
@@ -52,6 +53,8 @@ public class AjaxDataHttpServlet extends HttpServlet {
             out.println("<h1>Servlet AjaxDataHttpServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
+        } finally {
+            out.close();
         }
     }
 
@@ -161,12 +164,12 @@ public class AjaxDataHttpServlet extends HttpServlet {
         } catch (SQLException e) {
             Map<String, String> stringModes = new HashMap<String, String>();
             stringModes.putAll(new HashMap<String, String>() {
-                    {
-                        put("edit", "зміні");
-                        put("add", "доданні");
-                        put("delete", "видаленні");
-                    }
-                });
+                {
+                    put("edit", "зміні");
+                    put("add", "доданні");
+                    put("delete", "видаленні");
+                }
+            });
             response.setContentType("application/json; charset=utf-8");
             response.addHeader("error", URLEncoder.encode("Помилка при роботі з sql-сервером</br>Помилка при "
                     + stringModes.get(mode).trim() + " запису у таблиці " + tableName, "UTF-8")

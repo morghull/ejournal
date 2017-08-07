@@ -6,6 +6,7 @@
 package ajaxServlets;
 
 import DAOs.ejrdokController;
+import dataControllerCore.backendError;
 import dataObjects.ejrdok;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -36,7 +37,8 @@ public class ejrdokGetPageAjaxServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
+        PrintWriter out = response.getWriter();
+        try {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
@@ -47,6 +49,8 @@ public class ejrdokGetPageAjaxServlet extends HttpServlet {
             out.println("<h1>Servlet ejrdokGetPageAjaxServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
+        } finally {
+            out.close();
         }
     }
 
@@ -62,13 +66,13 @@ public class ejrdokGetPageAjaxServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        response.setContentType("application/json");
+        response.setContentType("application/json; charset=utf-8");
         request.setCharacterEncoding("UTF-8");
 
         String tableName = null;
         String pageSize = null;
         String pageNumber = null;
+        List<ejrdok> list = null;
 
         try {
             tableName = request.getParameter("q_table_name");
@@ -76,28 +80,37 @@ public class ejrdokGetPageAjaxServlet extends HttpServlet {
             pageNumber = request.getParameter("q_page_number");
 
             ejrdokController controller = new ejrdokController();
-            List<ejrdok> list = controller.getPage(Integer.parseInt(pageNumber), Integer.parseInt(pageSize));
-            controller.returnConnectionInPool();
+            try {
+                list = controller.getPage(Integer.parseInt(pageNumber), Integer.parseInt(pageSize));
+            } catch (Throwable e) {
+                throw e;
+            } finally {
+                controller.returnConnectionInPool();
+            }
 
             PrintWriter out = response.getWriter();
             String jsonList = "";
-            for (ejrdok entity : list) {
-                jsonList += ((jsonList.equals("")) ? "" : ",") + entity.toString();
+            if (list != null && !list.isEmpty()) {
+                for (ejrdok entity : list) {
+                    jsonList += ((jsonList.equals("")) ? "" : ",") + entity.toString();
+                }
+                out.print("{\"page\":[" + jsonList + "],"
+                        + "\"q_page_size\":" + pageSize
+                        + ",\"q_page_number\":" + pageNumber + "}");
             }
-            out.print("{\"page\":[" + jsonList + "],"
-                    + "\"q_page_size\":" + pageSize
-                    + ",\"q_page_number\":" + pageNumber + "}");
             out.flush();
-            //response.getWriter().write(json);
         } catch (Throwable e) {
-            response.setContentType("application/json; charset=utf-8");
-            response.addHeader("error", URLEncoder.encode("Помилка при роботі з sql-сервером</br>Помилка при "
-                    + " спробі отримати дінні з таблиці " + tableName, "UTF-8")
-            );
-            response.addHeader("error_details", URLEncoder.encode("<div class=\"nested-error\">" + e.getClass().getName() + ": " + e.getMessage() + "</div>", "UTF-8"));
+            backendError err = new backendError();
+            err.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            err.setText("Помилка при роботі з web-сервісом</br>Помилка при "
+                    + " спробі отримати дінні з таблиці " + tableName);
+            err.setDetails("<div class=\"nested-error\">" + e.getClass().getName()
+                    + ": " + e.getMessage() + "</div>");
+            response.setStatus(err.getStatus());
+            PrintWriter outErr = response.getWriter();
+            outErr.printf(err.toString());
 
-            //response.setStatus(500);
-            throw new ServletException();
+            outErr.flush();
         }
     }
 

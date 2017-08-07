@@ -7,6 +7,7 @@ package ajaxServlets;
 
 import DAOs.ejrdokController;
 import DAOs.uplfileController;
+import dataControllerCore.backendError;
 import dataObjects.ejrdok;
 import dataObjects.uplfile;
 import java.io.IOException;
@@ -32,7 +33,7 @@ import javax.servlet.http.Part;
  *
  * @author u27brvz04
  */
-@WebServlet(name = "ejrdokCrudAjaxServlet")
+//@WebServlet(name = "ejrdokCrudAjaxServlet", urlPatterns = {"/servlets/ajax/ejrdokCrud"})
 @MultipartConfig
 public class ejrdokCrudAjaxServlet extends HttpServlet {
 
@@ -48,7 +49,8 @@ public class ejrdokCrudAjaxServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
+        PrintWriter out = response.getWriter();
+        try {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
@@ -59,6 +61,8 @@ public class ejrdokCrudAjaxServlet extends HttpServlet {
             out.println("<h1>Servlet ejrdokCrudAjaxServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
+        } finally {
+            out.close();
         }
     }
 
@@ -74,32 +78,43 @@ public class ejrdokCrudAjaxServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+        response.setContentType("application/json; charset=utf-8");
         request.setCharacterEncoding("UTF-8");
         String tableName = null;
         String id = null;
+        ejrdok entity = null;
+        ejrdokController controller = null;
 
         try {
             tableName = request.getParameter("q_table_name");
             id = request.getParameter("q_id");
 
-            ejrdokController controller = new ejrdokController();
-            ejrdok entity = controller.getEntityById(Integer.parseInt(id));
-            controller.returnConnectionInPool();
+            controller = new ejrdokController();
+            try {
+                entity = controller.getEntityById(Integer.parseInt(id));
+            } catch (Throwable e) {
+                throw e;
+            } finally {
+                controller.returnConnectionInPool();
+            }
 
             PrintWriter out = response.getWriter();
-            out.print("{\"row\":" + entity.toString() + "}");
+            if (entity != null) {
+                out.print("{\"row\":" + entity.toString() + "}");
+            }
             out.flush();
-            //response.getWriter().write(json);
         } catch (Throwable e) {
-            response.setContentType("application/json; charset=utf-8");
-            response.addHeader("error", URLEncoder.encode("Помилка при роботі з sql-сервером</br>Помилка при спробі"
-                    + " отримати інформацію запису таблиці " + tableName + " для редагування", "UTF-8")
-            );
-            response.addHeader("error_details", URLEncoder.encode("<div class=\"nested-error\">" + e.getClass().getName() + ": " + e.getMessage() + "</div>", "UTF-8"));
+            backendError err = new backendError();
+            err.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            err.setText("Помилка при роботі з web-сервісом</br>Помилка при спробі"
+                    + " отримати інформацію запису таблиці " + tableName + " для редагування");
+            err.setDetails("<div class=\"nested-error\">" + e.getClass().getName()
+                    + ": " + e.getMessage() + "</div>");
+            response.setStatus(err.getStatus());
+            PrintWriter outErr = response.getWriter();
+            outErr.printf(err.toString());
 
-            //response.setStatus(500);
-            throw new ServletException();
+            outErr.flush();
         }
     }
 
@@ -114,19 +129,17 @@ public class ejrdokCrudAjaxServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+        response.setContentType("application/json; charset=utf-8");
         request.setCharacterEncoding("UTF-8");
         String tableName = null;
         String mode = null;
         int outId = -1;
         int outRowNumber = -1;
 
-        DateFormat format = new SimpleDateFormat("dd.MM.yyyy");
-
         try {
             tableName = request.getParameter("q_table_name");
             mode = request.getParameter("q_mode");
-            ejrdokController controller = new ejrdokController();
+            DateFormat format = new SimpleDateFormat("dd.MM.yyyy");
 
             if (mode.equals("add") || mode.equals("edit")) {
                 ejrdok entity = new ejrdok();
@@ -143,18 +156,25 @@ public class ejrdokCrudAjaxServlet extends HttpServlet {
                 entity.setPrim(request.getParameter("prim"));
 
                 if (mode.equals("add")) {
-                    outId = controller.create(entity);
-                    outRowNumber = controller.getRowNumberInOrdering(outId);
-                    controller.returnConnectionInPool();
+                    ejrdokController controller = new ejrdokController();
+                    try {
+                        outId = controller.create(entity);
+                        outRowNumber = controller.getRowNumberInOrdering(outId);
+                    } catch (Throwable e) {
+                        throw e;
+                    } finally {
+                        controller.returnConnectionInPool();
+                    }
 
                     Collection<Part> parts = request.getParts();
                     List<uplfile> files = new LinkedList<uplfile>();
 
                     uplfile temp = null;
                     for (Part part : parts) {
-                        if (part.getContentType() != null && !part.getSubmittedFileName().isEmpty()) {
+                        String fileName = getSubmittedFileName(part);
+                        if (part.getContentType() != null && fileName != null && !fileName.isEmpty()) {
                             temp = new uplfile();
-                            temp.setUfname(Paths.get(part.getSubmittedFileName()).getFileName().toString());
+                            temp.setUfname(fileName);
                             temp.setUfcontent(part.getInputStream());
                             temp.setIdd(outId);
                             files.add(temp);
@@ -162,61 +182,103 @@ public class ejrdokCrudAjaxServlet extends HttpServlet {
                     }
                     if (!files.isEmpty()) {
                         uplfileController upfController = new uplfileController();
-                        upfController.createFromList(files);
-                        upfController.returnConnectionInPool();
+                        try {
+                            upfController.createFromList(files);
+                        } catch (Throwable e) {
+                            throw e;
+                        } finally {
+                            upfController.returnConnectionInPool();
+                        }
                     }
                 } else if (mode.equals("edit")) {
                     entity.setIdd(Integer.parseInt(request.getParameter("q_id")));
                     outId = entity.getIdd();
-                    controller.update(entity);
-                    outRowNumber = controller.getRowNumberInOrdering(outId);
-                    controller.returnConnectionInPool();
-                    
+
+                    ejrdokController controller = new ejrdokController();
+                    try {
+                        controller.update(entity);
+                        outRowNumber = controller.getRowNumberInOrdering(outId);
+                    } catch (Throwable e) {
+                        throw e;
+                    } finally {
+                        controller.returnConnectionInPool();
+                    }
+
                     Collection<Part> parts = request.getParts();
                     List<uplfile> files = new LinkedList<uplfile>();
 
                     uplfile temp = null;
                     for (Part part : parts) {
-                        if (part.getContentType() != null && !part.getSubmittedFileName().isEmpty()) {
+                        String fileName = getSubmittedFileName(part);
+                        if (part.getContentType() != null && fileName != null && !fileName.isEmpty()) {
                             temp = new uplfile();
-                            temp.setUfname(Paths.get(part.getSubmittedFileName()).getFileName().toString());
+                            temp.setUfname(fileName);
                             temp.setUfcontent(part.getInputStream());
                             temp.setIdd(outId);
                             files.add(temp);
                         }
                     }
-                    if (!files.isEmpty()) {
+                    if (files.size() > 0) {
                         uplfileController upfController = new uplfileController();
-                        upfController.updateFromList(files);
-                        upfController.returnConnectionInPool();
+                        try {
+                            upfController.updateFromList(files);
+                        } catch (Throwable e) {
+                            throw e;
+                        } finally {
+                            upfController.returnConnectionInPool();
+                        }
                     }
                 }
+                PrintWriter out = response.getWriter();
+                out.printf("{"
+                        + "\"ret_id\":" + outId
+                        + ",\"ret_rn\":" + outRowNumber
+                        + "}");
+
             } else if (mode.equals("delete")) {
-                controller.delete(Integer.parseInt(request.getParameter("q_id")));
-                controller.returnConnectionInPool();
+                ejrdokController controller = new ejrdokController();
+                try {
+                    controller.delete(Integer.parseInt(request.getParameter("q_id")));
+                } catch (Throwable e) {
+                    throw e;
+                } finally {
+                    controller.returnConnectionInPool();
+                }
             }
         } catch (Throwable e) {
             Map<String, String> stringModes = new HashMap<String, String>();
             stringModes.putAll(new HashMap<String, String>() {
                 {
                     put("edit", "зміні");
-                    put("add", "доданні");
+                    put("add", "додаванні");
                     put("delete", "видаленні");
                 }
             });
-            response.setContentType("application/json; charset=utf-8");
-            response.addHeader("error", URLEncoder.encode("Помилка при роботі з sql-сервером</br>Помилка при "
-                    + stringModes.get(mode).trim() + " запису у таблиці " + tableName, "UTF-8")
-            );
-            response.addHeader("error_details", URLEncoder.encode("<div class=\"nested-error\">" + e.getClass().getName() + ": " + e.getMessage() + "</div>", "UTF-8"));
 
-            //response.setStatus(500);
-            throw new ServletException();
+            backendError err = new backendError();
+            err.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            err.setText("Помилка при роботі з web-сервісом</br>Помилка при "
+                    + ((stringModes.containsKey(mode)) ? stringModes.get(mode).trim() : "обробці")
+                    + " запису у таблиці " + tableName);
+            err.setDetails("<div class=\"nested-error\">" + e.getClass().getName()
+                    + ": " + e.getMessage() + "</div>");
+            response.setStatus(err.getStatus());
+            PrintWriter outErr = response.getWriter();
+            outErr.printf(err.toString());
+
+            outErr.flush();
         }
-        if (mode.equals("add") || mode.equals("edit")) {
-            response.addHeader("ret_id", Integer.toString(outId));
-            response.addHeader("ret_rn", Integer.toString(outRowNumber));
+
+    }
+
+    private static String getSubmittedFileName(Part part) {
+        for (String cd : part.getHeader("content-disposition").split(";")) {
+            if (cd.trim().startsWith("filename")) {
+                String fileName = cd.substring(cd.indexOf('=') + 1).trim().replace("\"", "");
+                return fileName.substring(fileName.lastIndexOf('/') + 1).substring(fileName.lastIndexOf('\\') + 1); // MSIE fix.
+            }
         }
+        return null;
     }
 
     /**

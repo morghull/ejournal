@@ -48,9 +48,9 @@
                                 $("#atc-wait").remove();
                                 response(data.autocomplete);
                             },
-                            error: function (xhr, status, error) {
+                            error: function (error) {
                                 if (settings.onError !== undefined) {
-                                    settings.onError(xhr, status, error);
+                                    settings.onError(error);
                                 }
                             },
                             complete: function () {

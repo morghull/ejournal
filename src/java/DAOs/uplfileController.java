@@ -85,7 +85,7 @@ public class uplfileController extends AbstractCrudController<uplfile, Integer> 
                 ps.setInt(++index, entity.getIdd());
             }
             ps.executeUpdate();
-        } catch (SQLException e) {
+        } catch (Throwable e) {
             throw new SQLException("Помилка при створенні записів зі списку</br>"
                     + "<div class=\"nested-error\">" + e.getMessage() + "</div>");
         } finally {

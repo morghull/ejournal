@@ -245,8 +245,8 @@
                         {"caption": "Код", "item": "rdtk"},
                         {"caption": "Назва", "item": "rdtn", "align": "left"}
                     ],
-                    onError: function (xhr, status, error) {
-                        riseAnError("jquery.iskra.tablehelp", xhr, status, error);
+                    onError: function (error) {
+                        riseAnError("jquery.iskra.tablehelp", error);
                     }
                 });
                 $("#rdk-help-btn").click(function () {
@@ -259,23 +259,23 @@
                 $("#rdk,#ordk").ajaxvalidation({
                     "fieldName": "rdtk",
                     "urlToGetData": "${pageContext.servletContext.contextPath}/servlets/api/validate_rdt",
-                    onError: function (xhr, status, error) {
-                        riseAnError("jquery.iskra.ajaxvalidation", xhr, status, error);
+                    onError: function (error) {
+                        riseAnError("jquery.iskra.ajaxvalidation", error);
                     }
                 });
 
                 $("#uplfiles").fileupload();
-                
+
                 $("#nzak").iskraAutocomplete({
                     "tableName": "clippersql.skisql",
                     "fieldName": "nzak",
                     "urlToGetData": "${pageContext.servletContext.contextPath}/servlets/ajax/autocomplete",
-                    onError: function (xhr, status, error) {
-                        riseAnError("jquery.iskra.autocomplete", xhr, status, error);
+                    onError: function (error) {
+                        riseAnError("jquery.iskra.autocomplete", error);
                     }
                 });
-                
-                function riseAnError(sender, xhr, status, error) {
+
+                function riseAnError(sender, error) {
                     // this creates dialog placeholder for error message
                     if ($("#dialog-error-message").length === 0)
                         $("body").append(
@@ -318,18 +318,13 @@
                                         }]
                                 })
                                 );
-                    if (xhr.getResponseHeader !== undefined && xhr.getResponseHeader("error") === null && status === "error") {
-                        var errorMessage, errorDetails;
-                        if (xhr.status === 404) {
-                            errorMessage = "Web-сторінка відсутня";
-                            errorDetails = "Можливо web-сервер не відповідає на запити. Зверніться до розробників";
-                        } else {
-                            errorMessage = "Не виявлена помилка серверу";
-                            errorDetails = "Можливо web-сервер не відповідає на запити. Зверніться до розробників";
-                        }
-                    } else if (xhr.getResponseHeader !== undefined) {
-                        errorMessage = decodeURIComponent(stringFormat(xhr.getResponseHeader("error"))).replace(/\s*\++\s*/g, " ");
-                        errorDetails = decodeURIComponent(stringFormat(xhr.getResponseHeader("error_details"))).replace(/\s*\++\s*/g, " ");
+                    var errorMessage, errorDetails;
+                    error = error.responseJSON.error;
+                    if (error !== undefined) {
+                        errorMessage = error.text;
+                        errorDetails = error.details;
+                        //errorMessage = decodeURIComponent(stringFormat(xhr.getResponseHeader("error"))).replace(/\s*\++\s*/g, " ");
+                        //errorDetails = decodeURIComponent(stringFormat(xhr.getResponseHeader("error_details"))).replace(/\s*\++\s*/g, " ");
                     } else {
                         errorMessage = "Не виявлена помилка серверу";
                         errorDetails = "Можливо web-сервер не відповідає на запити. Зверніться до розробників";
@@ -426,20 +421,20 @@
                             },
                             success: function (data, status, xhr) {
                                 if ($("#currentId").length) {
-                                    $("#currentId").empty().append(xhr.getResponseHeader("ret_id"));
+                                    $("#currentId").empty().append(data.ret_id);
                                 } else {
-                                    $("body").append($("<span>").prop("id", "currentId").attr("new-one", "true").addClass("hidden").append(xhr.getResponseHeader("ret_id")));
+                                    $("body").append($("<span>").prop("id", "currentId").attr("new-one", "true").addClass("hidden").append(data.ret_id));
                                 }
-                                var newRowNumber = xhr.getResponseHeader("ret_rn");
+                                var newRowNumber = data.ret_rn;
                                 $.iskra.pageNumber = ((newRowNumber - (newRowNumber % $.iskra.pageSize)) / $.iskra.pageSize) + (((newRowNumber % $.iskra.pageSize) === 0) ? 0 : 1);
                                 $.iskra.dialogForAddOrEdit.dialog("close");
-                                console.log("addRecord() SUCCESS: ", "retId:", xhr.getResponseHeader("ret_id"), "; retRowNumber:", xhr.getResponseHeader("ret_rn"));
+                                console.log("addRecord() SUCCESS: ", "retId:", data.ret_id, "; retRowNumber:", data.ret_rn);
                                 $.iskra.getPage();
                                 $.iskra.getTotalRowCount();
                                 //$("html, body").animate({scrollTop: $("tr.active").offset().top}, 500);
                             },
-                            error: function (xhr, status, error) {
-                                riseAnError("addRecord()", xhr, status, error);
+                            error: function (error) {
+                                riseAnError("addRecord()", error);
                             },
                             complete: function () {
                                 $("#overlay-wrapper").fadeOut("fast");
@@ -522,8 +517,8 @@
                             });
                             console.log("getPage() SUCCESS : ", data);
                         },
-                        error: function (xhr, status, error) {
-                            riseAnError("getPage()", xhr, status, error);
+                        error: function (error) {
+                            riseAnError("getPage()", error);
                         },
                         complete: function () {
                             $("#overlay-wrapper").fadeOut("fast");

@@ -47,7 +47,7 @@ public class autocompleteController extends AbstractController {
      * @throws SQLException
      */
     public List<String> getAutocompleteByPart(String pattern) throws SQLException {
-        List<String> lst = new LinkedList<>();
+        List<String> lst = new LinkedList<String>();
         String query;
         String type = "like"; //in some cases it uses regexp matching
         if (tableName.equals("clippersql.mm76030sql") && fieldName.equals("osd")) {

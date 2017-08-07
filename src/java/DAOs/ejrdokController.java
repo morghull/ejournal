@@ -115,7 +115,7 @@ public class ejrdokController extends AbstractCrudController<ejrdok, Integer> {
 
     @Override
     public List<ejrdok> getAll() throws SQLException {
-        List<ejrdok> lst = new LinkedList<>();
+        List<ejrdok> lst = new LinkedList<ejrdok>();
         String query
                 = "select idd,rdk,rdn,rdd,nazz,rdsh,ordk,ordn,ordd,dvd,nzak,prim "
                 + "from " + TABLE_NAME + " "
@@ -204,7 +204,7 @@ public class ejrdokController extends AbstractCrudController<ejrdok, Integer> {
 
     @Override
     public List<ejrdok> getPage(int pageNumber, int pageSize) throws SQLException {
-        List<ejrdok> lst = new LinkedList<>();
+        List<ejrdok> lst = new LinkedList<ejrdok>();
         String query
                 = "with uplfiles as ("
                 + "      select ufid,ufname,idd"
@@ -218,7 +218,8 @@ public class ejrdokController extends AbstractCrudController<ejrdok, Integer> {
                 + "select idd,rdk,rdn,rdd,nazz,rdsh,ordk,ordn,ordd,dvd,nzak,prim,json "
                 + "from " + TABLE_NAME + " "
                 + "   left join uf_agg using(idd)"
-                + "order by rdd,rdk,rdn,nzak limit " + pageSize + " offset " + pageSize * (pageNumber - 1);
+                + "order by rdd,rdk,rdn,nzak limit " + pageSize + " offset "
+                + pageSize * ((pageNumber == 0) ? 0 : (pageNumber - 1));
         PreparedStatement ps = getPrepareStatement(query);
         try {
             ResultSet rs = ps.executeQuery();

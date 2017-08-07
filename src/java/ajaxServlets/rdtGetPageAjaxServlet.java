@@ -6,6 +6,7 @@
 package ajaxServlets;
 
 import DAOs.rdtController;
+import dataControllerCore.backendError;
 import dataObjects.rdt;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -36,17 +37,20 @@ public class rdtGetPageAjaxServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
+        PrintWriter out = response.getWriter();
+        try {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet rdtGetPageAjaxServlet</title>");            
+            out.println("<title>Servlet rdtGetPageAjaxServlet</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet rdtGetPageAjaxServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
+        } finally {
+            out.close();
         }
     }
 
@@ -62,8 +66,7 @@ public class rdtGetPageAjaxServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        response.setContentType("application/json");
+        response.setContentType("application/json; charset=utf-8");
         request.setCharacterEncoding("UTF-8");
 
         String tableName = null;
@@ -88,17 +91,19 @@ public class rdtGetPageAjaxServlet extends HttpServlet {
                     + "\"q_page_size\":" + pageSize
                     + ",\"q_page_number\":" + pageNumber + "}");
             out.flush();
-            //response.getWriter().write(json);
         } catch (Throwable e) {
-            response.setContentType("application/json; charset=utf-8");
-            response.addHeader("error", URLEncoder.encode("Помилка при роботі з sql-сервером</br>Помилка при "
-                    + " спробі отримати дінні з таблиці " + tableName, "UTF-8")
-            );
-            response.addHeader("error_details", URLEncoder.encode("<div class=\"nested-error\">" + e.getClass().getName() + ": " + e.getMessage() + "</div>", "UTF-8"));
+            backendError err = new backendError();
+            err.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            err.setText("Помилка при роботі з web-сервісом</br>Помилка при "
+                    + " спробі отримати дінні з таблиці " + tableName);
+            err.setDetails("<div class=\"nested-error\">" + e.getClass().getName()
+                    + ": " + e.getMessage() + "</div>");
+            response.setStatus(err.getStatus());
+            PrintWriter outErr = response.getWriter();
+            outErr.printf(err.toString());
 
-            //response.setStatus(500);
-            throw new ServletException();
-        }
+            outErr.flush();
+         }
     }
 
     /**

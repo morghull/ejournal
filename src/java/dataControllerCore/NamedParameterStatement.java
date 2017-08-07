@@ -30,7 +30,7 @@ public class NamedParameterStatement {
      * @throws SQLException if the statement could not be created
      */
     public NamedParameterStatement(Connection connection, String query) throws SQLException {
-        fields = new ArrayList<>();
+        fields = new ArrayList<String>();
         //another one regexp for matcher "(?<!')(@[\\w]*)(?!')"
         Pattern findParametersPattern = Pattern.compile("(?!\\B'[^']*)(@\\w+)(?![^']*'\\B)");
         Matcher matcher = findParametersPattern.matcher(query);

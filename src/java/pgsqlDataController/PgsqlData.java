@@ -44,7 +44,7 @@ public class PgsqlData {
             String queryStringLoadingDate = "";
             String whereStatementString = "";
             int parameterIndex = 0;
-            List<String> validFilersList = new ArrayList<>();
+            List<String> validFilersList = new ArrayList<String>();
             for (Map.Entry<String, String> mapEntry : filterConditionMap.entrySet()) {
                 if (mapEntry.getKey().equals("osd")) {
                     validFilersList.add(mapEntry.getKey());
@@ -194,7 +194,7 @@ public class PgsqlData {
             String queryString = "";
             String whereStatementString = "";
             int parameterIndex = 0;
-            List<String> validFilersList = new ArrayList<>();
+            List<String> validFilersList = new ArrayList<String>();
             Map<String, String> columnTypes = new HashMap<String, String>();
             for (Map.Entry<String, String> mapEntry : filterConditionMap.entrySet()) {
                 if (mapEntry.getKey().equals("softid")) {
@@ -240,7 +240,7 @@ public class PgsqlData {
             String columnsInsertionString = "";
             String valuesInsertionString = "";
             int parameterIndex = 0;
-            List<String> columnsInsertionList = new ArrayList<>();
+            List<String> columnsInsertionList = new ArrayList<String>();
             Map<String, String> columnTypes = new HashMap<String, String>();
 
             if (tableName.equals("software")) {
@@ -301,8 +301,8 @@ public class PgsqlData {
             String columnsUpdatingString = "";
             String whereStatementString = "";
             int parameterIndex = 0;
-            List<String> columnsUpdatingList = new ArrayList<>();
-            List<String> columnsWhereStatementList = new ArrayList<>();
+            List<String> columnsUpdatingList = new ArrayList<String>();
+            List<String> columnsWhereStatementList = new ArrayList<String>();
             Map<String, String> columnTypes = new HashMap<String, String>();
 
             if (tableName.equals("software")) {
@@ -367,7 +367,7 @@ public class PgsqlData {
             String fullTableNameString = "";
             String whereStatementString = "";
             int parameterIndex = 0;
-            List<String> columnsWhereStatementList = new ArrayList<>();
+            List<String> columnsWhereStatementList = new ArrayList<String>();
             Map<String, String> columnTypes = new HashMap<String, String>();
 
             if (tableName.equals("software")) {

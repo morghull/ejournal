@@ -74,7 +74,7 @@ public class rdtController extends AbstractCrudController<rdt, String> {
 
     @Override
     public List<rdt> getPage(int pageNumber, int pageSize) throws SQLException {
-        List<rdt> lst = new LinkedList<>();
+        List<rdt> lst = new LinkedList<rdt>();
         String query
                 = "select rdtk,rdtn "
                 + "from " + TABLE_NAME + " "

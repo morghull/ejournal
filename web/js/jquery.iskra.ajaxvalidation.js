@@ -17,9 +17,9 @@
                     $.error("jquery.iskra.ajaxvalidation: missing urlToGetData (url of servlet\service where data can be acquired) option in plugin options of " + "#" + obj.attr("id"));
                 if (settings.fieldName === undefined)
                     $.error("jquery.iskra.ajaxvalidation: missing fieldName (name of the field to validate) option in plugin options of " + "#" + obj.attr("id"));
-                
+
                 obj.addClass("ui-ajv-input");
-                
+
                 var ajvPreviousValue;
                 obj.focusout(function () {
                     var value = obj.val();
@@ -50,9 +50,9 @@
                                     });
                                 }
                             },
-                            error: function (xhr, status, error) {
+                            error: function (error) {
                                 if (settings.onError !== undefined) {
-                                    settings.onError(xhr, status, error);
+                                    settings.onError(error);
                                 }
                             },
                             complete: function () {
