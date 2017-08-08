@@ -5,13 +5,8 @@
  */
 package ajaxServlets;
 
-import DAOs.rdtController;
-import dataControllerCore.backendError;
-import dataObjects.rdt;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URLEncoder;
-import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -22,8 +17,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author u27brvz04
  */
-@WebServlet(name = "rdtGetPageAjaxServlet", urlPatterns = {"/rdtGetPageAjaxServlet"})
-public class rdtGetPageAjaxServlet extends HttpServlet {
+@WebServlet(name = "uplfileDownloadAjaxServlet")
+public class uplfileDownloadAjaxServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -43,10 +38,10 @@ public class rdtGetPageAjaxServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet rdtGetPageAjaxServlet</title>");
+            out.println("<title>Servlet uplfileDownloadAjaxServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet rdtGetPageAjaxServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet uplfileDownloadAjaxServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         } finally {
@@ -66,44 +61,33 @@ public class rdtGetPageAjaxServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("application/json; charset=utf-8");
-        request.setCharacterEncoding("UTF-8");
+        String id = request.getParameter("id");
 
-        String tableName = null;
-        String pageSize = null;
-        String pageNumber = null;
-
-        try {
-            tableName = request.getParameter("q_table_name");
-            pageSize = request.getParameter("q_page_size");
-            pageNumber = request.getParameter("q_page_number");
-
-            rdtController controller = new rdtController();
-            List<rdt> list = controller.getPage(Integer.parseInt(pageNumber), Integer.parseInt(pageSize));
-            controller.returnConnectionInPool();
-
-            PrintWriter out = response.getWriter();
-            String jsonList = "";
-            for (rdt entity : list) {
-                jsonList += ((jsonList.equals("")) ? "" : ",") + entity.toString();
-            }
-            out.print("{\"page\":[" + jsonList + "],"
-                    + "\"q_page_size\":" + pageSize
-                    + ",\"q_page_number\":" + pageNumber + "}");
-            out.flush();
-        } catch (Throwable e) {
-            backendError err = new backendError();
-            err.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            err.setText("Помилка при роботі з web-сервісом</br>Помилка при "
-                    + " спробі отримати дінні з таблиці " + tableName);
-            err.setDetails("<div class=\"nested-error\">" + e.getClass().getName()
-                    + ": " + e.getMessage() + "</div>");
-            response.setStatus(err.getStatus());
-            PrintWriter outErr = response.getWriter();
-            outErr.printf(err.toString());
-
-            outErr.flush();
-         }
+//        String fileName = "";
+//        String fileType = "";
+//        // Find this file id in database to get file name, and file type
+//
+//        // You must tell the browser the file type you are going to send
+//        // for example application/pdf, text/plain, text/html, image/jpg
+//        response.setContentType(fileType);
+//
+//        // Make sure to show the download dialog
+//        response.setHeader("Content-disposition", "attachment; filename=yourcustomfilename.pdf");
+//
+//        // Assume file name is retrieved from database
+//        // For example D:\\file\\test.pdf
+//        File my_file = new File(fileName);
+//
+//        // This should send the file to browser
+//        OutputStream out = response.getOutputStream();
+//        FileInputStream in = new FileInputStream(my_file);
+//        byte[] buffer = new byte[4096];
+//        int length;
+//        while ((length = in.read(buffer)) > 0) {
+//            out.write(buffer, 0, length);
+//        }
+//        in.close();
+//        out.flush();
     }
 
     /**

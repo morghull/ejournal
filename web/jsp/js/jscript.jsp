@@ -9,7 +9,6 @@
 <script src="${pageContext.servletContext.contextPath}/js/jquery-ui.js"></script>
 <script src="${pageContext.servletContext.contextPath}/js/bootstrap.min-3.1.1.js"></script>
 <script src="${pageContext.servletContext.contextPath}/js/jquery-datapicker-ukr-localization.js"></script>
-<script src="${pageContext.servletContext.contextPath}/js/common-interface-init.js"></script>
 <script type="text/javascript">
     var tips = $(".validateTips");
 

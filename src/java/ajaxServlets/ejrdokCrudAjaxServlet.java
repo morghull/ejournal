@@ -244,6 +244,8 @@ public class ejrdokCrudAjaxServlet extends HttpServlet {
                 } finally {
                     controller.returnConnectionInPool();
                 }
+                PrintWriter out = response.getWriter();
+                out.printf("{\"deletion\":\"success\"}");
             }
         } catch (Throwable e) {
             Map<String, String> stringModes = new HashMap<String, String>();
