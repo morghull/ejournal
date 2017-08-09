@@ -5,6 +5,9 @@
  */
 package ajaxServlets;
 
+import DAOs.uplfileController;
+import dataControllerCore.backendError;
+import dataObjects.uplfile;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -61,7 +64,39 @@ public class uplfileDownloadAjaxServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String id = request.getParameter("id");
+
+        String id = null;
+        uplfile entity = null;
+
+        try {
+            id = request.getParameter("q_id");
+
+            uplfileController controller = new uplfileController();
+            try {
+                entity = controller.getEntityById(Integer.parseInt(id));
+            } catch (Throwable e) {
+                throw e;
+            } finally {
+                controller.returnConnectionInPool();
+            }
+
+            PrintWriter out = response.getWriter();
+            out.print("{\"row\":" + ((entity == null) ? "" : entity.toString()) + "}");
+            out.flush();
+
+        } catch (Throwable e) {
+            backendError err = new backendError();
+            err.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            err.setText("Помилка при роботі з web-сервісом</br>Помилка при "
+                    + " спробі підрахувати загальну кількість записів з таблиці ");
+            err.setDetails("<div class=\"nested-error\">" + e.getClass().getName()
+                    + ": " + e.getMessage() + "</div>");
+            response.setStatus(err.getStatus());
+            PrintWriter outErr = response.getWriter();
+            outErr.printf(err.toString());
+
+            outErr.flush();
+        }
 
 //        String fileName = "";
 //        String fileType = "";

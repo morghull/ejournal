@@ -68,13 +68,19 @@ public class rowcountAjaxServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
 
         String tableName = null;
+        Integer rowCount = 0;
 
         try {
             tableName = request.getParameter("q_table_name");
 
             rowcountController controller = new rowcountController(tableName);
-            Integer rowCount = controller.getTotalRowCount();
-            controller.returnConnectionInPool();
+            try {
+                rowCount = controller.getTotalRowCount();
+            } catch (Throwable e) {
+                throw e;
+            } finally {
+                controller.returnConnectionInPool();
+            }
 
             PrintWriter out = response.getWriter();
             out.print("{\"total_row_count\":" + rowCount + "}");

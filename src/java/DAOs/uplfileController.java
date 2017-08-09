@@ -46,7 +46,32 @@ public class uplfileController extends AbstractCrudController<uplfile, Integer> 
 
     @Override
     public uplfile getEntityById(Integer id) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        uplfile entity;
+        String query
+                = "select ufid,ufname,ufcontent,idd"
+                + "from xxx.uplfiles"
+                + "where ufid=? limit 1;";
+        PreparedStatement ps = getPrepareStatement(query);
+        try {
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                entity = new uplfile();
+                entity.setUfid(rs.getInt(1));
+                entity.setUfname(rs.getString(2));
+                entity.setUfcontent(rs.getBinaryStream(3));
+                entity.setIdd(rs.getInt(4));
+            } else {
+                throw new SQLException("За заданим ідентифікатором відсутній запис");
+            }
+
+        } catch (SQLException e) {
+            throw new SQLException("Помилка при виконанні SQL-запиту</br>"
+                    + "<div class=\"nested-error\">" + e.getMessage() + "</div>");
+        } finally {
+            closePrepareStatement(ps);
+        }
+        return entity;
     }
 
     public boolean createFromList(List<uplfile> list) throws SQLException {

@@ -115,40 +115,7 @@ public class ejrdokController extends AbstractCrudController<ejrdok, Integer> {
 
     @Override
     public List<ejrdok> getAll() throws SQLException {
-        List<ejrdok> lst = new LinkedList<ejrdok>();
-        String query
-                = "select idd,rdk,rdn,rdd,nazz,rdsh,ordk,ordn,ordd,dvd,nzak,prim "
-                + "from " + TABLE_NAME + " "
-                + "order by rdd,rdk,rdn,nzak";
-        PreparedStatement ps = getPrepareStatement(query);
-        try {
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                ejrdok entity = new ejrdok();
-                entity.setIdd(rs.getInt(1));
-                entity.setRdk(rs.getString(2));
-                entity.setRdn(rs.getString(3));
-                entity.setRdd(rs.getDate(4));
-                entity.setNazz(rs.getString(5));
-                entity.setRdsh(rs.getString(6));
-                entity.setOrdk(rs.getString(7));
-                entity.setOrdn(rs.getString(8));
-                entity.setOrdd(rs.getDate(9));
-                entity.setDvd(rs.getDate(10));
-                entity.setNzak(rs.getString(11));
-                entity.setPrim(rs.getString(12));
-                //ejrdok.setUfid(rs.getInt(12));
-
-                lst.add(entity);
-            }
-        } catch (SQLException e) {
-            throw new SQLException("Помилка при виконанні SQL-запиту</br>"
-                    + "<div class=\"nested-error\">" + e.getMessage() + "</div>");
-        } finally {
-            closePrepareStatement(ps);
-        }
-
-        return lst;
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -192,7 +159,6 @@ public class ejrdokController extends AbstractCrudController<ejrdok, Integer> {
             } else {
                 throw new SQLException("За заданим ідентифікатором відсутній запис");
             }
-
         } catch (SQLException e) {
             throw new SQLException("Помилка при виконанні SQL-запиту</br>"
                     + "<div class=\"nested-error\">" + e.getMessage() + "</div>");

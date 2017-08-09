@@ -68,7 +68,10 @@ public class autocompleteAjaxServlet extends HttpServlet {
         response.setContentType("application/json; charset=utf-8");
         request.setCharacterEncoding("UTF-8");
 
-        String tableName = null, fieldName = null, stringPattern;
+        String tableName = null;
+        String fieldName = null;
+        String stringPattern = null;
+        List<String> list = null;
 
         try {
             tableName = request.getParameter("q_table_name");
@@ -76,15 +79,21 @@ public class autocompleteAjaxServlet extends HttpServlet {
             stringPattern = request.getParameter("q_string_pattern");
 
             autocompleteController controller = new autocompleteController(tableName, fieldName);
-            List<String> list = controller.getAutocompleteByPart(stringPattern);
-            controller.returnConnectionInPool();
-
-            String jsonList = "";
-            for (String str : list) {
-                jsonList += ((jsonList.equals("")) ? "" : ",") + "\"" + str + "\"";
+            try {
+                list = controller.getAutocompleteByPart(stringPattern);
+            } catch (Throwable e) {
+                throw e;
+            } finally {
+                controller.returnConnectionInPool();
             }
 
             PrintWriter out = response.getWriter();
+            String jsonList = "";
+            if (list != null && !list.isEmpty()) {
+                for (String str : list) {
+                    jsonList += ((jsonList.equals("")) ? "" : ",") + "\"" + str + "\"";
+                }
+            }
             out.print("{\"autocomplete\":[" + jsonList + "]}");
             out.flush();
         } catch (Throwable e) {

@@ -94,10 +94,10 @@ public class ejrdokGetPageAjaxServlet extends HttpServlet {
                 for (ejrdok entity : list) {
                     jsonList += ((jsonList.equals("")) ? "" : ",") + entity.toString();
                 }
-                out.print("{\"page\":[" + jsonList + "],"
-                        + "\"q_page_size\":" + pageSize
-                        + ",\"q_page_number\":" + pageNumber + "}");
             }
+            out.print("{\"page\":[" + jsonList + "],"
+                    + "\"q_page_size\":" + pageSize
+                    + ",\"q_page_number\":" + pageNumber + "}");
             out.flush();
         } catch (Throwable e) {
             backendError err = new backendError();

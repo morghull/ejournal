@@ -270,56 +270,16 @@
                     $("#dialog-confirm-deletion").dialog("open");
                 });
 
-                //jquery plugin apply
-                $("#rdk,#ordk").tablehelp({
-                    "tableCaption": "Розпорядчі документи.Типи",
-                    "tableName": "rdt",
-                    "urlToGetData": "${pageContext.servletContext.contextPath}/servlets/ajax/rdtGetPage",
-                    "itemToPickup": "rdtk",
-                    "columns": [
-                        {"caption": "Код", "item": "rdtk"},
-                        {"caption": "Назва", "item": "rdtn", "align": "left"}
-                    ],
-                    onError: function (error) {
-                        riseAnError("jquery.iskra.tablehelp", error);
-                    }
-                });
-                $("#rdk-help-btn").click(function () {
-                    $("#rdk").tablehelp("show");
-                });
-                $("#ordk-help-btn").click(function () {
-                    $("#ordk").tablehelp("show");
-                });
-
-                $("#rdk,#ordk").ajaxvalidation({
-                    "fieldName": "rdtk",
-                    "urlToGetData": "${pageContext.servletContext.contextPath}/servlets/api/validate_rdt",
-                    onError: function (error) {
-                        riseAnError("jquery.iskra.ajaxvalidation", error);
-                    }
-                });
-
-                $("#uplfiles").fileupload();
-
-                $("#nzak").iskraAutocomplete({
-                    "tableName": "clippersql.skisql",
-                    "fieldName": "nzak",
-                    "urlToGetData": "${pageContext.servletContext.contextPath}/servlets/ajax/autocomplete",
-                    onError: function (error) {
-                        riseAnError("jquery.iskra.autocomplete", error);
-                    }
-                });
-
                 function riseAnError(sender, error) {
                     // this creates dialog placeholder for error message
-                    if ($("#dialog-error-message").length === 0)
+                    if ($("#dialog-error-message").length === 0) {
                         $("body").append(
                                 $("<div>")
                                 .prop("id", "dialog-error-message")
                                 .prop("title", "Помилка")
                                 .append($("<div>")
                                         .append($("<img>")
-                                                .prop("src", "${pageContext.servletContext.contextPath}/images/48px_error.png?<%=version%>")
+                                                .prop("src", "${pageContext.servletContext.contextPath}/images/48px_error.png")
                                                 .prop("alt", "error")
                                                 .css("float", "left")
                                                 )
@@ -337,22 +297,23 @@
                                         .css("display", "none")
                                         .css("padding-top", "5px")
                                         )
-                                .hide()
-                                .dialog({
-                                    autoOpen: false,
-                                    resizable: false,
-                                    height: "auto",
-                                    width: 500,
-                                    modal: true,
-                                    buttons: [{id: "ok",
-                                            "class": "ui-button",
-                                            text: "Так",
-                                            click: function () {
-                                                $(this).dialog("close");
-                                            }
-                                        }]
-                                })
-                                );
+                                .hide());
+                        $("#dialog-error-message").dialog({
+                            autoOpen: false,
+                            resizable: false,
+                            height: "auto",
+                            width: 500,
+                            modal: true,
+                            buttons: [{id: "ok",
+                                    "class": "ui-button",
+                                    text: "Так",
+                                    click: function () {
+                                        $(this).dialog("close");
+                                    }
+                                }]
+                        });
+
+                    }
                     var errorMessage, errorDetails;
                     if (error.responseJSON !== undefined && error.responseJSON.error !== undefined) {
                         errorMessage = error.responseJSON.error.text;
@@ -367,40 +328,6 @@
                     console.log(sender + " ERROR : ",
                             (error.responseJSON !== undefined && error.responseJSON.error !== undefined) ? error.responseJSON.error : error);
                 }
-
-                $("#dialog-form").on("keyup", "input:text", function () {
-                    $(this).removeAttr("valid-status");
-                    $(this).removeAttr("ajv-icon");
-                    $(this).errorpopup("hide");
-                });
-                $("#dialog-form input:text").attr("autocomplete", "off");
-                $("#dialog-form input:text").bind("keydown", function (e) {
-                    if ([9, 13].indexOf(e.which || e.keyCode) >= 0) {
-                        e.preventDefault();
-                        var inputs = $("#dialog-form input:text");
-                        var nextItem = inputs.eq(inputs.index($(this)) + ((e.shiftKey) ? -1 : 1));
-                        if (nextItem.size() === 0)
-                            nextItem = $("#dialog-form input:text").eq(0);
-                        nextItem.focus();
-                    }
-                });
-
-                //alternative way to force user type only digits
-                /*$('input[digitonly]').keyup(function (e) {
-                 if (/\D/g.test(this.value)) {
-                 // Filter non-digits from input value.
-                 this.value = this.value.replace(/\D/g, '');
-                 }
-                 });*/
-                $('input[digitonly]').on('keypress', function (evt) {
-                    var charCode = (evt.which) ? evt.which : evt.keyCode;
-                    return !(charCode !== 8 && charCode !== 9 // backspace and tab keys
-                            && charCode !== 37 && charCode !== 39 // ← → arrows keys
-                            && (charCode < 48 || charCode > 57) // 0-9 digits keys
-                            );
-                });
-
-                $("#dialog-form").parent().css("min-width", "750px");
 
                 addRecord = function () {
                     var valid = true;
@@ -483,23 +410,6 @@
                     $("#dialog-form").find("#ordd").val(("0" + d.getDate()).slice(-2) + "." + ("0" + (d.getMonth() + 1)).slice(-2) + "." + d.getFullYear());
                     $("#dialog-form").find("#dvd").val(("0" + d.getDate()).slice(-2) + "." + ("0" + (d.getMonth() + 1)).slice(-2) + "." + d.getFullYear());
                 };
-                $("#rdd").datepicker();
-                $("#rdd-help-btn").click(function () {
-                    $("#rdd").datepicker("show");
-                });
-                $("#ordd").datepicker();
-                $("#ordd-help-btn").click(function () {
-                    $("#ordd").datepicker("show");
-                });
-                $("#dvd").datepicker();
-                $("#dvd-help-btn").click(function () {
-                    $("#dvd").datepicker("show");
-                });
-
-                $("#content-table-body").tooltip({
-                    selector: ".uf-file",
-                    placement: "left"
-                });
                 getPage = function () {
                     var currentId = ($("#currentId").length) ? parseInt($("#currentId").text()) : -1;
                     if ($("#currentId").length && $("#currentId").attr("new-one") === "true") {
@@ -559,113 +469,6 @@
                         }
                     });
                 };
-                // this initializes the dialog to add or edit information in table
-                $("#dialog-form").dialog({
-                    autoOpen: false,
-                    height: "auto",
-                    width: "75%",
-                    resizable: false,
-                    modal: true,
-                    buttons: [{id: "ok",
-                            "class": "ui-button",
-                            text: "Ok",
-                            click: function () {
-                                addRecord();
-                            }},
-                        {id: "cancel",
-                            "class": "ui-button",
-                            text: "Відмінити",
-                            click: function () {
-                                $(this).dialog("close");
-                            }}
-                    ],
-                    close: function () {
-                        $("#dialog-form").trigger("reset");
-                        $("#dialog-form input").removeAttr("valid-status").removeAttr("ajv-icon");
-                        $("#dialog-form input:text").errorpopup("hide");
-                        $("#rdk,#ordk").ajaxvalidation("reset");
-                    }
-                });
-                // this makes an object form, used for reseting while pressing "cancel" button
-                $("#dialog-form").find("form").on("submit", function (event) {
-                    event.preventDefault();
-                    addRecord();
-                });
-
-                // this creates dialog placeholder for deletion confirmation
-                $("body").append($("<div>")
-                        .prop("id", "dialog-confirm-deletion")
-                        .prop("title", "Видалити обраний запис?")
-                        .append($("<p>")
-                                .prop("id", "confirm-content")
-                                .html("Чи дійсно ви бажаєте видатили обраний запис?</br>Обраний запис буде видалено з БД")
-                                )
-                        .hide()
-                        );
-                // this initializes the dialog to delete information from table
-                $("#dialog-confirm-deletion").dialog({
-                    autoOpen: false,
-                    resizable: false,
-                    height: "auto",
-                    width: 400,
-                    modal: true,
-                    buttons: [{id: "ok",
-                            "class": "ui-button",
-                            text: "Так",
-                            click: function () {
-                                $.ajax({
-                                    type: "post",
-                                    url: "${pageContext.servletContext.contextPath}/servlets/ajax/" + servletUrlPatternCrud,
-                                    data: {
-                                        q_table_name: tableName,
-                                        q_mode: mode,
-                                        q_id: $("tr.active").attr("data-id")
-                                    },
-                                    timeout: 600000,
-                                    beforeSend: function () {
-                                        $("#overlay-wrapper").fadeIn("fast");
-                                    },
-                                    success: function (data, status, xhr) {
-                                        $("#dialog-confirm-deletion").dialog("close");
-                                        console.log("deleteRecord SUCCESS ");
-                                        getPage();
-                                        getTotalRowCount();
-                                    },
-                                    error: function (error) {
-                                        riseAnError("deleteRecord", error);
-                                    },
-                                    complete: function () {
-                                        $("#overlay-wrapper").fadeOut("fast");
-                                    }
-                                });
-                            }},
-                        {id: "cancel",
-                            "class": "ui-button",
-                            text: "Ні",
-                            click: function () {
-                                $(this).dialog("close");
-                            }}
-                    ]
-                });
-
-                // this initializes the dialog for error message
-                $("#dialog-error-message").dialog({
-                    autoOpen: false,
-                    resizable: false,
-                    height: "auto",
-                    width: 500,
-                    modal: true,
-                    buttons: [{id: "ok",
-                            "class": "ui-button",
-                            text: "Так",
-                            click: function () {
-                                $(this).dialog("close");
-                            }
-                        }]
-                });
-
-                // this makes more pleasant look for dialog title close button
-                $('button.ui-dialog-titlebar-close').addClass('ui-button').addClass("ui-icon-closethick");
 
                 //this initializes choosing of page size
                 pageSizeList = function () {
@@ -784,6 +587,189 @@
                 }
                 $(document).ready(function () {
                     $(document).on("keydown", disableF5);
+                });
+
+                // this initializes the dialog to add or edit information in table
+                $("#dialog-form").dialog({
+                    autoOpen: false,
+                    height: "auto",
+                    width: "75%",
+                    resizable: false,
+                    modal: true,
+                    buttons: [{id: "ok",
+                            "class": "ui-button",
+                            text: "Ok",
+                            click: function () {
+                                addRecord();
+                            }},
+                        {id: "cancel",
+                            "class": "ui-button",
+                            text: "Відмінити",
+                            click: function () {
+                                $(this).dialog("close");
+                            }}
+                    ],
+                    close: function () {
+                        $("#dialog-form").find("form").trigger("reset");
+                        $("#dialog-form input").removeAttr("valid-status").removeAttr("ajv-icon");
+                        $("#dialog-form input:text").errorpopup("hide");
+                        $("#rdk,#ordk").ajaxvalidation("reset");
+                    }
+                });
+                // this makes an object form, used for reseting while pressing "cancel" button
+                $("#dialog-form").find("form").on("submit", function (event) {
+                    event.preventDefault();
+                    addRecord();
+                });
+                // this creates dialog placeholder for deletion confirmation
+                $("body").append($("<div>")
+                        .prop("id", "dialog-confirm-deletion")
+                        .prop("title", "Видалити обраний запис?")
+                        .append($("<p>")
+                                .prop("id", "confirm-content")
+                                .html("Чи дійсно ви бажаєте видатили обраний запис?</br>Обраний запис буде видалено з БД")
+                                )
+                        .hide()
+                        );
+                // this initializes the dialog to delete information from table
+                $("#dialog-confirm-deletion").dialog({
+                    autoOpen: false,
+                    resizable: false,
+                    height: "auto",
+                    width: 400,
+                    modal: true,
+                    buttons: [{id: "ok",
+                            "class": "ui-button",
+                            text: "Так",
+                            click: function () {
+                                $.ajax({
+                                    type: "post",
+                                    url: "${pageContext.servletContext.contextPath}/servlets/ajax/" + servletUrlPatternCrud,
+                                    data: {
+                                        q_table_name: tableName,
+                                        q_mode: mode,
+                                        q_id: $("tr.active").attr("data-id")
+                                    },
+                                    timeout: 600000,
+                                    beforeSend: function () {
+                                        $("#overlay-wrapper").fadeIn("fast");
+                                    },
+                                    success: function (data, status, xhr) {
+                                        $("#dialog-confirm-deletion").dialog("close");
+                                        console.log("deleteRecord SUCCESS ");
+                                        getPage();
+                                        getTotalRowCount();
+                                    },
+                                    error: function (error) {
+                                        riseAnError("deleteRecord", error);
+                                    },
+                                    complete: function () {
+                                        $("#overlay-wrapper").fadeOut("fast");
+                                    }
+                                });
+                            }},
+                        {id: "cancel",
+                            "class": "ui-button",
+                            text: "Ні",
+                            click: function () {
+                                $(this).dialog("close");
+                            }}
+                    ]
+                });
+
+                // this makes more pleasant look for dialog title close button
+                $('button.ui-dialog-titlebar-close').addClass('ui-button').addClass("ui-icon-closethick");
+
+                $("#dialog-form").on("keyup", "input:text", function () {
+                    $(this).removeAttr("valid-status");
+                    $(this).removeAttr("ajv-icon");
+                    $(this).errorpopup("hide");
+                });
+                $("#dialog-form input:text").attr("autocomplete", "off");
+                $("#dialog-form input:text").bind("keydown", function (e) {
+                    if ([9, 13].indexOf(e.which || e.keyCode) >= 0) {
+                        e.preventDefault();
+                        var inputs = $("#dialog-form input:text");
+                        var nextItem = inputs.eq(inputs.index($(this)) + ((e.shiftKey) ? -1 : 1));
+                        if (nextItem.size() === 0)
+                            nextItem = $("#dialog-form input:text").eq(0);
+                        nextItem.focus();
+                    }
+                });
+
+                //alternative way to force user type only digits
+                /*$('input[digitonly]').keyup(function (e) {
+                 if (/\D/g.test(this.value)) {
+                 // Filter non-digits from input value.
+                 this.value = this.value.replace(/\D/g, '');
+                 }
+                 });*/
+                $('input[digitonly]').on('keypress', function (evt) {
+                    var charCode = (evt.which) ? evt.which : evt.keyCode;
+                    return !(charCode !== 8 && charCode !== 9 // backspace and tab keys
+                            && charCode !== 37 && charCode !== 39 // ← → arrows keys
+                            && (charCode < 48 || charCode > 57) // 0-9 digits keys
+                            );
+                });
+
+                $("#dialog-form").parent().css("min-width", "750px");
+
+                //jquery plugin apply
+                $("#rdk,#ordk").tablehelp({
+                    "tableCaption": "Розпорядчі документи.Типи",
+                    "tableName": "rdt",
+                    "urlToGetData": "${pageContext.servletContext.contextPath}/servlets/ajax/rdtGetPage",
+                    "itemToPickup": "rdtk",
+                    "columns": [
+                        {"caption": "Код", "item": "rdtk"},
+                        {"caption": "Назва", "item": "rdtn", "align": "left"}
+                    ],
+                    onError: function (error) {
+                        riseAnError("jquery.iskra.tablehelp", error);
+                    }
+                });
+                $("#rdk-help-btn").click(function () {
+                    $("#rdk").tablehelp("show");
+                });
+                $("#ordk-help-btn").click(function () {
+                    $("#ordk").tablehelp("show");
+                });
+
+                $("#rdk,#ordk").ajaxvalidation({
+                    "fieldName": "rdtk",
+                    "urlToGetData": "${pageContext.servletContext.contextPath}/servlets/api/validate_rdt",
+                    onError: function (error) {
+                        riseAnError("jquery.iskra.ajaxvalidation", error);
+                    }
+                });
+
+                $("#uplfiles").fileupload();
+
+                $("#nzak").iskraAutocomplete({
+                    "tableName": "clippersql.skisql",
+                    "fieldName": "nzak",
+                    "urlToGetData": "${pageContext.servletContext.contextPath}/servlets/ajax/autocomplete",
+                    onError: function (error) {
+                        riseAnError("jquery.iskra.autocomplete", error);
+                    }
+                });
+
+                $("#rdd").datepicker();
+                $("#rdd-help-btn").click(function () {
+                    $("#rdd").datepicker("show");
+                });
+                $("#ordd").datepicker();
+                $("#ordd-help-btn").click(function () {
+                    $("#ordd").datepicker("show");
+                });
+                $("#dvd").datepicker();
+                $("#dvd-help-btn").click(function () {
+                    $("#dvd").datepicker("show");
+                });
+
+                $("#content-table-body").tooltip({
+                    selector: ".uf-file",
+                    placement: "left"
                 });
 
                 getPage();

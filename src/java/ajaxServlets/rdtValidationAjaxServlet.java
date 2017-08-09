@@ -66,7 +66,9 @@ public class rdtValidationAjaxServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("application/json; charset=utf-8");
         request.setCharacterEncoding("UTF-8");
-        String item = null, value = null;
+
+        String item = null;
+        String value = null;
 
         try {
             boolean validation;
@@ -76,8 +78,13 @@ public class rdtValidationAjaxServlet extends HttpServlet {
             value = request.getParameter("q_value");
 
             rdtController controller = new rdtController();
-            validation = controller.valdiateRdtk(value);
-            controller.returnConnectionInPool();
+            try {
+                validation = controller.valdiateRdtk(value);
+            } catch (Throwable e) {
+                throw e;
+            } finally {
+                controller.returnConnectionInPool();
+            }
 
             if (!validation) {
                 validationMessage = "Код типу розпорядчого документа не відповідає довіднику \\\"Розпорядчі документи.Типи\\\"";
@@ -85,7 +92,7 @@ public class rdtValidationAjaxServlet extends HttpServlet {
 
             PrintWriter out = response.getWriter();
             out.print("{\"valid\":" + validation
-                    + ((!validation) ? ",\"message\":\"" + validationMessage + "\"" : "")
+                    + ((validation) ? "" : ",\"message\":\"" + validationMessage + "\"")
                     + "}");
             out.flush();
         } catch (Throwable e) {

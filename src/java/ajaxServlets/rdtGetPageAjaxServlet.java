@@ -72,6 +72,7 @@ public class rdtGetPageAjaxServlet extends HttpServlet {
         String tableName = null;
         String pageSize = null;
         String pageNumber = null;
+        List<rdt> list = null;
 
         try {
             tableName = request.getParameter("q_table_name");
@@ -79,13 +80,20 @@ public class rdtGetPageAjaxServlet extends HttpServlet {
             pageNumber = request.getParameter("q_page_number");
 
             rdtController controller = new rdtController();
-            List<rdt> list = controller.getPage(Integer.parseInt(pageNumber), Integer.parseInt(pageSize));
-            controller.returnConnectionInPool();
+            try {
+                list = controller.getPage(Integer.parseInt(pageNumber), Integer.parseInt(pageSize));
+            } catch (Throwable e) {
+                throw e;
+            } finally {
+                controller.returnConnectionInPool();
+            }
 
             PrintWriter out = response.getWriter();
             String jsonList = "";
-            for (rdt entity : list) {
-                jsonList += ((jsonList.equals("")) ? "" : ",") + entity.toString();
+            if (list != null && !list.isEmpty()) {
+                for (rdt entity : list) {
+                    jsonList += ((jsonList.equals("")) ? "" : ",") + entity.toString();
+                }
             }
             out.print("{\"page\":[" + jsonList + "],"
                     + "\"q_page_size\":" + pageSize
@@ -103,7 +111,7 @@ public class rdtGetPageAjaxServlet extends HttpServlet {
             outErr.printf(err.toString());
 
             outErr.flush();
-         }
+        }
     }
 
     /**

@@ -33,7 +33,7 @@ import javax.servlet.http.Part;
  *
  * @author u27brvz04
  */
-//@WebServlet(name = "ejrdokCrudAjaxServlet", urlPatterns = {"/servlets/ajax/ejrdokCrud"})
+@WebServlet(name = "ejrdokCrudAjaxServlet")
 @MultipartConfig
 public class ejrdokCrudAjaxServlet extends HttpServlet {
 
@@ -80,16 +80,16 @@ public class ejrdokCrudAjaxServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("application/json; charset=utf-8");
         request.setCharacterEncoding("UTF-8");
+
         String tableName = null;
         String id = null;
         ejrdok entity = null;
-        ejrdokController controller = null;
 
         try {
             tableName = request.getParameter("q_table_name");
             id = request.getParameter("q_id");
 
-            controller = new ejrdokController();
+            ejrdokController controller = new ejrdokController();
             try {
                 entity = controller.getEntityById(Integer.parseInt(id));
             } catch (Throwable e) {
@@ -100,8 +100,9 @@ public class ejrdokCrudAjaxServlet extends HttpServlet {
 
             PrintWriter out = response.getWriter();
             if (entity != null) {
-                out.print("{\"row\":" + entity.toString() + "}");
+
             }
+            out.print("{\"row\":" + ((entity == null) ? "" : entity.toString()) + "}");
             out.flush();
         } catch (Throwable e) {
             backendError err = new backendError();
@@ -131,6 +132,7 @@ public class ejrdokCrudAjaxServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("application/json; charset=utf-8");
         request.setCharacterEncoding("UTF-8");
+
         String tableName = null;
         String mode = null;
         int outId = -1;
