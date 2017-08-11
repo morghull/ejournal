@@ -60,4 +60,7 @@
     .uf-file {
         background: rgba(0, 0, 0, 0.00) url("${pageContext.servletContext.contextPath}/images/24px_png_doc.png?<%=version%>") no-repeat -2px -1px;
     }
+    .uf-viewer-placeholder {
+        background: rgba(0, 0, 0, 0.1) url("${pageContext.servletContext.contextPath}/images/loading.gif?<%=version%>") no-repeat center;
+    }
 </style>

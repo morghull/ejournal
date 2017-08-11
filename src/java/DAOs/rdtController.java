@@ -108,7 +108,7 @@ public class rdtController extends AbstractCrudController<rdt, String> {
         return TABLE_NAME;
     }
     
-    public boolean valdiateRdtk(String rdtk) throws SQLException{
+    public boolean valdiateRdtk(String value) throws SQLException{
         boolean isValid = false;
         String query
                 = "select 1 as chk "
@@ -116,7 +116,7 @@ public class rdtController extends AbstractCrudController<rdt, String> {
                 + "where rdtk=? limit 1";
         PreparedStatement ps = getPrepareStatement(query);
         try {
-            ps.setString(1, rdtk);
+            ps.setString(1, value);
             ResultSet rs = ps.executeQuery();
             isValid = rs.isBeforeFirst();
         } catch (SQLException e) {

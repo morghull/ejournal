@@ -56,7 +56,7 @@ public class uplfile implements Serializable {
         return "{"
                 + "\"ufid\":" + ufid
                 + ",\"ufname\":\"" + ufname + "\""
-                + "\"idd\":" + idd
+                + ",\"idd\":" + idd
                 + "}";
     }
 }

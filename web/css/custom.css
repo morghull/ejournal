@@ -169,6 +169,28 @@ input[valid-status="invalid"] {
     content: "exe";
     color: #dd110a;
 }
+.uf-viewer-placeholder {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 2000;
+    justify-content: space-around;
+    align-items: center;
+}
+.uf-viewer-iframe {
+    width: 85vw;
+    min-height: 100vh;
+    border: 0;
+    box-shadow: 0 0 5px rgba(0,0,0,0.7);
+}
+.uf-viewer-img {
+    width: 85vw;
+    border: 0;
+    box-shadow: 0 0 5px rgba(0,0,0,0.7);
+}
 .padding-off {
     padding:0;
 }

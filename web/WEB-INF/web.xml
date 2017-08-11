@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+    <display-name>Електронний журнал</display-name>
+    <description>
+        Електронний журнал реєстрації розпорядчих документів
+    </description>
     <context-param>
         <description>test</description>
         <param-name>pluginVersion</param-name>
-        <param-value>0.02</param-value>
+        <param-value>0.001</param-value>
     </context-param>
     <!--url mapping ******************************************************-->
     <servlet>
@@ -86,6 +90,14 @@
     <servlet-mapping>
         <servlet-name>uplfileDownloadAjaxServlet</servlet-name>
         <url-pattern>/servlets/ajax/uplfileDownload</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>skiValidationAjaxServlet</servlet-name>
+        <servlet-class>ajaxServlets.skiValidationAjaxServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>skiValidationAjaxServlet</servlet-name>
+        <url-pattern>/servlets/api/validate_ski</url-pattern>
     </servlet-mapping>
     <!--********************************************************************-->
     <servlet>

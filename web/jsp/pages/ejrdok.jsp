@@ -431,19 +431,27 @@
                         success: function (data, status, xhr) {
                             var tableBody = $("#content-table-body");
                             var rowNumber = pageSize * (pageNumber - 1);
+                            var url = "${pageContext.servletContext.contextPath}/servlets/ajax/uplfileDownload?q_id=";
                             tableBody.empty();
                             $.each(data.page, function (key, val) {
                                 rowNumber++;
-                                var uf = $("<td>").addClass("padding-off");
+                                var ufs = $("<td>").addClass("padding-off");
                                 $.each(val.files, function () {
-                                    var ext = (/[.]/.exec(this.ufname)) ? /[^.]+$/.exec(this.ufname) : undefined;
-                                    uf.append($("<div>")
+                                    var ext = (/[.]/.exec(this.ufname)) ? /[^.]+$/.exec(this.ufname)[0] : undefined;
+                                    var uf = $("<div>")
                                             .attr("uf-id", this.ufid)
                                             .attr("uf-name", this.ufname)
                                             .attr("title", this.ufname)
-                                            .addClass("uf-file uf-" + ext));
+                                            .addClass("uf-file uf-" + ext);
+                                    if (["jpeg", "png", "jpg", "bmp"].indexOf(ext) >= 0)
+                                        ufs.append(uf.addClass("uf-img"));
+                                    else if (ext === "pdf")
+                                        ufs.append(uf);
+                                    else {
+                                        var a = $("<a>").attr("href", url + this.ufid).attr("download", this.ufname);
+                                        ufs.append(a.append(uf));
+                                    }
                                 });
-                                //uf.children(":last").attr("data-placement","left");
                                 tableBody.append($("<tr>").addClass("clickable-row").attr("data-id", val.idd)
                                         .append($("<td>").append(rowNumber).addClass("text-center"))
                                         .append($("<td>").append(stringFormat(val.rdk)).addClass("text-center"))
@@ -455,9 +463,18 @@
                                         .append($("<td>").append(stringFormat(val.dvd)).addClass("text-center"))
                                         .append($("<td>").append(stringFormat(val.nzak)).addClass("text-center"))
                                         .append($("<td>").append(stringFormat(val.prim)).addClass("text-left"))
-                                        .append(uf)
+                                        .append(ufs)
                                         );
                             });
+                            $(".uf-file.uf-pdf").click(function () {
+                                $("#pdf-viewer-iframe").attr("src", url + $(this).attr("uf-id"));
+                                $("#pdf-viewer-placeholder").fadeIn("fast");
+                            });
+                            $(".uf-file.uf-img").click(function () {
+                                $("#img-viewer-img").attr("src", url + $(this).attr("uf-id"));
+                                $("#img-viewer-placeholder").fadeIn("fast");
+                            });
+
                             console.log("getPage SUCCESS : ", data);
                         },
                         error: function (error) {
@@ -611,9 +628,9 @@
                     ],
                     close: function () {
                         $("#dialog-form").find("form").trigger("reset");
-                        $("#dialog-form input").removeAttr("valid-status").removeAttr("ajv-icon");
                         $("#dialog-form input:text").errorpopup("hide");
-                        $("#rdk,#ordk").ajaxvalidation("reset");
+                        $("#dialog-form input:text").ajaxvalidation("reset");
+                        //$("#rdk,#ordk,#nzak").ajaxvalidation("reset");
                     }
                 });
                 // this makes an object form, used for reseting while pressing "cancel" button
@@ -676,6 +693,38 @@
                             }}
                     ]
                 });
+                // this initializes the dialog for viewing uploaded pdf files
+                $("body")
+                        .append($("<div>")
+                                .attr("id", "pdf-viewer-placeholder")
+                                .addClass("uf-viewer-placeholder")
+                                .append(
+                                        $("<iframe>")
+                                        .attr("id", "pdf-viewer-iframe")
+                                        .addClass("uf-viewer-iframe")
+                                        )
+                                .click(function () {
+                                    $("#pdf-viewer-iframe").removeAttr("src");
+                                    $("#pdf-viewer-placeholder").fadeOut("fast");
+                                })
+                                .hide()
+                                );
+                // this initializes the dialog for viewing uploaded image files
+                $("body")
+                        .append($("<div>")
+                                .attr("id", "img-viewer-placeholder")
+                                .addClass("uf-viewer-placeholder")
+                                .append(
+                                        $("<img>")
+                                        .attr("id", "img-viewer-img")
+                                        .addClass("uf-viewer-img")
+                                        )
+                                .click(function () {
+                                    $("#img-viewer-iframe").removeAttr("src");
+                                    $("#img-viewer-placeholder").fadeOut("fast");
+                                })
+                                .hide()
+                                );
 
                 // this makes more pleasant look for dialog title close button
                 $('button.ui-dialog-titlebar-close').addClass('ui-button').addClass("ui-icon-closethick");
@@ -738,6 +787,14 @@
                 $("#rdk,#ordk").ajaxvalidation({
                     "fieldName": "rdtk",
                     "urlToGetData": "${pageContext.servletContext.contextPath}/servlets/api/validate_rdt",
+                    onError: function (error) {
+                        riseAnError("jquery.iskra.ajaxvalidation", error);
+                    }
+                });
+
+                $("#nzak").ajaxvalidation({
+                    "fieldName": "nzak",
+                    "urlToGetData": "${pageContext.servletContext.contextPath}/servlets/api/validate_ski",
                     onError: function (error) {
                         riseAnError("jquery.iskra.ajaxvalidation", error);
                     }

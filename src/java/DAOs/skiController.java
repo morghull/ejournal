@@ -7,6 +7,8 @@ package DAOs;
 
 import dataControllerCore.AbstractCrudController;
 import dataObjects.ski;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -60,5 +62,24 @@ public class skiController extends AbstractCrudController<ski, String> {
     public String getTableName() {
         return TABLE_NAME;
     }
-
+    
+    public boolean valdiateNzak(String value) throws SQLException{
+        boolean isValid = false;
+        String query
+                = "select 1 as chk "
+                + "from " + TABLE_NAME + " "
+                + "where nzak=? limit 1";
+        PreparedStatement ps = getPrepareStatement(query);
+        try {
+            ps.setString(1, value);
+            ResultSet rs = ps.executeQuery();
+            isValid = rs.isBeforeFirst();
+        } catch (SQLException e) {
+            throw new SQLException("Помилка при виконанні SQL-запиту</br>"
+                    + "<div class=\"nested-error\">" + e.getMessage() + "</div>",e.getSQLState());
+        } finally {
+            closePrepareStatement(ps);
+        }
+        return isValid;
+    }
 }

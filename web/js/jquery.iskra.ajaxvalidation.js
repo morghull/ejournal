@@ -19,14 +19,14 @@
                 obj.addClass("ui-ajv-input");
                 obj.focusout(function () {
                     var value = obj.val();
-                    var ajvPreviousValue = obj.data("ajv-prev-value");
-                    if (value.length !== 0 && value !== ajvPreviousValue) {
+                    var previousValue = obj.data("ajv-prev-value");
+                    if (value.length !== 0 && value !== previousValue) {
                         $.ajax({
                             type: "get",
                             url: settings.urlToGetData,
                             dataType: "json",
                             data: {
-                                q_item: settings.ajvFieldName,
+                                q_item: settings.fieldName,
                                 q_value: value
                             },
                             timeout: 600000,
@@ -64,6 +64,7 @@
         reset: function () {
             return this.each(function () {
                 $(this).removeData("ajv-prev-value");
+                $(this).removeAttr("valid-status").removeAttr("ajv-icon");
             });
         },
         hide: function () {

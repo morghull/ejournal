@@ -5,14 +5,9 @@
  */
 package ajaxServlets;
 
-import DAOs.uplfileController;
+import DAOs.skiController;
 import dataControllerCore.backendError;
-import dataControllerCore.fileUtils;
-import dataObjects.uplfile;
-import java.net.URLEncoder;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -24,8 +19,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author u27brvz04
  */
-@WebServlet(name = "uplfileDownloadAjaxServlet")
-public class uplfileDownloadAjaxServlet extends HttpServlet {
+@WebServlet(name = "skiValidationAjaxServlet")
+public class skiValidationAjaxServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -45,10 +40,10 @@ public class uplfileDownloadAjaxServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet uplfileDownloadAjaxServlet</title>");
+            out.println("<title>Servlet rdtValidationAjaxServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet uplfileDownloadAjaxServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet rdtValidationAjaxServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         } finally {
@@ -68,51 +63,42 @@ public class uplfileDownloadAjaxServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setContentType("application/json; charset=utf-8");
+        request.setCharacterEncoding("UTF-8");
 
-        String id = null;
-        uplfile entity = null;
+        String item = null;
+        String value = null;
 
         try {
-            id = request.getParameter("q_id");
+            boolean validation;
+            String validationMessage = "";
 
-            uplfileController controller = new uplfileController();
+            item = request.getParameter("q_item");
+            value = request.getParameter("q_value");
+
+            skiController controller = new skiController();
             try {
-                entity = controller.getEntityById(Integer.parseInt(id));
+                validation = controller.valdiateNzak(value);
             } catch (Throwable e) {
                 throw e;
             } finally {
                 controller.returnConnectionInPool();
             }
 
-            OutputStream out = response.getOutputStream();
-            if (entity != null) {
-                String fileName = entity.getUfname();
-
-                String contentType = getServletContext().getMimeType(fileName);
-
-                response.setContentType(contentType);
-                if (fileUtils.canBeShowInBrowser(fileName)) {
-                    response.setHeader("content-disposition", "inline; filename=file" + entity.getUfid() + "." + fileUtils.getExtension(fileName));
-                } else {
-                    response.setHeader("content-disposition", "attachment; filename=file" + entity.getUfid() + "." + fileUtils.getExtension(fileName));
-                }
-                InputStream in = entity.getUfcontent();
-                try {
-                    byte[] buffer = new byte[4096];
-                    int length;
-                    while ((length = in.read(buffer)) > 0) {
-                        out.write(buffer, 0, length);
-                    }
-                } finally {
-                    in.close();
-                }
+            if (!validation) {
+                validationMessage = "Номер замовлення не відповідає довіднику \\\"Коди виробів.Довідник\\\"";
             }
+
+            PrintWriter out = response.getWriter();
+            out.print("{\"valid\":" + validation
+                    + ((validation) ? "" : ",\"message\":\"" + validationMessage + "\"")
+                    + "}");
             out.flush();
         } catch (Throwable e) {
             backendError err = new backendError();
             err.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             err.setText("Помилка при роботі з web-сервісом</br>Помилка при "
-                    + " спробі отримати ынформацыю щодо збереженого файлу");
+                    + " спробі отримати інформацію запису таблиці rdt для перевірки");
             err.setDetails("<div class=\"nested-error\">" + e.getClass().getName()
                     + ": " + e.getMessage() + "</div>");
             response.setStatus(err.getStatus());
@@ -134,7 +120,7 @@ public class uplfileDownloadAjaxServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        processRequest(request, response);
     }
 
     /**

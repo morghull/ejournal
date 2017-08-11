@@ -48,8 +48,8 @@ public class uplfileController extends AbstractCrudController<uplfile, Integer> 
     public uplfile getEntityById(Integer id) throws SQLException {
         uplfile entity;
         String query
-                = "select ufid,ufname,ufcontent,idd"
-                + "from xxx.uplfiles"
+                = "select ufid,ufname,ufcontent,idd "
+                + "from xxx.uplfiles "
                 + "where ufid=? limit 1;";
         PreparedStatement ps = getPrepareStatement(query);
         try {
