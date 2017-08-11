@@ -312,6 +312,8 @@
                                     }
                                 }]
                         });
+                        // this makes more pleasant look for dialog title close button
+                        $("#dialog-error-message").siblings(".ui-dialog-titlebar").find("button.ui-dialog-titlebar-close").addClass("ui-button").addClass("ui-icon-closethick");
 
                     }
                     var errorMessage, errorDetails;
@@ -369,7 +371,7 @@
                         data.append("q_id", $("tr.active").attr("data-id"));
                         $.ajax({
                             type: "post",
-                            enctype: 'multipart/form-data',
+                            enctype: "multipart/form-data",
                             url: "${pageContext.servletContext.contextPath}/servlets/ajax/" + servletUrlPatternCrud,
                             data: data,
                             processData: false, // Important!
@@ -586,7 +588,7 @@
                             redrawPagination();
                             console.log("getTotalRowCount SUCCESS : ", data);
                         },
-                        error: function (xhr, status, error) {
+                        error: function (error) {
                             riseAnError("getTotalRowCount", error);
                         },
                         complete: function () {
@@ -717,17 +719,17 @@
                                 .append(
                                         $("<img>")
                                         .attr("id", "img-viewer-img")
-                                        .addClass("uf-viewer-img")
+                                        .addClass("uf-viewer-img select-disable")
                                         )
                                 .click(function () {
-                                    $("#img-viewer-iframe").removeAttr("src");
+                                    $("#img-viewer-img").removeAttr("src");
                                     $("#img-viewer-placeholder").fadeOut("fast");
                                 })
                                 .hide()
                                 );
 
                 // this makes more pleasant look for dialog title close button
-                $('button.ui-dialog-titlebar-close').addClass('ui-button').addClass("ui-icon-closethick");
+                $("button.ui-dialog-titlebar-close").addClass("ui-button").addClass("ui-icon-closethick");
 
                 $("#dialog-form").on("keyup", "input:text", function () {
                     $(this).removeAttr("valid-status");
@@ -747,13 +749,13 @@
                 });
 
                 //alternative way to force user type only digits
-                /*$('input[digitonly]').keyup(function (e) {
+                /*$("input[digitonly]").keyup(function (e) {
                  if (/\D/g.test(this.value)) {
                  // Filter non-digits from input value.
-                 this.value = this.value.replace(/\D/g, '');
+                 this.value = this.value.replace(/\D/g, "");
                  }
                  });*/
-                $('input[digitonly]').on('keypress', function (evt) {
+                $("input[digitonly]").on("keypress", function (evt) {
                     var charCode = (evt.which) ? evt.which : evt.keyCode;
                     return !(charCode !== 8 && charCode !== 9 // backspace and tab keys
                             && charCode !== 37 && charCode !== 39 // ← → arrows keys

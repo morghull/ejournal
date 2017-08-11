@@ -135,8 +135,8 @@ public abstract class AbstractController<E, K> {
         String query
                 = "select public.sp_get_total_row_count(?) as cnt;";
         PreparedStatement ps = getPrepareStatement(query);
-        ps.setString(1, this.getTableName());
         try {
+            ps.setString(1, this.getTableName());
             ResultSet rs = ps.executeQuery();
             rs.next();
             totalRowCount = Integer.parseInt(rs.getString("cnt"));

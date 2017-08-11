@@ -191,6 +191,13 @@ input[valid-status="invalid"] {
     border: 0;
     box-shadow: 0 0 5px rgba(0,0,0,0.7);
 }
+.select-disable {
+    -webkit-user-select: none; 
+    -khtml-user-select: none; 
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none; 
+}
 .padding-off {
     padding:0;
 }
