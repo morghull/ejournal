@@ -28,7 +28,7 @@ table.singleline tr>td:first-child{
 }
 table.singleline>thead>tr {
     background-color: #5ca135;
-    background-color: rgba(92,161,53,0.8);
+    background-color: #7cb35d;/*rgba(92,161,53,0.8)*/
     color: #f0f0f0;
 }
 table.singleline>thead>tr:first-child>td{
@@ -38,7 +38,7 @@ table.singleline>thead>tr>td:last-child{
     border-right: none;
 }
 table.singleline>thead>tr>td:first-child{
-    border-left-color: rgba(92,161,53,0.8);
+    border-left-color: #7cb35d;
 }
 table.singleline>thead>tr>td{
     padding: 8px 8px;
@@ -53,14 +53,14 @@ table.singleline>tbody>tr:nth-child(2n+1)>td{
     background-color: #f9f9f9;
 }
 table.singleline>tbody>tr.active>td{
-    background-image: -webkit-linear-gradient(top,rgba(92,161,53,0.8) 0,rgba(92,161,53,0.8) 100%);
-    background-image: -o-linear-gradient(top,rgba(92,161,53,0.8) 0,rgba(92,161,53,0.8) 100%);
-    background-image: -webkit-gradient(linear,left top,left bottom,from(rgba(92,161,53,0.8)),to(rgba(92,161,53,0.8)));
-    background-image: linear-gradient(to bottom,rgba(92,161,53,0.8) 0,rgba(92,161,53,0.8) 100%);
+    background-image: -webkit-linear-gradient(top,#7cb35d 0,#7cb35d 100%);
+    background-image: -o-linear-gradient(top,#7cb35d 0,#7cb35d 100%);
+    background-image: -webkit-gradient(linear,left top,left bottom,from(#7cb35d),to(#7cb35d));
+    background-image: linear-gradient(to bottom,#7cb35d 0,#7cb35d 100%);
     color: #f0f0f0;
 }
 table.singleline>tbody>tr.active>td:first-child{
-    border-left-color: rgba(92,161,53,0.8);
+    border-left-color: #7cb35d;
 }
 table.singleline>tbody>tr:last-child>td{
     border-bottom: 1px solid rgb(221,221,221);

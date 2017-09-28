@@ -196,10 +196,10 @@
         <script src="${pageContext.servletContext.contextPath}/js/jquery.iskra.errorpopup.js?<%=version%>"></script>
         <script src="${pageContext.servletContext.contextPath}/js/jquery.iskra.ajaxvalidation.js?<%=version%>"></script>
         <script src="${pageContext.servletContext.contextPath}/js/jquery.iskra.autocomplete.js?<%=version%>"></script>
+        <script src="${pageContext.servletContext.contextPath}/js/jquery.stickytableheaders.js?<%=version%>"></script>
         <script type="text/javascript">
             $(function () {
                 var emailRegex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-
             });
         </script>
         <jsp:include page="/jsp/js/initClickableTableRow.jsp"/>
@@ -813,15 +813,16 @@
                     }
                 });
 
-                $("#rdd").datepicker();
+                $("#rdd,#ordd,#dvd").datepicker({
+                    "changeMonth": true,
+                    "changeYear": true
+                });
                 $("#rdd-help-btn").click(function () {
                     $("#rdd").datepicker("show");
                 });
-                $("#ordd").datepicker();
                 $("#ordd-help-btn").click(function () {
                     $("#ordd").datepicker("show");
                 });
-                $("#dvd").datepicker();
                 $("#dvd-help-btn").click(function () {
                     $("#dvd").datepicker("show");
                 });
@@ -830,6 +831,8 @@
                     selector: ".uf-file",
                     placement: "left"
                 });
+
+                $("table").stickyTableHeaders();
 
                 getPage();
                 getTotalRowCount();
